@@ -9,7 +9,14 @@ import { L } from '../data/layout.js';
 import { G, KIND_KEYS, buildDecor, buildStations, buildZones, makeChar, menu, owned, placeCharEl, renderBubble, renderMenu, renderPass, renderTable, setLook, stationEls, syncCashiers, syncCooks, syncTables, syncWaiters, updateTop } from './world.js';
 
 export const freeTable = () => G.tables.find(t => !t.cust && !t.coins && t.i < LEVEL_SLOTS[S.level]);
-export const spawnEvery = () => Math.max(1.6, 8 / (1 + .3 * S.ads + Object.keys(S.decor).length * .05) * (1.4 - S.stars * .1));
+// Hoeveel seconden tussen twee klanten. Sneller met:
+//  - meer tafels     (2 tafels = normaal, 4 = 1,5x zo vaak, 6 = 2x, 9 = 2,75x)
+//  - reclame         (+30% per niveau)
+//  - versiering      (+5% per stuk)
+//  - meer sterren    (1 ster = langzaam, 5 sterren = snel)
+export const tableBoost = () => .5 + .25 * Math.min(S.tables, LEVEL_SLOTS[S.level]);
+export const spawnEvery = () => Math.max(1.2,
+  8 / (1 + .3 * S.ads + Object.keys(S.decor).length * .05) * (1.4 - S.stars * .1) / tableBoost());
 export const walkSpeed = () => 150;
 export const waiterSpeed = () => 170 * (1 + .35 * S.skates);
 export let spawnT = 1;
