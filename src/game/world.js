@@ -3,7 +3,8 @@ import { art, ic } from '../art/index.js';
 import { svg } from '../art/svg.js';
 import { S } from '../core/state.js';
 import { $, fmt, pick } from '../core/util.js';
-import { DECOR, FOODS, LEVEL_COST, SLOTS, STATIONS, ST_KEYS, ZONES } from '../data/config.js';
+import { FOODS, LEVEL_COST, STATIONS, ST_KEYS } from '../data/config.js';
+import { L, chooseLayout } from '../data/layout.js';
 import { cheapest } from './shop.js';
 import { buyLevel, collect, stationTap } from './sim.js';
 
@@ -21,25 +22,46 @@ export const ptag = c => `<span class="ptag ${S.money < c ? 'cant' : ''}">${ic('
 export const G = { tables: [], cooks: [], waiters: [], cashiers: [], customers: [], tickets: [], ready: [], paused: false, last: 0 };
 export let stationEls = {}, zoneEls = [], passEl;
 
-// Schaal de wereld (1000x600) zo groot mogelijk: zo breed als past, maar ook binnen de schermhoogte.
+// Maak het speelveld zo groot als het scherm toelaat. Kies daarbij de indeling
+// (liggend of staand) waarmee het speelveld het grootst wordt.
+let built = false;
 export function fit() {
-  const st = $('stage'), app = $('app');
-  st.style.width = '';
-  const free = innerHeight - $('top').offsetHeight - $('menu').offsetHeight - 50;
-  const s = Math.max(.2, Math.min(st.clientWidth / 1000, free / 600));
-  st.style.width = (1000 * s + 10) + 'px';
-  W.style.transform = `scale(${s})`; st.style.height = (600 * s) + 'px';
+  const st = $('stage'), app = $('app'), cs = getComputedStyle(app);
+  const border = 10;
+  const availW = app.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - border;
+  const availH = innerHeight - $('top').offsetHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - 10 - border;
+  if (chooseLayout(availW, availH) && built) rebuildWorld();
+  const s = Math.max(.2, Math.min(availW / L.W, availH / L.H));
+  W.style.width = L.W + 'px'; W.style.height = L.H + 'px';
+  W.style.transform = `scale(${s})`;
+  st.style.width = (L.W * s + border) + 'px'; st.style.height = (L.H * s + border) + 'px';
+  document.body.dataset.layout = L.name;
 }
+
+// Bouw het hele restaurant (opnieuw) op, bijvoorbeeld na het draaien van het scherm.
+// Geld dat nog op tafel ligt, gaat eerst naar de portemonnee.
+export function buildWorld() {
+  buildStatic(); buildStations(); syncCooks(); syncWaiters(); syncCashiers(); syncTables(); buildZones(); buildDecor(); renderMenu(); updateTop();
+  built = true;
+}
+export function rebuildWorld() {
+  for (const t of G.tables) S.money += t.coins || 0;
+  Object.assign(G, { tables: [], cooks: [], waiters: [], cashiers: [], customers: [], tickets: [], ready: [] });
+  stationEls = {}; zoneEls = []; decorEls = [];
+  buildWorld();
+}
+const rect = (cls, r, z = 0) => { const d = mk(cls, '', r[0], r[1], z); d.style.width = r[2] + 'px'; d.style.height = r[3] + 'px'; return d; };
 
 export function buildStatic() {
   W.innerHTML = '';
-  mk('kwall', '', 0, 0, 0); mk('kfloor', '', 0, 175, 0); mk('dwall', '', 380, 0, 0); mk('dfloor', '', 380, 175, 0); mk('awning', '', 380, 0, 2);
-  mk('hood', '', 10, 0, 2).style.width = '360px';
-  mk('win', art('window'), 470, 34, 1); mk('win', art('window'), 696, 34, 1);
-  mk('door', art('door'), 900, 40, 1).style.zIndex = 1;
-  mk('divider', '', 374, 0, 3);
-  passEl = mk('pass', '', 380, 190, 150);
-  const reg = mk('register', art('register'), 905, 300, 360); reg.title = '';
+  const R = L.rects;
+  rect('kwall', R.kwall); rect('kfloor', R.kfloor); rect('dwall', R.dwall); rect('dfloor', R.dfloor);
+  rect('awning', R.awning, 2); rect('hood', R.hood, 2);
+  for (const [x, y] of L.windows) mk('win', art('window'), x, y, 1);
+  mk('door', art('door'), L.door[0], L.door[1], 1);
+  rect('divider' + (L.dividerDir === 'h' ? ' h' : ''), R.divider, 3);
+  passEl = rect('pass', R.pass, 150);
+  mk('register', art('register'), L.register[0], L.register[1], L.register[1] + 60);
 }
 
 export function placeCharEl(ch) {
@@ -65,9 +87,9 @@ export const staffLook = role => {
 
 export function buildStations() {
   for (const k of ST_KEYS) {
-    const p = STATIONS[k];
+    const [px, py] = L.stations[k];
     if (stationEls[k]) stationEls[k].remove();
-    const el = mk('station' + (owned(k) ? '' : ' locked'), art(k), p.x, p.y, p.y + 110);
+    const el = mk('station' + (owned(k) ? '' : ' locked'), art(k), px, py, py + 110);
     el.innerHTML += `<div class="ring"><svg class="art" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#fff" stroke="#4a2c17" stroke-width="5"/><circle class="prog" cx="50" cy="50" r="38" fill="none" stroke="#2ec27e" stroke-width="12" stroke-dasharray="239" stroke-dashoffset="239" transform="rotate(-90 50 50)"/></svg><div class="food"></div></div>`;
     if (!owned(k)) {
       el.innerHTML += `<div class="lockbadge">${ic('lock')}${ptag(STATIONS[k].cost)}</div>`;
@@ -89,15 +111,15 @@ export function syncCooks() {
       if (look.kind === 'tijn') { c.boss = true; c.el.classList.add('boss'); }
     }
     mine.forEach((c, i) => {
-      const p = STATIONS[k], n = mine.length;
-      c.x = p.x + 55 + (n === 1 ? 0 : (i - (n - 1) / 2) * 36); c.y = p.y + 48;
+      const [px, py] = L.stations[k], n = mine.length;
+      c.x = px + 55 + (n === 1 ? 0 : (i - (n - 1) / 2) * 36); c.y = py + 48;
       placeCharEl(c);
     });
   }
 }
 export function syncWaiters() {
   while (G.waiters.length < S.waiters) {
-    const i = G.waiters.length, home = [458, 236 + i * 64];
+    const i = G.waiters.length, home = L.waiterHome(i);
     const w = makeChar(staffLook('waiter'), home[0], home[1]);
     w.home = home; w.state = 'idle'; w.carry = []; G.waiters.push(w);
     w.carryEl = document.createElement('div'); w.carryEl.className = 'carry'; w.el.appendChild(w.carryEl);
@@ -105,12 +127,13 @@ export function syncWaiters() {
 }
 export function syncCashiers() {
   while (G.cashiers.length < S.cashiers) {
-    const c = makeChar(staffLook('cashier'), 950 - G.cashiers.length * 40, 330); c.t = 0; G.cashiers.push(c);
+    const [x, y] = L.cashier(G.cashiers.length);
+    const c = makeChar(staffLook('cashier'), x, y); c.t = 0; G.cashiers.push(c);
   }
 }
 export function syncTables() {
   while (G.tables.length < S.tables) {
-    const i = G.tables.length, [x, y] = SLOTS[i];
+    const i = G.tables.length, [x, y] = L.slots[i];
     const t = { i, x, y, cust: null, coins: 0, dishes: [] };
     t.chair = mk('chair', art('chair'), x - 36, y - 88, y - 60);
     t.el = mk('table', art('table'), x - 61, y - 36, y + 46);
@@ -120,8 +143,8 @@ export function syncTables() {
 }
 export function buildZones() {
   zoneEls.forEach(z => z.remove()); zoneEls = [];
-  for (let l = S.level + 1; l < ZONES.length; l++) {
-    const z = ZONES[l];
+  for (let l = S.level + 1; l < L.zones.length; l++) {
+    const z = L.zones[l];
     const el = mk('zone', `${ic('lock')}${ptag(LEVEL_COST[l])}`, z.x, z.y, 2000);
     el.style.width = z.w + 'px'; el.style.height = z.h + 'px';
     if (l > S.level + 1) { el.style.opacity = .85; el.innerHTML = ic('lock'); }
@@ -132,7 +155,7 @@ export function buildZones() {
 export let decorEls = [];
 export function buildDecor() {
   decorEls.forEach(d => d.remove()); decorEls = [];
-  for (const k in S.decor) { const d = DECOR[k]; decorEls.push(mk('decor' + (k === 'neon' ? ' neon' : ''), art(k), d.x, d.y, 5)); }
+  for (const k in S.decor) { const [x, y] = L.decor[k]; decorEls.push(mk('decor' + (k === 'neon' ? ' neon' : ''), art(k), x, y, 5)); }
 }
 export function renderMenu() {
   $('menu').innerHTML = menu().map(k => `<div class="mi">${ic(k)}<span class="tag">${fmt(FOODS[k].price)}</span></div>`).join('');
@@ -142,7 +165,7 @@ export function renderPass() {
   passEl.innerHTML = '';
   G.ready.filter(d => !d.taken).slice(0, 9).forEach((d, i) => {
     const e = document.createElement('div'); e.className = 'abs passitem'; e.innerHTML = art(d.item);
-    e.style.left = '4px'; e.style.top = (6 + i * 42) + 'px'; passEl.appendChild(e);
+    const [x, y] = L.passItem(i); e.style.left = x + 'px'; e.style.top = y + 'px'; passEl.appendChild(e);
   });
 }
 export function renderBubble(c) {

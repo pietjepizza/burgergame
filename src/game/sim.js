@@ -5,6 +5,7 @@ import { sfx } from '../core/sound.js';
 import { S, save } from '../core/state.js';
 import { fmt, pick } from '../core/util.js';
 import { FOODS, LEVEL_COST, LEVEL_SLOTS, STATIONS, ST_KEYS } from '../data/config.js';
+import { L } from '../data/layout.js';
 import { G, KIND_KEYS, buildDecor, buildStations, buildZones, makeChar, menu, owned, placeCharEl, renderBubble, renderMenu, renderPass, renderTable, setLook, stationEls, syncCashiers, syncCooks, syncTables, syncWaiters, updateTop } from './world.js';
 
 export const freeTable = () => G.tables.find(t => !t.cust && !t.coins && t.i < LEVEL_SLOTS[S.level]);
@@ -28,17 +29,14 @@ export function spawnCustomer() {
   const order = []; for (let i = 0; i < n; i++) order.push(pick(m));
   let kind = pick(KIND_KEYS), acc = pick(ACCS); if (acc === 'cap' && ['rabbit', 'frog', 'lion'].includes(kind)) acc = 'none';
   const look = { kind, shirt: pick(SHIRTS), cap: pick(SHIRTS), acc, blink: (Math.random() * 4).toFixed(2), feet: true, mood: 'happy' };
-  const c = makeChar(look, ...DOOR);
+  const c = makeChar(look, ...L.DOOR);
   Object.assign(c, { order, got: [], table: t, state: 'enter', pat: 0, max: 40 + n * 12 });
   t.cust = c; G.customers.push(c);
   // looproute: van de deur langs de muur, dan naar de tafel (zo lopen ze niet door afgesloten stukken)
-  moveTo(c, ...HALL);
+  moveTo(c, ...L.HALL);
   c.path = [[t.x, t.y + 10]];
   sfx.hello();
 }
-
-// deur en gang langs de muur (wereldcoördinaten)
-const DOOR = [942, 182], HALL = [760, 186];
 
 export function removeCustomer(c) {
   c.el.remove(); G.customers = G.customers.filter(x => x !== c);
@@ -87,7 +85,7 @@ export function update(dt) {
         if (c.delay <= 0) {
           const t = c.table; t.cust = null; if (!c.happy) { t.dishes = []; renderTable(t); }
           c.look.feet = true; c.look.mood = ''; setLook(c, c.happy ? 'love' : 'angry');
-          moveTo(c, ...HALL); c.path = [DOOR];
+          moveTo(c, ...L.HALL); c.path = [L.DOOR];
         }
         continue;
       }
@@ -137,7 +135,7 @@ export function update(dt) {
       if (d) {
         const batch = G.ready.filter(r => !r.taken && r.cust === d.cust).slice(0, 3);
         batch.forEach(r => r.taken = true); w.batch = batch; w.cust = d.cust;
-        w.state = 'toPass'; moveTo(w, 458, Math.min(560, 210 + G.ready.indexOf(d) * 42));
+        w.state = 'toPass'; moveTo(w, ...L.pickup(G.ready.indexOf(d)));
       } else if (w.x !== w.home[0] || w.y !== w.home[1]) moveTo(w, w.home[0], w.home[1]);
     } else if (w.state === 'toPass') {
       G.ready = G.ready.filter(r => !w.batch.includes(r)); renderPass();
@@ -195,7 +193,8 @@ export function stationTap(k, el) {
   const busy = G.cooks.filter(c => c.st === k && c.job);
   if (!busy.length) return;
   busy.forEach(c => c.job.t -= c.job.dur * .18);
-  sfx.tap(); spark(STATIONS[k].x + 30 + Math.random() * 50, STATIONS[k].y + 20 + Math.random() * 40);
+  const [sx, sy] = L.stations[k];
+  sfx.tap(); spark(sx + 30 + Math.random() * 50, sy + 20 + Math.random() * 40);
 }
 export function buyLevel(l) {
   const c = LEVEL_COST[l];

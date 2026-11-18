@@ -9,12 +9,13 @@ body { color: var(--ink); font-family: "Baloo 2", "Trebuchet MS", system-ui, san
   background: #ffb84d radial-gradient(ellipse at 50% -10%, #ffe7a3 0, #ffc15e 45%, #ff9f43 100%) fixed; }
 body::before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .18;
   background: radial-gradient(circle, #fff 2.5px, transparent 3px) 0 0 / 34px 34px; }
-#app { max-width: 2200px; margin: 0 auto; padding: 8px 12px 16px; position: relative; }
+#app { margin: 0 auto; position: relative; padding-block: 6px 6px; padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+html, body { height: 100%; overflow: hidden; }
 svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
 
 /* ---------- Topbalk ---------- */
-#top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-.logo { margin-right: auto; display: flex; align-items: center; gap: 8px; }
+#top { display: flex; align-items: center; gap: 8px 10px; flex-wrap: nowrap; margin-bottom: 8px; }
+.logo { display: flex; align-items: center; gap: 8px; }
 .logo .ic { width: 56px; height: 56px; animation: bob 2.2s ease-in-out infinite; }
 .logo .t { line-height: .9; }
 .logo .t1 { font-size: 17px; color: #fff; text-shadow: 0 2px 0 var(--wood-d); letter-spacing: 1px; }
@@ -50,6 +51,7 @@ svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
   background: repeating-linear-gradient(0deg, #00000014 0 2px, transparent 2px 42px),
               repeating-linear-gradient(90deg, #d99a5b 0 120px, #cf9052 120px 240px); }
 .divider { left: 374px; top: 0; width: 12px; height: 600px; background: linear-gradient(90deg, #8d5a33, #b7794a, #8d5a33); }
+.divider.h { background: linear-gradient(#8d5a33, #b7794a, #8d5a33); }
 .awning { left: 380px; top: 0; width: 620px; height: 26px; background: repeating-linear-gradient(90deg, var(--tomato) 0 40px, #fff 40px 80px); }
 .hood { top: 0; height: 40px; background: linear-gradient(#adb5bd, #ced4da); border-radius: 0 0 14px 14px; border: 3px solid #868e96; border-top: 0; }
 .pass { left: 380px; top: 190px; width: 58px; height: 400px; border-radius: 10px;
@@ -111,12 +113,14 @@ svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
 .spark { position: absolute; width: 30px; height: 30px; pointer-events: none; animation: sparkle .6s forwards; z-index: 9999; }
 
 /* ---------- Menubalk ---------- */
-#menu { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+#menu { flex: 1 1 0; min-width: 0; display: flex; gap: 6px; flex-wrap: nowrap; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
+#menu::-webkit-scrollbar { display: none; }
+#menu > :first-child { margin-left: auto; } #menu > :last-child { margin-right: auto; }
+#menu .mi { flex-shrink: 0; }
 #menu .mi { background: #fff; border-radius: 18px; padding: 4px 10px 4px 4px; display: flex; align-items: center; gap: 4px;
   box-shadow: 0 4px 0 #d9822b; font-size: 18px; animation: popin .4s; }
-#menu .mi .ic { width: 38px; height: 38px; }
-#rotate { display: none; margin: 10px auto 0; width: 70px; height: 70px; opacity: .7; }
-@media (orientation: portrait) and (max-width: 700px) { #rotate { display: block; } }
+#menu .mi .ic { width: 30px; height: 30px; }
+#menu .mi .tag { font-size: 15px; padding: 0 7px; }
 
 /* ---------- Overlays ---------- */
 .overlay { position: fixed; inset: 0; z-index: 10000; padding: 12px; display: flex; align-items: center; justify-content: center;
@@ -187,8 +191,11 @@ svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
 .eyes { transform-box: fill-box; transform-origin: center; animation: blink 4.5s infinite; }
 .fishy { animation: swim 2s ease-in-out infinite; }
 
+@media (max-width: 1150px) { .logo .t { display: none; } }
 @media (max-width: 640px) {
-  .logo { width: 100%; justify-content: center; margin: 0; }
+  #top { flex-wrap: wrap; }
+  #menu { order: 5; flex-basis: 100%; }
+  .logo { margin: 0; }
   .logo .ic { width: 42px; height: 42px; } .logo .t2 { font-size: 26px; } .logo .t1 { font-size: 13px; }
   #top { justify-content: center; gap: 8px; }
   .pill { height: 44px; font-size: 20px; padding: 0 12px 0 4px; } .pill .ic { width: 34px; height: 34px; } #wallet { min-width: 108px; }
@@ -263,4 +270,14 @@ svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
   .crowd { position: relative; bottom: auto; margin-bottom: -26px; flex-shrink: 0; }
   .steps { gap: 14px 12px; }
   .step { width: 146px; height: 158px; }
+}
+
+/* lage schermen (telefoon liggend): kleinere bovenbalk */
+@media (max-height: 520px) {
+  #top { margin-bottom: 4px; gap: 6px; }
+  .logo .ic { width: 34px; height: 34px; }
+  .pill { height: 36px; font-size: 18px; padding: 0 10px 0 3px; } .pill .ic { width: 28px; height: 28px; } #wallet { min-width: 92px; }
+  .rbtn { width: 36px; height: 36px; padding: 6px; } #shopBtn { width: 44px; height: 44px; padding: 9px; }
+  #menu .mi .ic { width: 22px; height: 22px; } #menu .mi { padding: 2px 6px 2px 2px; } #menu .mi .tag { font-size: 13px; }
+  #stage { border-width: 3px; border-radius: 14px; }
 }
