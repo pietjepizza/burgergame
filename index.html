@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tijn's Burger Place</title>
+<style>
+  :root {
+    --bg: #fff4e0; --panel: #ffffff; --ink: #3a2414; --muted: #8a6a50;
+    --accent: #e8590c; --accent2: #f59f00; --good: #2f9e44; --bad: #e03131;
+    --line: #f0d9b5; --floor: #fbe3c0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; user-select: none; }
+  header { background: linear-gradient(90deg, #c92a2a, var(--accent)); color: #fff; padding: 10px 16px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
+  header h1 { margin: 0; font-size: 22px; letter-spacing: .5px; }
+  .stats { display: flex; gap: 14px; flex-wrap: wrap; font-weight: 600; }
+  .stats span { background: rgba(0,0,0,.18); padding: 4px 10px; border-radius: 99px; }
+  main { display: grid; grid-template-columns: 1fr 320px; gap: 14px; padding: 14px; max-width: 1200px; margin: 0 auto; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border-radius: 14px; padding: 12px; box-shadow: 0 2px 0 var(--line); }
+  h2 { margin: 0 0 8px; font-size: 16px; color: var(--accent); }
+  #dining { background: repeating-conic-gradient(var(--floor) 0 25%, #fff0d6 0 50%) 0 0/40px 40px;
+    border-radius: 14px; padding: 12px; min-height: 250px; position: relative; }
+  #queue { display: flex; gap: 10px; flex-wrap: wrap; min-height: 170px; align-items: flex-end; }
+  .cust { width: 104px; background: #fff; border-radius: 12px; padding: 6px; text-align: center; cursor: pointer;
+    border: 3px solid transparent; transition: transform .1s; animation: walkin .4s ease-out; }
+  .cust:hover { transform: translateY(-3px); }
+  .cust.ready { border-color: var(--good); }
+  .cust .face { font-size: 40px; line-height: 1; }
+  .cust .order { font-size: 20px; min-height: 26px; }
+  .cust .order .done { opacity: .35; }
+  .pbar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-top: 4px; }
+  .pbar div { height: 100%; background: var(--good); }
+  @keyframes walkin { from { transform: translateX(60px); opacity: 0; } to { transform: none; opacity: 1; } }
+  #counter { margin-top: 10px; background: #8d5524; color: #fff; border-radius: 10px; padding: 8px 10px;
+    display: flex; gap: 6px; align-items: center; flex-wrap: wrap; min-height: 48px; }
+  #counter .lbl { font-size: 12px; opacity: .8; margin-right: 6px; }
+  #counter .item { font-size: 24px; }
+  #kitchen { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 14px; }
+  .station { background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 12px; padding: 8px; text-align: center; }
+  .station.locked { opacity: .5; }
+  .station .big { font-size: 34px; }
+  .station .name { font-weight: 700; font-size: 14px; }
+  .slots { display: flex; gap: 4px; justify-content: center; margin: 6px 0; flex-wrap: wrap; }
+  .slot { width: 30px; height: 30px; border-radius: 6px; background: #343a40; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .slot .fill { position: absolute; left: 0; bottom: 0; width: 100%; background: var(--accent2); opacity: .7; }
+  .slot span { position: relative; }
+  button { font: inherit; border: 0; border-radius: 10px; padding: 8px 10px; cursor: pointer; font-weight: 700;
+    background: var(--accent); color: #fff; }
+  button:disabled { background: #ced4da; color: #868e96; cursor: not-allowed; }
+  button.sec { background: #495057; }
+  .shop-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+  .shop-item .ico { font-size: 26px; width: 34px; text-align: center; }
+  .shop-item .txt { flex: 1; font-size: 13px; }
+  .shop-item .txt b { display: block; font-size: 14px; }
+  .shop-item .txt small { color: var(--muted); }
+  .shop-item button { min-width: 80px; font-size: 13px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 8px; }
+  .tabs button { flex: 1; background: #f1f3f5; color: var(--ink); font-size: 13px; }
+  .tabs button.on { background: var(--accent); color: #fff; }
+  #log { font-size: 12px; color: var(--muted); max-height: 120px; overflow: auto; margin-top: 10px; }
+  .float { position: fixed; pointer-events: none; font-weight: 800; color: var(--good); font-size: 20px;
+    animation: up 1s ease-out forwards; text-shadow: 0 1px 0 #fff; z-index: 50; }
+  .float.bad { color: var(--bad); }
+  @keyframes up { to { transform: translateY(-50px); opacity: 0; } }
+  .overlay { position: fixed; inset: 0; background: rgba(40,20,5,.6); display: flex; align-items: center;
+    justify-content: center; z-index: 100; padding: 16px; }
+  .modal { background: #fff; border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; text-align: center; }
+  .modal h2 { font-size: 24px; }
+  .modal table { width: 100%; margin: 10px 0 16px; border-collapse: collapse; }
+  .modal td { padding: 4px; border-bottom: 1px solid #f1f3f5; text-align: left; }
+  .modal td:last-child { text-align: right; font-weight: 700; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .staffrow { font-size: 13px; margin-top: 6px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🍔 Tijn's Burger Place</h1>
+  <div class="stats">
+    <span id="sMoney">€0</span>
+    <span id="sDay">Dag 1</span>
+    <span id="sTime">⏱ 0s</span>
+    <span id="sRating">⭐ 3.0</span>
+    <span id="sServed">😋 0</span>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div id="dining">
+      <h2>Restaurant</h2>
+      <div id="queue"></div>
+      <div id="counter"><span class="lbl">Uitgifte:</span></div>
+      <div class="hint">Klik op een station om eten te maken. Klik op een klant om te serveren als alles klaar ligt.</div>
+    </div>
+    <div class="panel" style="margin-top:14px">
+      <h2>Keuken</h2>
+      <div id="kitchen"></div>
+      <div id="staffInfo" class="staffrow"></div>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <div class="tabs">
+      <button data-tab="upg" class="on">Upgrades</button>
+      <button data-tab="menu">Menu</button>
+      <button data-tab="staff">Personeel</button>
+    </div>
+    <div id="shop"></div>
+    <div id="log"></div>
+    <div style="margin-top:10px; display:flex; gap:6px">
+      <button class="sec" id="btnReset" style="flex:1">Opnieuw beginnen</button>
+    </div>
+  </aside>
+</main>
+
+<div id="overlay"></div>
+
+<script>
+(() => {
+  const DAY_LEN = 120; // seconden per dag
+  const FACES = ['🧑','👩','👨','🧒','👵','👴','👧','👦','🧔','👱','👩‍🦰','🧑‍🦱','👨‍🦳','🤠','🧑‍🎤'];
+
+  const ITEMS = {
+    burger:  { name: 'Burger',       ico: '🍔', station: 'grill',  price: 6,  time: 5,   cost: 0 },
+    fries:   { name: 'Friet',        ico: '🍟', station: 'fryer',  price: 3,  time: 4,   cost: 150 },
+    cola:    { name: 'Cola',         ico: '🥤', station: 'drinks', price: 2,  time: 2,   cost: 100 },
+    cheese:  { name: 'Cheeseburger', ico: '🧀', station: 'grill',  price: 9,  time: 6,   cost: 400 },
+    shake:   { name: 'Milkshake',    ico: '🥛', station: 'drinks', price: 5,  time: 3.5, cost: 600 },
+    hotdog:  { name: 'Hotdog',       ico: '🌭', station: 'grill',  price: 5,  time: 4,   cost: 800 },
+    ice:     { name: 'IJsje',        ico: '🍦', station: 'dessert',price: 4,  time: 2.5, cost: 1200 },
+    donut:   { name: 'Donut',        ico: '🍩', station: 'dessert',price: 4,  time: 3,   cost: 1500 },
+  };
+
+  const STATIONS = {
+    grill:   { name: 'Grill',          ico: '🔥', unlock: 0 },
+    fryer:   { name: 'Frituur',        ico: '🫕', unlock: 0 },
+    drinks:  { name: 'Drankautomaat',  ico: '🧃', unlock: 0 },
+    dessert: { name: 'Toetjesbar',     ico: '🍨', unlock: 0 },
+  };
+
+  const UPGRADES = {
+    slots:    { name: 'Extra kookplek',      ico: '➕', desc: 'Elk station kan 1 extra ding tegelijk maken', base: 120, mult: 1.8, max: 5 },
+    speed:    { name: 'Snellere apparatuur', ico: '⚡', desc: '15% sneller koken', base: 200, mult: 1.9, max: 6 },
+    queue:    { name: 'Grotere zaak',        ico: '🏠', desc: '+1 plek in de rij', base: 250, mult: 1.7, max: 6 },
+    ads:      { name: 'Reclame',             ico: '📣', desc: 'Meer klanten komen langs', base: 180, mult: 1.75, max: 8 },
+    decor:    { name: 'Gezellige inrichting',ico: '🪴', desc: 'Klanten wachten langer', base: 220, mult: 1.8, max: 6 },
+    price:    { name: 'Premium recepten',    ico: '👨‍🍳', desc: '+12% prijs op alles', base: 350, mult: 2.0, max: 8 },
+    counter:  { name: 'Grotere uitgifte',    ico: '🗄️', desc: '+3 plekken op de uitgifte', base: 150, mult: 1.6, max: 6 },
+  };
+
+  const STAFF = {
+    cook:    { name: 'Kok',      ico: '👨‍🍳', desc: 'Maakt automatisch eten dat klanten willen', base: 300, mult: 1.9, max: 6, wage: 25 },
+    cashier: { name: 'Kassière', ico: '💁', desc: 'Serveert automatisch klanten', base: 400, mult: 2.0, max: 4, wage: 30 },
+  };
+
+  const fresh = () => ({
+    money: 50, day: 1, t: 0, rating: 3, served: 0, totalServed: 0,
+    menu: { burger: true }, upg: {}, staff: {},
+    dayStats: { earned: 0, tips: 0, served: 0, lost: 0 },
+  });
+
+  let S;
+  try { S = JSON.parse(localStorage.getItem('tijnsburger')) || fresh(); } catch { S = fresh(); }
+  S = Object.assign(fresh(), S);
+
+  // Runtime state (niet opgeslagen)
+  let queue = [], cooking = {}, tray = [], spawnTimer = 2, cookTimer = 0, cashTimer = 0, paused = false, tab = 'upg';
+  let nextId = 1;
+
+  const lvl = k => S.upg[k] || 0;
+  const staffN = k => S.staff[k] || 0;
+  const upCost = (def, n) => Math.round(def.base * Math.pow(def.mult, n));
+  const slotsPer = () => 1 + lvl('slots');
+  const speedMult = () => Math.pow(0.85, lvl('speed'));
+  const queueMax = () => 3 + lvl('queue');
+  const trayMax = () => 6 + lvl('counter') * 3;
+  const priceMult = () => 1 + 0.12 * lvl('price');
+  const patienceBase = () => 30 * (1 + 0.2 * lvl('decor'));
+  const spawnEvery = () => Math.max(1.2, 8 / (1 + 0.3 * lvl('ads')) / (0.6 + S.rating / 5) - Math.min(S.day * 0.1, 1.5));
+  const unlockedItems = () => Object.keys(ITEMS).filter(k => S.menu[k]);
+  const activeStations = () => Object.keys(STATIONS).filter(st => unlockedItems().some(i => ITEMS[i].station === st));
+  const fmt = n => '€' + Math.floor(n).toLocaleString('nl-NL');
+
+  function save() { try { localStorage.setItem('tijnsburger', JSON.stringify(S)); } catch {} }
+  function log(msg) {
+    const el = document.getElementById('log');
+    const d = document.createElement('div'); d.textContent = msg; el.prepend(d);
+    while (el.children.length > 30) el.lastChild.remove();
+  }
+  function floatText(x, y, text, bad) {
+    const d = document.createElement('div'); d.className = 'float' + (bad ? ' bad' : '');
+    d.textContent = text; d.style.left = x + 'px'; d.style.top = y + 'px';
+    document.body.appendChild(d); setTimeout(() => d.remove(), 1000);
+  }
+
+  // ---------- Klanten ----------
+  function spawnCustomer() {
+    if (queue.length >= queueMax()) return;
+    const items = unlockedItems();
+    const n = Math.min(items.length, 1 + Math.floor(Math.random() * Math.min(3, 1 + S.day / 2)));
+    const order = [];
+    for (let i = 0; i < n; i++) order.push(items[Math.floor(Math.random() * items.length)]);
+    const pat = patienceBase() + order.length * 8;
+    queue.push({ id: nextId++, face: FACES[Math.floor(Math.random() * FACES.length)], order, patience: pat, maxPat: pat });
+  }
+
+  function trayHas(order) {
+    const copy = tray.slice();
+    for (const it of order) { const i = copy.indexOf(it); if (i < 0) return false; copy.splice(i, 1); }
+    return true;
+  }
+
+  function serve(c, el) {
+    if (!trayHas(c.order)) return false;
+    for (const it of c.order) tray.splice(tray.indexOf(it), 1);
+    const base = c.order.reduce((s, it) => s + ITEMS[it].price, 0) * priceMult();
+    const frac = c.patience / c.maxPat;
+    const tip = Math.round(base * 0.4 * frac);
+    S.money += base + tip; S.dayStats.earned += base; S.dayStats.tips += tip; S.dayStats.served++;
+    S.totalServed++;
+    S.rating = Math.min(5, S.rating + 0.03 + 0.05 * frac);
+    queue = queue.filter(q => q !== c);
+    if (el) { const r = el.getBoundingClientRect(); floatText(r.left + 20, r.top, '+' + fmt(base + tip)); }
+    return true;
+  }
+
+  // ---------- Koken ----------
+  function startCook(item) {
+    const st = ITEMS[item].station;
+    cooking[st] = cooking[st] || [];
+    if (cooking[st].length >= slotsPer()) return false;
+    if (tray.length + totalCooking() >= trayMax()) return false;
+    const dur = ITEMS[item].time * speedMult();
+    cooking[st].push({ item, t: dur, dur });
+    return true;
+  }
+  const totalCooking = () => Object.values(cooking).reduce((s, a) => s + a.length, 0);
+
+  function neededItems() {
+    // Wat de rij nodig heeft min wat al klaar of in de maak is
+    const need = {};
+    for (const c of queue) for (const it of c.order) need[it] = (need[it] || 0) + 1;
+    for (const it of tray) if (need[it]) need[it]--;
+    for (const arr of Object.values(cooking)) for (const c of arr) if (need[c.item]) need[c.item]--;
+    return need;
+  }
+
+  // ---------- Game loop ----------
+  let last = performance.now();
+  function tick(now) {
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    if (!paused) update(dt);
+    render();
+    requestAnimationFrame(tick);
+  }
+
+  function update(dt) {
+    S.t += dt;
+    // klanten
+    if (S.t < DAY_LEN) {
+      spawnTimer -= dt;
+      if (spawnTimer <= 0) { spawnCustomer(); spawnTimer = spawnEvery() * (0.6 + Math.random() * 0.8); }
+    }
+    for (const c of queue.slice()) {
+      c.patience -= dt;
+      if (c.patience <= 0) {
+        queue = queue.filter(q => q !== c);
+        S.dayStats.lost++; S.rating = Math.max(1, S.rating - 0.25);
+        log(`${c.face} liep boos weg 😠`);
+      }
+    }
+    // koken
+    for (const st in cooking) {
+      for (const c of cooking[st].slice()) {
+        c.t -= dt;
+        if (c.t <= 0) { cooking[st].splice(cooking[st].indexOf(c), 1); tray.push(c.item); }
+      }
+    }
+    // koks
+    if (staffN('cook') > 0) {
+      cookTimer -= dt;
+      if (cookTimer <= 0) {
+        cookTimer = 1.6 / staffN('cook');
+        const need = neededItems();
+        for (const it in need) if (need[it] > 0 && startCook(it)) break;
+      }
+    }
+    // kassières
+    if (staffN('cashier') > 0) {
+      cashTimer -= dt;
+      if (cashTimer <= 0) {
+        cashTimer = 2.2 / staffN('cashier');
+        const c = queue.find(q => trayHas(q.order));
+        if (c) serve(c, document.querySelector(`[data-cid="${c.id}"]`));
+      }
+    }
+    // einde dag
+    if (S.t >= DAY_LEN && queue.length === 0) endDay();
+  }
+
+  function endDay() {
+    paused = true;
+    const wages = Object.keys(STAFF).reduce((s, k) => s + staffN(k) * STAFF[k].wage, 0);
+    const rent = 10 + S.day * 5;
+    S.money -= wages + rent;
+    const ds = S.dayStats;
+    document.getElementById('overlay').innerHTML = `
+      <div class="overlay"><div class="modal">
+        <h2>🌙 Einde van dag ${S.day}</h2>
+        <table>
+          <tr><td>Klanten geholpen</td><td>${ds.served}</td></tr>
+          <tr><td>Klanten weggelopen</td><td>${ds.lost}</td></tr>
+          <tr><td>Omzet</td><td>${fmt(ds.earned)}</td></tr>
+          <tr><td>Fooien</td><td>${fmt(ds.tips)}</td></tr>
+          <tr><td>Salarissen</td><td style="color:var(--bad)">-${fmt(wages)}</td></tr>
+          <tr><td>Huur</td><td style="color:var(--bad)">-${fmt(rent)}</td></tr>
+          <tr><td>Saldo</td><td>${fmt(S.money)}</td></tr>
+          <tr><td>Beoordeling</td><td>⭐ ${S.rating.toFixed(1)}</td></tr>
+        </table>
+        <button id="btnNext">Volgende dag ☀️</button>
+      </div></div>`;
+    document.getElementById('btnNext').onclick = () => {
+      S.day++; S.t = 0; S.dayStats = { earned: 0, tips: 0, served: 0, lost: 0 };
+      tray = []; cooking = {}; spawnTimer = 2;
+      document.getElementById('overlay').innerHTML = '';
+      paused = false; save(); renderShop();
+    };
+    save();
+  }
+
+  // ---------- Render ----------
+  let lastShopKey = '';
+  function render() {
+    document.getElementById('sMoney').textContent = fmt(S.money);
+    document.getElementById('sDay').textContent = 'Dag ' + S.day;
+    document.getElementById('sTime').textContent = S.t < DAY_LEN ? '⏱ ' + Math.ceil(DAY_LEN - S.t) + 's' : '🚪 Sluiten...';
+    document.getElementById('sRating').textContent = '⭐ ' + S.rating.toFixed(1);
+    document.getElementById('sServed').textContent = '😋 ' + S.totalServed;
+
+    // rij
+    const qEl = document.getElementById('queue');
+    const ids = queue.map(c => c.id).join(',');
+    if (qEl.dataset.ids !== ids) {
+      qEl.dataset.ids = ids;
+      qEl.innerHTML = '';
+      for (const c of queue) {
+        const d = document.createElement('div'); d.className = 'cust'; d.dataset.cid = c.id;
+        d.innerHTML = `<div class="order"></div><div class="face">${c.face}</div><div class="pbar"><div></div></div>`;
+        d.onclick = () => { if (!serve(c, d)) { const r = d.getBoundingClientRect(); floatText(r.left + 10, r.top, 'Nog niet klaar!', true); } };
+        qEl.appendChild(d);
+      }
+      if (!queue.length) qEl.innerHTML = `<div style="color:var(--muted);padding:20px">${S.t < DAY_LEN ? 'Wachten op klanten...' : 'Alle klanten zijn weg.'}</div>`;
+    }
+    const trayCopy = tray.slice();
+    for (const c of queue) {
+      const d = qEl.querySelector(`[data-cid="${c.id}"]`); if (!d) continue;
+      const frac = Math.max(0, c.patience / c.maxPat);
+      const bar = d.querySelector('.pbar div');
+      bar.style.width = (frac * 100) + '%';
+      bar.style.background = frac > .5 ? 'var(--good)' : frac > .25 ? 'var(--accent2)' : 'var(--bad)';
+      const ready = trayHas(c.order);
+      d.classList.toggle('ready', ready);
+      const tc = trayCopy.slice();
+      const html = c.order.map(it => {
+        const i = tc.indexOf(it); const have = i >= 0; if (have) tc.splice(i, 1);
+        return `<span class="${have ? 'done' : ''}">${ITEMS[it].ico}</span>`;
+      }).join('');
+      const o = d.querySelector('.order'); if (o.innerHTML !== html) o.innerHTML = html;
+      d.querySelector('.face').textContent = frac < .25 ? '😤' : c.face;
+    }
+
+    // uitgifte
+    const cEl = document.getElementById('counter');
+    const tKey = tray.join(',') + '|' + trayMax();
+    if (cEl.dataset.k !== tKey) {
+      cEl.dataset.k = tKey;
+      cEl.innerHTML = `<span class="lbl">Uitgifte (${tray.length}/${trayMax()}):</span>` +
+        tray.map((it, i) => `<span class="item" title="Klik om weg te gooien" data-i="${i}" style="cursor:pointer">${ITEMS[it].ico}</span>`).join('');
+      cEl.querySelectorAll('.item').forEach(el => el.onclick = () => { tray.splice(+el.dataset.i, 1); });
+    }
+
+    // keuken
+    const kEl = document.getElementById('kitchen');
+    const stKey = activeStations().join(',') + '|' + unlockedItems().join(',') + '|' + slotsPer();
+    if (kEl.dataset.k !== stKey) {
+      kEl.dataset.k = stKey;
+      kEl.innerHTML = '';
+      for (const st of activeStations()) {
+        const d = document.createElement('div'); d.className = 'station'; d.dataset.st = st;
+        const btns = unlockedItems().filter(i => ITEMS[i].station === st)
+          .map(i => `<button data-item="${i}" style="margin:2px">${ITEMS[i].ico} ${ITEMS[i].name}</button>`).join('');
+        d.innerHTML = `<div class="big">${STATIONS[st].ico}</div><div class="name">${STATIONS[st].name}</div>
+          <div class="slots">${'<div class="slot"><div class="fill"></div><span></span></div>'.repeat(slotsPer())}</div>${btns}`;
+        d.querySelectorAll('button').forEach(b => b.onclick = () => {
+          if (!startCook(b.dataset.item)) { const r = b.getBoundingClientRect(); floatText(r.left, r.top, 'Vol!', true); }
+        });
+        kEl.appendChild(d);
+      }
+    }
+    for (const st of activeStations()) {
+      const d = kEl.querySelector(`[data-st="${st}"]`); if (!d) continue;
+      const arr = cooking[st] || [];
+      d.querySelectorAll('.slot').forEach((s, i) => {
+        const c = arr[i];
+        s.querySelector('.fill').style.height = c ? ((1 - c.t / c.dur) * 100) + '%' : '0';
+        s.querySelector('span').textContent = c ? ITEMS[c.item].ico : '';
+      });
+      const full = arr.length >= slotsPer() || tray.length + totalCooking() >= trayMax();
+      d.querySelectorAll('button').forEach(b => b.disabled = full);
+    }
+    const si = [];
+    if (staffN('cook')) si.push(`👨‍🍳 ${staffN('cook')} kok(s) aan het werk`);
+    if (staffN('cashier')) si.push(`💁 ${staffN('cashier')} kassière(s) aan het werk`);
+    document.getElementById('staffInfo').textContent = si.join(' · ');
+
+    // winkel: alleen opnieuw tekenen als geld-status verandert
+    const key = tab + '|' + Math.floor(S.money) + JSON.stringify(S.upg) + JSON.stringify(S.staff) + JSON.stringify(S.menu);
+    if (key !== lastShopKey) { lastShopKey = key; renderShop(); }
+  }
+
+  function shopRow(ico, title, desc, cost, owned, maxed, onBuy) {
+    const row = document.createElement('div'); row.className = 'shop-item';
+    row.innerHTML = `<div class="ico">${ico}</div><div class="txt"><b>${title}</b><small>${desc}</small>${owned}</div>`;
+    const b = document.createElement('button');
+    b.textContent = maxed ? 'Max' : fmt(cost);
+    b.disabled = maxed || S.money < cost;
+    b.onclick = () => { if (S.money >= cost && !maxed) { S.money -= cost; onBuy(); save(); } };
+    row.appendChild(b);
+    return row;
+  }
+
+  function renderShop() {
+    const el = document.getElementById('shop'); el.innerHTML = '';
+    if (tab === 'upg') {
+      for (const k in UPGRADES) {
+        const u = UPGRADES[k], n = lvl(k);
+        el.appendChild(shopRow(u.ico, u.name, u.desc, upCost(u, n), `<br><small>Niveau ${n}/${u.max}</small>`, n >= u.max,
+          () => { S.upg[k] = n + 1; log(`${u.ico} ${u.name} → niveau ${n + 1}`); }));
+      }
+    } else if (tab === 'menu') {
+      for (const k in ITEMS) {
+        const it = ITEMS[k];
+        const owned = !!S.menu[k];
+        el.appendChild(shopRow(it.ico, it.name, `${STATIONS[it.station].name} · verkoopprijs ${fmt(it.price * priceMult())}`,
+          it.cost, owned ? '<br><small style="color:var(--good)">✔ Op het menu</small>' : '', owned,
+          () => { S.menu[k] = true; log(`${it.ico} ${it.name} staat nu op het menu!`); }));
+      }
+    } else {
+      for (const k in STAFF) {
+        const s = STAFF[k], n = staffN(k);
+        el.appendChild(shopRow(s.ico, s.name, `${s.desc} · salaris ${fmt(s.wage)}/dag`, upCost(s, n),
+          `<br><small>In dienst: ${n}/${s.max}</small>`, n >= s.max,
+          () => { S.staff[k] = n + 1; log(`${s.ico} Nieuwe ${s.name.toLowerCase()} aangenomen!`); }));
+      }
+    }
+  }
+
+  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+    tab = b.dataset.tab;
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+    lastShopKey = '';
+  });
+  document.getElementById('btnReset').onclick = () => {
+    if (confirm('Weet je zeker dat je opnieuw wilt beginnen? Je voortgang gaat verloren.')) {
+      S = fresh(); queue = []; tray = []; cooking = {}; save(); lastShopKey = '';
+      document.querySelectorAll('[data-k]').forEach(e => e.dataset.k = '');
+    }
+  };
+  setInterval(save, 5000);
+
+  // Welkomstscherm
+  paused = true;
+  document.getElementById('overlay').innerHTML = `
+    <div class="overlay"><div class="modal">
+      <div style="font-size:60px">🍔</div>
+      <h2>Tijn's Burger Place</h2>
+      <p style="text-align:left;font-size:14px;line-height:1.5">
+        Welkom, baas! Bouw jouw burgerzaak uit tot een echt imperium.<br><br>
+        🔥 Klik op de knoppen in de <b>keuken</b> om eten te maken.<br>
+        😋 Klik op een <b>klant</b> (groene rand) om te serveren.<br>
+        ⭐ Snel serveren = meer fooi en betere beoordeling.<br>
+        🛒 Koop <b>upgrades</b>, nieuwe <b>menu-items</b> en <b>personeel</b>.<br>
+        🌙 Aan het eind van de dag betaal je huur en salarissen.
+      </p>
+      <button id="btnStart">${S.day > 1 || S.totalServed ? 'Verder spelen (dag ' + S.day + ')' : 'Open de zaak!'}</button>
+    </div></div>`;
+  document.getElementById('btnStart').onclick = () => { document.getElementById('overlay').innerHTML = ''; paused = false; last = performance.now(); };
+
+  renderShop();
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
