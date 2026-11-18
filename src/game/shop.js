@@ -74,21 +74,50 @@ export function renderShop() {
 export function help() {
   G.paused = true;
   const cust = { kind: 'bear', shirt: '#3a86ff', acc: 'none', blink: 0 };
-  overlay(`
-    <div class="hero">${art('burger')}</div>
-    <div class="title">Tijn's Burger Place</div>
-    <div class="how">
-      <div><span class="n">1</span><div class="pics"><div class="ic half">${animalSVG(cust, 'happy')}</div>${ic('table')}</div><small>Klanten gaan zitten</small></div>
-      <div><span class="n">2</span><div class="pics"><div class="ic half">${art('chef')}</div>${ic('grill')}</div><small>Koks maken het eten</small></div>
-      <div><span class="n">3</span><div class="pics"><div class="ic half">${art('waiterIc')}</div>${ic('burger')}</div><small>Obers brengen het</small></div>
-      <div><span class="n">4</span><div class="pics">${ic('tap')}${ic('pile')}</div><small>Tik op het geld!</small></div>
-      <div><span class="n">5</span><div class="pics"><div class="ic" style="background:var(--green);border-radius:50%;padding:10px">${art('cart')}</div>${ic('house')}</div><small>Koop mensen en uitbreidingen</small></div>
-    </div>
-    <div class="actions">
-      ${S.served ? `<button class="big no" id="resetBtn">${art('reset')}</button>` : ''}
-      <button class="big go" id="startBtn">${art('play')}</button>
-    </div>`);
-  $('startBtn').onclick = () => { S.seenHelp = true; save(); closeOverlay(); G.paused = false; G.last = performance.now(); sfx.hello(); };
+  const step = (i, pics, text) =>
+    `<div class="step" style="--i:${i}"><span class="n">${i + 1}</span><div class="pics">${pics}</div><p>${text}</p></div>`;
+  const half = svgHtml => `<div class="ic half">${svgHtml}</div>`;
+  const title = [...'Burger Place'].map((ch, i) => ch === ' ' ? '<span class="sp"></span>' : `<span style="--i:${i}">${ch}</span>`).join('');
+  const foods = ['burger', 'fries', 'cola', 'pizza', 'donut', 'ice', 'hotdog', 'shake', 'taco', 'chicken'];
+  const floaters = foods.map((k, i) =>
+    `<div class="floater" style="left:${(i * 10 + 3) % 100}%;--d:${(i * 1.7) % 9}s;--t:${9 + (i % 4) * 2}s;--s:${0.7 + (i % 3) * 0.25}">${art(k)}</div>`).join('');
+  const crowdLooks = [
+    art('chef'),
+    animalSVG({ kind: 'rabbit', shirt: '#ef476f', acc: 'bow', blink: 1 }, 'happy'),
+    art('waiterIc'),
+    animalSVG({ kind: 'frog', shirt: '#ffd23f', acc: 'none', blink: 2 }, 'love'),
+    art('cashierIc'),
+    animalSVG({ kind: 'tiger', shirt: '#9b5de5', acc: 'glasses', blink: 3 }, 'happy'),
+  ];
+  const crowd = crowdLooks.map((svgHtml, i) => `<div class="pal" style="--i:${i}">${svgHtml}</div>`).join('');
+
+  $('overlay').innerHTML = `
+    <div class="splash" id="splash">
+      <div class="rays"></div>
+      <div class="floaters">${floaters}</div>
+      <div class="splash-inner">
+        <div class="brand">
+          <div class="bigburger">${art('burger')}</div>
+          <div class="ribbon">TIJN'S</div>
+          <h1 class="wordmark">${title}</h1>
+        </div>
+        <div class="steps">
+          ${step(0, half(animalSVG(cust, 'happy')) + ic('table'), 'Klanten gaan zitten')}
+          ${step(1, half(art('chef')) + ic('grill'), 'Koks maken het eten')}
+          ${step(2, half(art('waiterIc')) + ic('burger'), 'Obers brengen het')}
+          ${step(3, ic('tap') + ic('pile'), 'Tik op het geld')}
+          ${step(4, `<div class="ic cartbubble">${art('cart')}</div>` + ic('house'), 'Koop mensen en meer')}
+        </div>
+        <button class="playbig" id="startBtn" aria-label="Spelen">${art('play')}</button>
+      </div>
+      <div class="crowd">${crowd}</div>
+      ${S.served ? `<button class="rbtn resetcorner" id="resetBtn" aria-label="Opnieuw beginnen">${art('reset')}</button>` : ''}
+    </div>`;
+  $('startBtn').onclick = () => {
+    S.seenHelp = true; save(); sfx.buy();
+    $('splash').classList.add('out');
+    setTimeout(() => { closeOverlay(); G.paused = false; G.last = performance.now(); sfx.hello(); }, 450);
+  };
   const r = $('resetBtn');
   if (r) r.onclick = () => {
     overlay(`<div class="hero">${art('reset')}</div><div class="actions">

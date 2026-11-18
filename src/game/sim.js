@@ -28,13 +28,17 @@ export function spawnCustomer() {
   const order = []; for (let i = 0; i < n; i++) order.push(pick(m));
   let kind = pick(KIND_KEYS), acc = pick(ACCS); if (acc === 'cap' && ['rabbit', 'frog', 'lion'].includes(kind)) acc = 'none';
   const look = { kind, shirt: pick(SHIRTS), cap: pick(SHIRTS), acc, blink: (Math.random() * 4).toFixed(2), feet: true, mood: 'happy' };
-  const c = makeChar(look, 942, 182);
+  const c = makeChar(look, ...DOOR);
   Object.assign(c, { order, got: [], table: t, state: 'enter', pat: 0, max: 40 + n * 12 });
   t.cust = c; G.customers.push(c);
-  moveTo(c, 942, 230);
+  // looproute: van de deur langs de muur, dan naar de tafel (zo lopen ze niet door afgesloten stukken)
+  moveTo(c, ...HALL);
   c.path = [[t.x, t.y + 10]];
   sfx.hello();
 }
+
+// deur en gang langs de muur (wereldcoördinaten)
+const DOOR = [942, 182], HALL = [760, 186];
 
 export function removeCustomer(c) {
   c.el.remove(); G.customers = G.customers.filter(x => x !== c);
@@ -83,7 +87,7 @@ export function update(dt) {
         if (c.delay <= 0) {
           const t = c.table; t.cust = null; if (!c.happy) { t.dishes = []; renderTable(t); }
           c.look.feet = true; c.look.mood = ''; setLook(c, c.happy ? 'love' : 'angry');
-          moveTo(c, 942, 230); c.path = [[942, 182]];
+          moveTo(c, ...HALL); c.path = [DOOR];
         }
         continue;
       }
