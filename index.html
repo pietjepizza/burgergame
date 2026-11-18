@@ -4,210 +4,292 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Tijn's Burger Place</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --red: #e63946; --orange: #ff8c1a; --yellow: #ffd23f; --green: #2ec27e; --blue: #3a86ff;
-    --ink: #3b2314; --wood: #a0612b; --wood2: #7a4519; --cream: #fff6e5;
+    --ink: #4a2c17; --red: #ef476f; --tomato: #e63946; --orange: #ff8c1a; --yellow: #ffd23f;
+    --green: #2ec27e; --green-d: #1f9d63; --blue: #3a86ff; --cream: #fff7e8; --wood: #b5652d; --wood-d: #7d3f15;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; }
-  body { background: #ffcf5c radial-gradient(circle at 50% 0, #ffe9a8, #ffb347); color: var(--ink);
-    font-family: "Fredoka", "Comic Sans MS", system-ui, sans-serif; user-select: none; overflow-x: hidden; }
-  #app { max-width: 920px; margin: 0 auto; padding: 8px 12px 16px; }
+  html, body { margin: 0; min-height: 100%; }
+  body { color: var(--ink); font-family: "Baloo 2", "Trebuchet MS", system-ui, sans-serif; font-weight: 800;
+    user-select: none; -webkit-user-select: none; overflow-x: hidden;
+    background: #ffb84d radial-gradient(ellipse at 50% -10%, #ffe7a3 0, #ffc15e 45%, #ff9f43 100%) fixed; }
+  body::before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .18;
+    background: radial-gradient(circle, #fff 2.5px, transparent 3px) 0 0 / 34px 34px; }
+  #app { max-width: 940px; margin: 0 auto; padding: 10px 12px 20px; position: relative; }
+  svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
 
   /* ---------- Topbalk ---------- */
-  #top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .logo { font-size: 26px; font-weight: 700; color: #fff; text-shadow: 0 3px 0 var(--red), 0 5px 0 #0003;
-    display: flex; align-items: center; gap: 6px; margin-right: auto; }
-  .logo .b { font-size: 36px; animation: bob 2s ease-in-out infinite; }
-  .pill { background: #fff; border-radius: 99px; padding: 4px 14px 4px 6px; display: flex; align-items: center;
-    gap: 6px; font-size: 24px; font-weight: 700; box-shadow: 0 4px 0 #0002; }
-  .pill .i { font-size: 28px; }
-  #wallet { color: #1b7a43; min-width: 120px; }
+  #top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .logo { margin-right: auto; display: flex; align-items: center; gap: 8px; }
+  .logo .ic { width: 58px; height: 58px; animation: bob 2.2s ease-in-out infinite; }
+  .logo .t { line-height: .9; }
+  .logo .t1 { font-size: 18px; color: #fff; text-shadow: 0 2px 0 var(--wood-d); letter-spacing: 1px; }
+  .logo .t2 { font-size: 34px; color: #fff; letter-spacing: .5px;
+    text-shadow: 0 3px 0 var(--tomato), 0 6px 0 var(--wood-d), 0 8px 8px #0003; }
+  .pill { background: #fff; border-radius: 99px; height: 52px; padding: 0 16px 0 6px; display: flex; align-items: center; gap: 6px;
+    font-size: 26px; box-shadow: 0 5px 0 #d9822b, 0 8px 12px #0002; }
+  .pill .ic { width: 42px; height: 42px; }
+  #wallet { color: var(--green-d); min-width: 132px; }
   #wallet.pop { animation: pop .35s; }
-  .round { width: 54px; height: 54px; border-radius: 50%; border: 0; background: #fff; font-size: 28px;
-    box-shadow: 0 4px 0 #0002; cursor: pointer; display: grid; place-items: center; }
-  .round:active { transform: translateY(3px); box-shadow: 0 1px 0 #0002; }
-  #shopBtn { background: var(--green); width: 64px; height: 64px; font-size: 34px; animation: bob 2.4s infinite; }
-  #sunbar { height: 14px; background: #fff8; border-radius: 99px; margin: 8px 0 6px; position: relative; }
-  #sunbar .fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #ffe066, #ff8c1a, #7048e8); width: 0; }
-  #sunbar .sun { position: absolute; top: 50%; transform: translate(-50%, -50%); font-size: 26px; left: 0; }
+  .rbtn { width: 52px; height: 52px; border-radius: 50%; border: 0; background: #fff; cursor: pointer; padding: 9px;
+    box-shadow: 0 5px 0 #d9822b, 0 8px 12px #0002; }
+  .rbtn:active { transform: translateY(4px); box-shadow: 0 1px 0 #d9822b; }
+  #shopBtn { background: var(--green); width: 66px; height: 66px; padding: 12px; box-shadow: 0 5px 0 var(--green-d), 0 8px 12px #0003;
+    animation: wiggle 3s ease-in-out infinite; }
+  #sunbar { height: 16px; background: #fff7; border-radius: 99px; margin: 12px 18px 8px; position: relative; box-shadow: inset 0 2px 0 #0001; }
+  #sunbar .fill { height: 100%; border-radius: 99px; width: 0; background: linear-gradient(90deg, #ffe066, #ff8c1a 60%, #7b4fd6); }
+  #sunbar .sun { position: absolute; top: 50%; width: 40px; height: 40px; transform: translate(-50%, -50%); left: 0; }
 
   /* ---------- Restaurant ---------- */
-  #scene { position: relative; height: 340px; border-radius: 22px; overflow: hidden; box-shadow: 0 6px 0 #0002;
+  #scene { position: relative; height: 400px; border-radius: 26px; overflow: hidden;
+    box-shadow: 0 8px 0 var(--wood-d), 0 14px 24px #0003; border: 5px solid #fff;
     background:
-      linear-gradient(#0000 62%, #0000 62%),
-      repeating-linear-gradient(90deg, #ff6b6b 0 40px, #fff 40px 80px) top / 100% 30px no-repeat,
-      linear-gradient(#ffeccc 0 62%, #0000 62%),
-      repeating-conic-gradient(#fff 0 25%, #222 0 50%) 0 0 / 44px 44px; }
-  #scene::after { content: ""; position: absolute; left: 0; right: 0; top: 62%; height: 6px; background: #c0392b; }
-  #board { position: absolute; left: 50%; top: 40px; transform: translateX(-50%); background: #2b2d42; color: #fff;
-    border: 6px solid var(--wood); border-radius: 12px; padding: 6px 10px; display: flex; gap: 10px;
-    font-size: 15px; box-shadow: 0 4px 0 #0003; z-index: 1; max-width: 92%; flex-wrap: wrap; justify-content: center; }
-  #board div { display: flex; flex-direction: column; align-items: center; line-height: 1.05; }
-  #board span { font-size: 26px; }
-  #board b { color: var(--yellow); }
-  .decor { position: absolute; font-size: 46px; z-index: 1; animation: popin .5s; filter: drop-shadow(0 4px 0 #0002); }
-  #customer { position: absolute; left: 50%; bottom: 70px; transform: translateX(-50%); z-index: 2;
-    display: flex; flex-direction: column; align-items: center; transition: left .7s ease-in-out, opacity .7s; }
-  #customer .face { font-size: 120px; line-height: 1; animation: bob 1.4s ease-in-out infinite; }
-  #customer.walk .face { animation: walk .3s ease-in-out infinite; }
-  #bubble { position: absolute; left: 100%; bottom: 70%; background: #fff; border-radius: 22px; padding: 6px 12px;
-    font-size: 44px; white-space: nowrap; box-shadow: 0 4px 0 #0002; display: flex; gap: 2px; animation: popin .35s; }
-  #bubble::before { content: ""; position: absolute; left: -12px; bottom: 12px; border: 10px solid transparent;
-    border-right: 16px solid #fff; border-left: 0; }
-  #bubble .got { opacity: .3; }
-  #react { position: absolute; top: -30px; right: -10px; font-size: 54px; }
+      linear-gradient(transparent 61%, #c0392b 61%, #c0392b 62.5%, transparent 62.5%),
+      linear-gradient(transparent 48%, #6cc7c0 48%, #6cc7c0 61%, transparent 61%),
+      repeating-linear-gradient(90deg, #ffefd2 0 26px, #ffe6bf 26px 52px); }
+  #scene .tiles { position: absolute; left: 0; right: 0; top: 48%; height: 13%;
+    background: linear-gradient(90deg, #0000 96%, #fff6 96%) 0 0 / 32px 100%, linear-gradient(#0000 46%, #fff6 46%, #fff6 54%, #0000 54%); }
+  #scene .awning { position: absolute; left: 0; right: 0; top: 0; height: 34px; z-index: 2;
+    background: repeating-linear-gradient(90deg, var(--tomato) 0 46px, #fff 46px 92px);
+    -webkit-mask: radial-gradient(circle at 23px 34px, transparent 0, transparent 0) , linear-gradient(#000, #000);
+    box-shadow: 0 4px 0 #0001; }
+  #scene .awning::after { content: ""; position: absolute; left: 0; right: 0; bottom: -12px; height: 12px;
+    background: radial-gradient(circle at 23px 0, var(--tomato) 0 22px, transparent 23px) 0 0 / 92px 12px,
+                radial-gradient(circle at 69px 0, #fff 0 22px, transparent 23px) 0 0 / 92px 12px; }
+  .lampS { position: absolute; top: 30px; width: 46px; height: 66px; z-index: 1; }
+  .lampS::before { content: ""; position: absolute; left: 50%; top: 50px; width: 120px; height: 120px; transform: translateX(-50%);
+    background: radial-gradient(#fff6c4aa, transparent 65%); pointer-events: none; }
+  #board { position: absolute; left: 50%; top: 52px; transform: translateX(-50%); z-index: 1;
+    background: #2f3a45 radial-gradient(circle at 30% 20%, #3e4b58, #26303a); border: 7px solid var(--wood);
+    border-radius: 16px; padding: 6px 10px 4px; display: flex; gap: 4px 9px; flex-wrap: wrap; justify-content: center;
+    box-shadow: 0 6px 0 #0003, inset 0 0 0 2px #0003; max-width: 54%; }
+  #board div { display: flex; flex-direction: column; align-items: center; }
+  #board .ic { width: 30px; height: 30px; }
+  #board b { color: #fff; font-size: 13px; line-height: 1.1; text-shadow: 0 0 6px #fff7; }
+  .decor { position: absolute; width: 58px; height: 58px; z-index: 1; animation: popin .5s; filter: drop-shadow(0 4px 0 #0002); }
+
+  #customer { position: absolute; left: 40%; bottom: 22px; width: 170px; height: 276px; transform: translateX(-50%); z-index: 3;
+    transition: left .8s ease-in-out; }
+  #customer .face { width: 100%; height: 100%; transform-origin: 50% 100%; animation: breathe 2.4s ease-in-out infinite; }
+  #customer.walk .face { animation: hop .32s ease-in-out infinite; }
+  #bubble { position: absolute; left: 84%; top: 40px; background: #fff; border-radius: 26px; padding: 8px 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: 0 5px 0 #0002; animation: popin .35s; z-index: 4; }
+  #order-items { display: flex; gap: 4px; }
+  #bubble::before { content: ""; position: absolute; left: -14px; bottom: 16px; border: 11px solid transparent; border-right: 18px solid #fff; border-left: 0; }
+  #bubble .ic { width: 58px; height: 58px; transition: opacity .2s, transform .2s; }
+  #bubble .ic.got { opacity: .28; transform: scale(.85); }
+  #react { position: absolute; top: 4px; left: -4px; width: 50px; height: 50px; z-index: 5; }
   #react.show { animation: popin .4s; }
-  #patience { width: 120px; height: 16px; background: #0003; border-radius: 99px; overflow: hidden; border: 3px solid #fff; }
-  #patience div { height: 100%; width: 100%; background: var(--green); transition: background .3s; }
-  #line { position: absolute; right: 14px; bottom: 74px; display: flex; gap: 0; z-index: 1; flex-direction: row-reverse; }
-  #line span { font-size: 56px; margin-left: -12px; animation: popin .4s; filter: saturate(.8); }
-  #counter { position: absolute; left: 0; right: 0; bottom: 0; height: 84px; z-index: 3;
-    background: linear-gradient(var(--wood) 0 14px, #c97b3c 14px 18px, var(--wood2) 18px); border-top: 4px solid #d98c4a;
-    display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 0; gap: 10px; }
-  #tray { background: #e63946; border-radius: 14px; min-width: 150px; height: 58px; padding: 4px 8px; display: flex;
-    align-items: center; gap: 2px; box-shadow: inset 0 -5px 0 #0003; }
-  #tray span { font-size: 40px; cursor: pointer; animation: popin .25s; }
-  #tray .empty { font-size: 30px; opacity: .35; cursor: default; animation: none; }
-  #paid { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+  #patience { width: 120px; height: 16px;
+    background: #0002; border-radius: 99px; overflow: hidden; border: 0; }
+  #patience div { height: 100%; width: 100%; border-radius: 99px; }
+  #line { position: absolute; right: 6px; bottom: 40px; display: flex; flex-direction: row-reverse; z-index: 2; }
+  #line .q { width: 104px; height: 170px; margin-left: -38px; animation: popin .4s; filter: brightness(.92); }
+
+  #counter { position: absolute; left: 0; right: 0; bottom: 0; height: 96px; z-index: 4; padding: 18px 14px 0;
+    display: flex; align-items: center; gap: 10px;
+    background:
+      linear-gradient(#e59a52 0 8px, #c47432 8px 18px, transparent 18px),
+      repeating-linear-gradient(90deg, #a95b26 0 60px, #9a5021 60px 62px),
+      var(--wood); box-shadow: 0 -4px 0 #0002; }
+  #tray { position: relative; height: 66px; min-width: 170px; padding: 4px 12px; display: flex; align-items: center; gap: 0;
+    background: linear-gradient(#ff6b6b, var(--tomato)); border-radius: 16px; border: 4px solid #b9273a; box-shadow: 0 5px 0 #0003; }
+  #tray .ic { width: 52px; height: 52px; margin-right: -6px; cursor: pointer; animation: drop .3s; filter: drop-shadow(0 3px 0 #0003); }
+  #tray .plate { width: 46px; height: 46px; opacity: .45; }
+  #paid { flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 4px; flex-wrap: wrap; }
+  #register { width: 92px; height: 86px; margin-top: -40px; flex-shrink: 0; }
   .shake { animation: shake .4s; }
 
-  /* ---------- Bedieningspaneel ---------- */
-  #panel { margin-top: 12px; background: #fff; border-radius: 22px; padding: 12px; box-shadow: 0 6px 0 #0002; min-height: 200px; }
-  #foods { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 10px; }
-  .food { border: 0; border-radius: 18px; background: #fff1d6; box-shadow: 0 5px 0 #f0c88a; cursor: pointer;
-    padding: 6px 4px 8px; display: flex; flex-direction: column; align-items: center; font-family: inherit; }
-  .food:active { transform: translateY(4px); box-shadow: 0 1px 0 #f0c88a; }
-  .food .e { font-size: 52px; line-height: 1.1; }
-  .tag { background: var(--yellow); color: var(--ink); border-radius: 99px; padding: 1px 10px; font-weight: 700; font-size: 18px; }
-  .actions { display: flex; gap: 12px; justify-content: center; margin-top: 12px; }
-  .big { border: 0; border-radius: 20px; font-size: 40px; padding: 8px 30px; cursor: pointer; color: #fff;
-    font-family: inherit; font-weight: 700; box-shadow: 0 6px 0 #0003; display: flex; align-items: center; gap: 8px; }
-  .big:active { transform: translateY(4px); box-shadow: 0 2px 0 #0003; }
-  .big.go { background: var(--green); }
-  .big.no { background: #adb5bd; }
-  .big:disabled { opacity: .4; }
+  /* ---------- Paneel ---------- */
+  #panel { margin-top: 14px; border-radius: 26px; padding: 14px; min-height: 220px; position: relative;
+    background: linear-gradient(#fff, #fff4df); box-shadow: 0 8px 0 #d9822b, 0 14px 24px #0002; border: 5px solid #fff; }
+  #foods { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
+  .food { border: 0; border-radius: 22px; cursor: pointer; padding: 8px 4px 10px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-family: inherit; background: linear-gradient(#fff, #ffeccc); box-shadow: 0 6px 0 #f0b86e, 0 8px 10px #0001; position: relative; }
+  .food:active { transform: translateY(5px); box-shadow: 0 1px 0 #f0b86e; }
+  .food .ic { width: 70px; height: 70px; transition: transform .15s; }
+  .food:hover .ic { transform: scale(1.08) rotate(-4deg); }
+  .tag { background: var(--yellow); color: var(--ink); border-radius: 99px; padding: 0 12px; font-size: 20px; line-height: 1.5;
+    box-shadow: 0 3px 0 #e0a800; }
+  .actions { display: flex; gap: 14px; justify-content: center; margin-top: 14px; }
+  .big { border: 0; border-radius: 24px; cursor: pointer; width: 120px; height: 72px; padding: 12px; display: grid; place-items: center;
+    box-shadow: 0 7px 0 #0003; font-family: inherit; }
+  .big .ic { width: 46px; height: 46px; }
+  .big:active { transform: translateY(5px); box-shadow: 0 2px 0 #0003; }
+  .big.go { background: linear-gradient(#4ee39a, var(--green)); box-shadow: 0 7px 0 var(--green-d); }
+  .big.no { background: linear-gradient(#ced4da, #adb5bd); box-shadow: 0 7px 0 #868e96; width: 90px; }
+  .big.orange { background: linear-gradient(#ffb04d, var(--orange)); box-shadow: 0 7px 0 #d96d00; }
+  .big:disabled { opacity: .45; }
   .big.pulse { animation: pulse 1s infinite; }
 
   #pay { display: none; }
-  .payrow { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; font-size: 28px; font-weight: 700; }
-  .receipt { background: #fffdf5; border: 2px dashed #d6c7a1; border-radius: 12px; padding: 4px 12px; display: flex; align-items: center; gap: 8px; }
-  .receipt .e { font-size: 32px; }
-  .eq { font-size: 34px; color: #999; }
-  .tot { background: var(--yellow); border-radius: 14px; padding: 2px 14px; font-size: 32px; }
-  .change { background: #e7f5ff; border-radius: 16px; padding: 6px 14px; display: flex; align-items: center; gap: 10px; font-size: 32px; }
-  .change.ok { background: #d3f9d8; }
-  .change.over { background: #ffe3e3; }
-  #given { display: flex; gap: 4px; flex-wrap: wrap; min-height: 56px; justify-content: center; align-items: center;
-    background: #f1f3f5; border-radius: 14px; padding: 6px; margin: 10px 0; }
-  #given:empty::before { content: "👇"; font-size: 32px; opacity: .5; }
-  #drawer { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; background: #495057; border-radius: 16px; padding: 10px; }
-  #drawer .m { cursor: pointer; }
-  #drawer .m:active { transform: scale(.92); }
+  .payrow { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; font-size: 30px; }
+  .receipt { background: #fff; border-radius: 14px; padding: 4px 10px; display: flex; align-items: center; gap: 0;
+    box-shadow: 0 4px 0 #0001; border: 3px dashed #e5cfa5; }
+  .receipt .ic { width: 40px; height: 40px; }
+  .eq { color: #c9a77a; font-size: 34px; }
+  .tot { background: var(--yellow); border-radius: 16px; padding: 0 16px; box-shadow: 0 4px 0 #e0a800; }
+  .chip { display: flex; align-items: center; gap: 8px; border-radius: 18px; padding: 2px 14px 2px 6px; background: #fff; box-shadow: 0 4px 0 #0001; }
+  .chip .ic { width: 40px; height: 40px; }
+  .change { background: #dbeafe; box-shadow: 0 4px 0 #a5c8f5; }
+  .change.ok { background: #c9f7d8; box-shadow: 0 4px 0 #7ed9a1; }
+  .change.over { background: #ffd6d6; box-shadow: 0 4px 0 #f5a3a3; }
+  .change .sep { width: 3px; height: 30px; background: #0002; border-radius: 3px; margin: 0 4px; }
+  #given { display: flex; gap: 6px; flex-wrap: wrap; min-height: 74px; justify-content: center; align-items: center;
+    background: #f4ecdf; border-radius: 18px; padding: 8px; margin: 12px 0; box-shadow: inset 0 3px 0 #0001; }
+  #given:empty::before { content: ""; width: 40px; height: 40px; opacity: .35;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 10v60M25 50l25 28 25-28' fill='none' stroke='%234a2c17' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+    transform: rotate(180deg); }
+  #drawer { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; border-radius: 20px; padding: 12px;
+    background: linear-gradient(#5b6470, #3d444d); box-shadow: inset 0 4px 0 #0003, 0 5px 0 #2a2f35; }
+  #drawer .m { cursor: pointer; transition: transform .1s; }
+  #drawer .m:hover { transform: translateY(-3px); }
+  #drawer .m:active { transform: scale(.9); }
 
   /* ---------- Geld ---------- */
-  .m { flex-shrink: 0; display: inline-grid; place-items: center; font-weight: 700; position: relative; animation: popin .25s; }
-  .coin { width: 58px; height: 58px; border-radius: 50%; font-size: 22px; color: #5c4400;
-    box-shadow: 0 3px 0 #0004, inset 0 0 0 3px #0002; }
-  .coin small { font-size: 11px; position: absolute; bottom: 7px; }
-  .c50  { background: radial-gradient(circle at 35% 30%, #fff3b0, #e6b422 60%, #b8860b); width: 52px; height: 52px; }
-  .c100 { background: radial-gradient(circle, #f5c542 0 52%, #8d8d8d 53%, #e9ecef 60%, #adb5bd); }
-  .c200 { background: radial-gradient(circle, #dee2e6 0 52%, #a07c00 53%, #ffd43b 60%, #c99700); width: 64px; height: 64px; font-size: 26px; }
-  .note { width: 96px; height: 54px; border-radius: 6px; color: #fff; font-size: 26px; box-shadow: 0 3px 0 #0004;
-    text-shadow: 0 2px 0 #0004; border: 2px solid #fff6; overflow: hidden; }
-  .note::before { content: ""; position: absolute; right: 8px; top: 8px; width: 26px; height: 34px; border-radius: 50%; background: #fff4; }
-  .note::after { content: "€"; position: absolute; left: 7px; top: 3px; font-size: 14px; opacity: .8; }
-  .n500  { background: linear-gradient(135deg, #8a9a8c, #5f6f62); }
-  .n1000 { background: linear-gradient(135deg, #ef5350, #b71c1c); }
-  .n2000 { background: linear-gradient(135deg, #42a5f5, #1565c0); }
-  .n5000 { background: linear-gradient(135deg, #ffa726, #e65100); }
-  .small .coin { transform: scale(.75); margin: -6px; }
-  .small .note { transform: scale(.7); margin: -10px -14px; }
+  .m { flex-shrink: 0; display: inline-grid; place-items: center; position: relative; animation: popin .25s; line-height: 1; }
+  .coin { width: 60px; height: 60px; border-radius: 50%; font-size: 24px; color: #6b4a00;
+    box-shadow: 0 4px 0 #0005, inset 0 0 0 3px #fff6, inset 0 -4px 0 #0002; }
+  .coin::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; border: 2px dashed #0002; }
+  .coin small { font-size: 12px; position: absolute; bottom: 8px; }
+  .c50  { width: 54px; height: 54px; font-size: 21px; background: radial-gradient(circle at 35% 30%, #fff6c2, #f0c02a 55%, #c08d0c); }
+  .c100 { background: radial-gradient(circle at 40% 35%, #ffe27a 0, #e9b21c 44%, #9ca3ab 45%, #e9ecef 54%, #b6bdc4 100%); }
+  .c200 { width: 66px; height: 66px; font-size: 28px; color: #444;
+    background: radial-gradient(circle at 40% 35%, #ffffff 0, #ced4da 44%, #b08800 45%, #ffd84d 54%, #d4a106 100%); }
+  .note { width: 100px; height: 56px; border-radius: 8px; color: #fff; font-size: 28px; box-shadow: 0 4px 0 #0005;
+    text-shadow: 0 2px 0 #0004; border: 3px solid #fff8; overflow: hidden; }
+  .note::before { content: ""; position: absolute; right: 8px; top: 7px; width: 26px; height: 36px; border-radius: 50%; background: #fff4; }
+  .note::after { content: "€"; position: absolute; left: 8px; top: 4px; font-size: 15px; opacity: .85; }
+  .n500  { background: linear-gradient(135deg, #a3b1a6, #66766a); }
+  .n1000 { background: linear-gradient(135deg, #ff6b6b, #c0262d); }
+  .n2000 { background: linear-gradient(135deg, #5aa9ff, #1b5fc1); }
+  .n5000 { background: linear-gradient(135deg, #ffb347, #e46a00); }
+  #paid .m { transform: scale(.82); margin: -4px -6px; }
 
-  /* ---------- Winkel / overlays ---------- */
-  .overlay { position: fixed; inset: 0; background: #2b1a0ccc; display: flex; align-items: center; justify-content: center;
-    z-index: 100; padding: 12px; animation: fade .2s; }
-  .modal { background: var(--cream); border-radius: 26px; padding: 16px; max-width: 760px; width: 100%;
-    max-height: 92vh; overflow: auto; box-shadow: 0 8px 0 #0004; text-align: center; position: relative; }
-  .modal h2 { margin: 0 0 8px; font-size: 32px; }
-  .stabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
-  .stabs button { font-size: 34px; border: 0; border-radius: 16px; padding: 4px 20px; background: #fff; cursor: pointer; box-shadow: 0 4px 0 #0002; }
-  .stabs button.on { background: var(--orange); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; }
-  .card { background: #fff; border-radius: 20px; padding: 8px; box-shadow: 0 5px 0 #0002; cursor: pointer; border: 0;
-    font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
-  .card .e { font-size: 58px; line-height: 1.1; }
-  .card .eff { font-size: 18px; min-height: 22px; }
-  .card .price { background: var(--green); color: #fff; border-radius: 99px; padding: 2px 12px; font-weight: 700; font-size: 20px; }
-  .card.cant { opacity: .55; }
-  .card.cant .price { background: #adb5bd; }
-  .card.owned { background: #d3f9d8; cursor: default; }
-  .card.owned .price { background: none; color: var(--green); font-size: 30px; padding: 0; }
-  .dots { display: flex; gap: 3px; }
-  .dots i { width: 10px; height: 10px; border-radius: 50%; background: #dee2e6; }
+  /* ---------- Overlays ---------- */
+  .overlay { position: fixed; inset: 0; z-index: 100; padding: 12px; display: flex; align-items: center; justify-content: center;
+    background: #3b1f0bcc; animation: fade .2s; }
+  .modal { position: relative; width: 100%; max-width: 780px; max-height: 94vh; overflow: auto; text-align: center;
+    background: linear-gradient(#fffaf0, #ffefd3); border-radius: 30px; padding: 18px; border: 6px solid #fff;
+    box-shadow: 0 10px 0 #d9822b, 0 20px 40px #0005; animation: popin .35s; }
+  .modal .hero { width: 130px; height: 130px; margin: -4px auto 0; animation: bob 2s ease-in-out infinite; }
+  .modal .title { font-size: 40px; color: #fff; text-shadow: 0 3px 0 var(--tomato), 0 6px 0 var(--wood-d); margin: 4px 0 10px; }
+  .modal .head { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .modal .head .ic { width: 56px; height: 56px; }
+  .xbtn { position: absolute; right: 12px; top: 12px; z-index: 2; }
+  .stabs { display: flex; gap: 10px; justify-content: center; margin-bottom: 14px; }
+  .stabs button { width: 86px; height: 66px; padding: 8px; border: 0; border-radius: 20px; background: #fff; cursor: pointer;
+    box-shadow: 0 5px 0 #e2c597; }
+  .stabs button.on { background: linear-gradient(#ffb04d, var(--orange)); box-shadow: 0 5px 0 #d96d00; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 14px; }
+  .card { border: 0; border-radius: 24px; padding: 10px 8px; cursor: pointer; font-family: inherit; position: relative;
+    display: flex; flex-direction: column; align-items: center; gap: 6px; background: #fff; box-shadow: 0 6px 0 #e2c597; }
+  .card .ic { width: 80px; height: 80px; transition: transform .2s; }
+  .card:hover .ic { transform: scale(1.06) rotate(3deg); }
+  .card .eff { display: flex; align-items: center; gap: 4px; min-height: 28px; font-size: 20px; }
+  .card .eff .ic { width: 28px; height: 28px; }
+  .price { display: flex; align-items: center; gap: 4px; background: linear-gradient(#4ee39a, var(--green)); color: #fff; border-radius: 99px;
+    padding: 0 14px 0 4px; font-size: 22px; box-shadow: 0 4px 0 var(--green-d); text-shadow: 0 2px 0 #0002; }
+  .price .ic { width: 26px; height: 26px; }
+  .card.cant { filter: saturate(.35); opacity: .7; }
+  .card.cant .price { background: #adb5bd; box-shadow: 0 4px 0 #868e96; }
+  .card.owned { background: #d8f8e3; box-shadow: 0 6px 0 #8fdcae; cursor: default; }
+  .card .okmark { width: 40px; height: 40px; }
+  .dots { display: flex; gap: 4px; }
+  .dots i { width: 12px; height: 12px; border-radius: 50%; background: #e9ddc8; box-shadow: inset 0 2px 0 #0001; }
   .dots i.on { background: var(--orange); }
-  .close { position: absolute; right: 10px; top: 10px; }
-  .stat { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 12px 0 18px; }
-  .stat div { background: #fff; border-radius: 18px; padding: 8px 16px; font-size: 34px; font-weight: 700; box-shadow: 0 4px 0 #0002; }
-  .how { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 12px 0 16px; }
-  .how div { background: #fff; border-radius: 18px; padding: 10px; font-size: 40px; box-shadow: 0 4px 0 #0002; }
-  .how small { display: block; font-size: 16px; }
+  .stat { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 8px 0 14px; }
+  .stat div { display: flex; align-items: center; gap: 8px; background: #fff; border-radius: 22px; padding: 6px 18px 6px 8px;
+    font-size: 36px; box-shadow: 0 5px 0 #e2c597; }
+  .stat .ic { width: 54px; height: 54px; }
+  .stars { display: flex; justify-content: center; gap: 6px; margin: 6px 0; }
+  .stars .ic { width: 58px; height: 58px; }
+  .stars .ic.off { opacity: .2; filter: grayscale(1); }
+  .how { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 6px 0 16px; }
+  .how > div { background: #fff; border-radius: 22px; padding: 10px 8px 8px; box-shadow: 0 5px 0 #e2c597; position: relative; }
+  .how .n { position: absolute; left: -6px; top: -8px; width: 34px; height: 34px; border-radius: 50%; background: var(--orange);
+    color: #fff; font-size: 22px; display: grid; place-items: center; box-shadow: 0 3px 0 #d96d00; }
+  .how .pics { display: flex; justify-content: center; align-items: center; height: 70px; }
+  .how .pics .ic { width: 56px; height: 56px; }
+  .how .pics .m { transform: scale(.75); margin: -6px; }
+  .how small { display: block; font-size: 16px; color: #8a6440; }
 
-  .fly { position: fixed; z-index: 200; pointer-events: none; font-size: 40px; transition: all .8s cubic-bezier(.5,-0.3,.6,1); }
-  .float { position: fixed; z-index: 200; pointer-events: none; font-size: 34px; font-weight: 700; color: var(--green);
-    text-shadow: 0 2px 0 #fff, 0 0 8px #fff; animation: up 1.1s forwards; }
-  .confetti { position: fixed; z-index: 150; pointer-events: none; font-size: 28px; animation: fall 1.4s ease-in forwards; }
+  .fly { position: fixed; z-index: 200; pointer-events: none; width: 30px; height: 30px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff6c2, #f0c02a 55%, #c08d0c); box-shadow: 0 2px 0 #0004;
+    transition: all .8s cubic-bezier(.5,-0.4,.6,1); }
+  .float { position: fixed; z-index: 200; pointer-events: none; font-size: 38px; color: #fff;
+    text-shadow: 0 3px 0 var(--green-d), 0 0 10px #0003; animation: up 1.2s forwards; }
+  .confetti { position: fixed; z-index: 150; pointer-events: none; width: 12px; height: 16px; border-radius: 3px; animation: fall 1.6s ease-in forwards; }
 
   @keyframes bob { 50% { transform: translateY(-6px); } }
-  @keyframes walk { 0%,100% { transform: rotate(-6deg) translateY(0); } 50% { transform: rotate(6deg) translateY(-8px); } }
-  @keyframes popin { from { transform: scale(0); } 70% { transform: scale(1.15); } }
-  @keyframes pop { 50% { transform: scale(1.2); } }
-  @keyframes pulse { 50% { transform: scale(1.07); } }
+  @keyframes breathe { 50% { transform: scale(1.02, .98); } }
+  @keyframes hop { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-12px) rotate(4deg); } }
+  @keyframes wiggle { 0%,88%,100% { transform: rotate(0); } 92% { transform: rotate(-10deg); } 96% { transform: rotate(10deg); } }
+  @keyframes popin { from { transform: scale(0); } 70% { transform: scale(1.12); } }
+  @keyframes drop { from { transform: translateY(-40px); opacity: 0; } 70% { transform: translateY(4px); } }
+  @keyframes pop { 50% { transform: scale(1.18); } }
+  @keyframes pulse { 50% { transform: scale(1.08); } }
   @keyframes shake { 20%,60% { transform: translateX(-10px); } 40%,80% { transform: translateX(10px); } }
-  @keyframes up { to { transform: translateY(-70px); opacity: 0; } }
+  @keyframes up { to { transform: translateY(-80px) scale(1.2); opacity: 0; } }
   @keyframes fade { from { opacity: 0; } }
-  @keyframes fall { from { transform: translateY(0) rotate(0); opacity: 1; } to { transform: translateY(260px) rotate(540deg); opacity: 0; } }
+  @keyframes fall { from { transform: translateY(0) rotate(0); opacity: 1; } to { transform: translateY(320px) rotate(720deg); opacity: 0; } }
+  @keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+  .eyes { transform-box: fill-box; transform-origin: center; animation: blink 4.5s infinite; }
+  @keyframes glow { 50% { filter: drop-shadow(0 0 10px #ff4fd8) drop-shadow(0 4px 0 #0002); } }
+  .decor.neon { animation: popin .5s, glow 1.6s infinite; }
+  @keyframes swim { 50% { transform: translateX(6px); } }
+  .fishy { animation: swim 2s ease-in-out infinite; }
 
-  @media (max-width: 600px) {
-    .logo { font-size: 22px; width: 100%; justify-content: center; margin: 0; } .logo .b { font-size: 30px; }
-    #top { justify-content: center; gap: 6px; }
-    .pill { font-size: 18px; padding: 3px 10px 3px 4px; } .pill .i { font-size: 22px; } #wallet { min-width: 96px; }
-    .round { width: 44px; height: 44px; font-size: 22px; } #shopBtn { width: 52px; height: 52px; font-size: 28px; }
-    #scene { height: 310px; }
-    #board { gap: 6px; padding: 4px 6px; border-width: 4px; }
-    #customer .face { font-size: 96px; } #bubble { font-size: 34px; left: 70%; }
-    #line span { font-size: 40px; } #board span { font-size: 20px; } #board { font-size: 12px; top: 36px; }
-    .decor { font-size: 34px; }
-    .food .e { font-size: 42px; } .big { font-size: 32px; padding: 6px 22px; }
+  @media (max-width: 640px) {
+    .logo { width: 100%; justify-content: center; margin: 0; }
+    .logo .ic { width: 44px; height: 44px; } .logo .t2 { font-size: 27px; } .logo .t1 { font-size: 14px; }
+    #top { justify-content: center; gap: 8px; }
+    .pill { height: 44px; font-size: 20px; padding: 0 12px 0 4px; } .pill .ic { width: 34px; height: 34px; } #wallet { min-width: 104px; }
+    .rbtn { width: 44px; height: 44px; padding: 8px; } #shopBtn { width: 54px; height: 54px; padding: 10px; }
+    #scene { height: 360px; }
+    #board { display: none; }
+    .decor { width: 40px; height: 40px; }
+    .lampS { display: none; }
+    #customer { width: 140px; height: 228px; left: 36%; bottom: 34px; }
+    #bubble { left: 76%; top: 30px; padding: 6px 8px; } #patience { width: 90px; } #bubble .ic { width: 40px; height: 40px; }
+    #line .q { width: 72px; height: 118px; margin-left: -26px; } #line { bottom: 34px; }
+    #tray { min-width: 120px; padding: 4px 6px; } #tray .ic { width: 40px; height: 40px; }
+    #register { width: 70px; height: 66px; }
+    .food .ic { width: 56px; height: 56px; } #foods { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 10px; }
+    .coin { transform: scale(.88); } .note { width: 88px; height: 50px; font-size: 24px; }
+    .payrow { font-size: 24px; gap: 6px; } .receipt .ic { width: 30px; height: 30px; }
   }
 </style>
 </head>
 <body>
 <div id="app">
   <div id="top">
-    <div class="logo"><span class="b">🍔</span>Tijn's Burger Place</div>
-    <div class="pill" id="wallet"><span class="i">💰</span><span id="money">€0</span></div>
-    <div class="pill"><span class="i">⭐</span><span id="stars">3</span></div>
-    <button class="round" id="soundBtn">🔊</button>
-    <button class="round" id="shopBtn">🛒</button>
+    <div class="logo"><div class="ic" data-art="burger"></div><div class="t"><div class="t1">TIJN'S</div><div class="t2">Burger Place</div></div></div>
+    <div class="pill" id="wallet"><div class="ic" data-icon="coin"></div><span id="money">€0</span></div>
+    <div class="pill"><div class="ic" data-icon="star"></div><span id="stars">3</span></div>
+    <button class="rbtn" id="soundBtn"></button>
+    <button class="rbtn" id="shopBtn"></button>
   </div>
-  <div id="sunbar"><div class="fill"></div><div class="sun">☀️</div></div>
+  <div id="sunbar"><div class="fill"></div><div class="sun"></div></div>
 
   <div id="scene">
+    <div class="tiles"></div>
+    <div class="awning"></div>
     <div id="board"></div>
     <div id="decorLayer"></div>
     <div id="line"></div>
-    <div id="customer" style="opacity:0">
+    <div id="customer" style="visibility:hidden">
+      <div class="face"></div>
       <div id="react"></div>
-      <div id="bubble" style="display:none"></div>
-      <div class="face">🐻</div>
-      <div id="patience"><div></div></div>
+      <div id="bubble" style="display:none"><div id="order-items"></div><div id="patience"><div></div></div></div>
     </div>
     <div id="counter">
       <div id="tray"></div>
       <div id="paid"></div>
+      <div id="register" data-icon="register"></div>
     </div>
   </div>
 
@@ -215,15 +297,15 @@
     <div id="order">
       <div id="foods"></div>
       <div class="actions">
-        <button class="big no" id="clearBtn">🗑️</button>
-        <button class="big go" id="serveBtn">✔️</button>
+        <button class="big no" id="clearBtn"></button>
+        <button class="big go" id="serveBtn"></button>
       </div>
     </div>
     <div id="pay">
       <div class="payrow" id="bill"></div>
       <div id="given"></div>
       <div id="drawer"></div>
-      <div class="actions"><button class="big go" id="payBtn">✔️</button></div>
+      <div class="actions"><button class="big go" id="payBtn"></button></div>
     </div>
   </div>
 </div>
@@ -231,54 +313,311 @@
 
 <script>
 (() => {
-  // ================= Gegevens =================
+  // =====================================================================
+  //  TEKENINGEN (SVG)
+  // =====================================================================
+  const O = '#4a2c17';
+  const svg = (inner, vb = '0 0 100 100') =>
+    `<svg class="art" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg"><g stroke="${O}" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
+  const shine = d => `<path d="${d}" fill="none" stroke="#fff" stroke-width="4" opacity=".6"/>`;
+
+  const FOOD_ART = {
+    burger: () => svg(`
+      <rect x="14" y="68" width="72" height="20" rx="10" fill="#f2a541"/>
+      <rect x="9" y="56" width="82" height="15" rx="7.5" fill="#7a4526"/>
+      <path d="M11 54 H89 L85 60 L76 67 L68 60 L55 69 L44 60 L30 67 L18 60 Z" fill="#ffd23f"/>
+      <path d="M7 48 Q13 58 19 48 Q25 58 31 48 Q37 58 43 48 Q49 58 55 48 Q61 58 67 48 Q73 58 79 48 Q85 58 93 48 L93 46 H7 Z" fill="#7ccf4f"/>
+      <path d="M9 47 C9 20 30 11 50 11 C70 11 91 20 91 47 Z" fill="#f6a93b"/>
+      ${shine('M24 28 Q32 18 46 17')}
+      <g fill="#fff6dc" stroke="none"><ellipse cx="38" cy="26" rx="3" ry="2"/><ellipse cx="54" cy="22" rx="3" ry="2"/><ellipse cx="66" cy="30" rx="3" ry="2"/><ellipse cx="48" cy="34" rx="3" ry="2"/><ellipse cx="74" cy="22" rx="2.5" ry="1.8"/><ellipse cx="28" cy="36" rx="2.5" ry="1.8"/></g>`),
+    fries: () => svg(`
+      <g fill="#ffd23f">
+        <rect x="24" y="14" width="10" height="46" rx="3" transform="rotate(-12 29 40)"/>
+        <rect x="36" y="8" width="10" height="50" rx="3" transform="rotate(-4 41 36)"/>
+        <rect x="48" y="6" width="10" height="52" rx="3" transform="rotate(3 53 36)"/>
+        <rect x="60" y="10" width="10" height="48" rx="3" transform="rotate(10 65 36)"/>
+        <rect x="42" y="18" width="10" height="40" rx="3" transform="rotate(14 47 40)"/>
+      </g>
+      <path d="M18 40 Q50 52 82 40 L74 92 H26 Z" fill="#e63946"/>
+      <path d="M50 58 l4 9 10 1 -7.5 6.5 2.5 9.5 -9-5 -9 5 2.5-9.5 -7.5-6.5 10-1z" fill="#ffd23f" stroke-width="2.5"/>
+      ${shine('M28 50 L32 84')}`),
+    cola: () => svg(`
+      <path d="M55 26 L62 4 H76" fill="none" stroke="${O}" stroke-width="10"/>
+      <path d="M55 26 L62 4 H76" fill="none" stroke="#ff8fab" stroke-width="5"/>
+      <path d="M25 30 H75 L68 92 H32 Z" fill="#3a86ff"/>
+      <path d="M27.5 50 H72.5 L70.6 68 H29.4 Z" fill="#fff"/>
+      <path d="M38 56 q6 -6 12 0 q6 6 12 0" fill="none" stroke="#e63946" stroke-width="4"/>
+      <rect x="20" y="22" width="60" height="11" rx="5.5" fill="#e9ecef"/>
+      ${shine('M33 38 L37 86')}`),
+    popcorn: () => svg(`
+      <g fill="#fff6d8"><circle cx="32" cy="36" r="10"/><circle cx="46" cy="28" r="11"/><circle cx="60" cy="30" r="10"/><circle cx="70" cy="38" r="9"/><circle cx="52" cy="18" r="9"/><circle cx="38" cy="22" r="8"/><circle cx="64" cy="20" r="7"/></g>
+      <g fill="#ffd23f" stroke="none"><circle cx="44" cy="25" r="3"/><circle cx="62" cy="34" r="2.5"/><circle cx="34" cy="34" r="2.5"/></g>
+      <path d="M22 42 H78 L70 94 H30 Z" fill="#fff"/>
+      <g fill="#e63946" stroke="none"><path d="M31 42 H41 L40 94 H34 Z"/><path d="M50 42 H60 L57 94 H51 Z" transform="translate(-5 0)"/><path d="M64 42 H74 L69 94 H63 Z" transform="translate(-2 0)"/></g>
+      <path d="M22 42 H78 L70 94 H30 Z" fill="none"/>`),
+    hotdog: () => svg(`
+      <rect x="12" y="42" width="76" height="30" rx="15" fill="#f6a93b"/>
+      <rect x="3" y="40" width="94" height="20" rx="10" fill="#d0533a"/>
+      ${shine('M12 46 H40')}
+      <path d="M14 50 l7 -5 7 5 7 -5 7 5 7 -5 7 5 7 -5 7 5 7 -5 7 5" fill="none" stroke="#ffd23f" stroke-width="4.5"/>
+      <path d="M10 58 Q50 70 90 58 Q90 84 70 84 H30 Q10 84 10 58 Z" fill="#f8bb55"/>
+      ${shine('M22 72 Q40 78 56 76')}`),
+    ice: () => svg(`
+      <path d="M30 52 H70 L50 96 Z" fill="#eaa45a"/>
+      <path d="M38 56 L56 82 M50 54 L62 68 M34 64 L46 54 M44 76 L62 56" fill="none" stroke-width="2.5" opacity=".6"/>
+      <path d="M24 52 C18 36 30 26 40 30 C40 16 60 14 62 28 C74 24 84 38 76 52 Q72 58 66 52 Q60 60 54 52 Q48 60 42 52 Q36 60 30 52 Z" fill="#ffadc6"/>
+      <circle cx="52" cy="14" r="7" fill="#e63946"/>
+      <path d="M52 7 Q56 0 62 0" fill="none"/>
+      ${shine('M32 36 Q36 30 42 32')}
+      <g stroke="none"><rect x="40" y="38" width="6" height="3" rx="1.5" fill="#3a86ff" transform="rotate(30 43 39)"/><rect x="58" y="34" width="6" height="3" rx="1.5" fill="#ffd23f" transform="rotate(-20 61 35)"/><rect x="64" y="44" width="6" height="3" rx="1.5" fill="#2ec27e"/></g>`),
+    donut: () => svg(`
+      <path fill-rule="evenodd" d="M50 12 a40 38 0 1 0 0.1 0 Z M50 40 a12 11 0 1 1 -0.1 0 Z" fill="#e5a05a"/>
+      <path fill-rule="evenodd" d="M50 17 C66 15 84 26 82 44 C86 52 80 58 82 66 C76 80 60 86 48 82 C36 86 22 78 20 66 C14 56 18 44 22 38 C24 26 36 16 50 17 Z M50 40 a12 11 0 1 1 -0.1 0 Z" fill="#ff7eb6"/>
+      <g stroke="none"><rect x="30" y="34" width="9" height="3.6" rx="1.8" fill="#fff" transform="rotate(30 34 36)"/><rect x="60" y="26" width="9" height="3.6" rx="1.8" fill="#ffd23f" transform="rotate(-20 64 28)"/><rect x="68" y="56" width="9" height="3.6" rx="1.8" fill="#3a86ff" transform="rotate(50 72 58)"/><rect x="40" y="66" width="9" height="3.6" rx="1.8" fill="#2ec27e" transform="rotate(-30 44 68)"/><rect x="26" y="54" width="9" height="3.6" rx="1.8" fill="#ffd23f" transform="rotate(70 30 56)"/><rect x="48" y="24" width="9" height="3.6" rx="1.8" fill="#3a86ff"/><rect x="62" y="70" width="8" height="3.6" rx="1.8" fill="#fff" transform="rotate(10 66 72)"/></g>
+      ${shine('M30 28 Q36 22 44 21')}`),
+    pizza: () => svg(`
+      <path d="M50 94 L12 24 Q50 4 88 24 Z" fill="#ffcf4a"/>
+      <path d="M12 24 Q50 4 88 24 L84 34 Q50 16 16 34 Z" fill="#d98c3a"/>
+      <path d="M30 48 Q30 58 34 60 Q36 52 40 50" fill="#ffcf4a"/>
+      <g fill="#d63b3b"><circle cx="40" cy="40" r="7"/><circle cx="62" cy="42" r="7"/><circle cx="50" cy="62" r="6.5"/></g>
+      <g fill="#4caf50" stroke="none"><circle cx="54" cy="32" r="2.5"/><circle cx="44" cy="54" r="2.5"/><circle cx="60" cy="56" r="2"/></g>
+      ${shine('M24 30 Q40 20 56 19')}`),
+    shake: () => svg(`
+      <path d="M58 28 L66 2" fill="none" stroke="${O}" stroke-width="10"/><path d="M58 28 L66 2" fill="none" stroke="#3a86ff" stroke-width="5"/>
+      <path d="M28 36 H72 L64 94 H36 Z" fill="#ff9ec4"/>
+      <path d="M30 50 H70" fill="none" stroke="#fff" stroke-width="3" opacity=".6"/>
+      <path d="M24 38 Q22 24 34 26 Q36 14 50 18 Q62 12 66 26 Q78 24 76 38 Z" fill="#fff"/>
+      <circle cx="50" cy="13" r="7" fill="#e63946"/><path d="M50 6 Q52 0 58 -1" fill="none"/>
+      ${shine('M36 54 L40 86')}`),
+    chicken: () => svg(`
+      <g transform="rotate(-30 50 50)">
+        <rect x="44" y="56" width="12" height="30" rx="5" fill="#fff4e0"/>
+        <circle cx="44" cy="88" r="7" fill="#fff4e0"/><circle cx="56" cy="88" r="7" fill="#fff4e0"/>
+        <path d="M50 10 C78 10 82 36 72 50 C66 60 58 62 56 62 H44 C42 62 34 60 28 50 C18 36 22 10 50 10 Z" fill="#d07a30"/>
+        <g fill="#b55f1f" stroke="none"><circle cx="40" cy="28" r="3.5"/><circle cx="58" cy="24" r="3"/><circle cx="62" cy="44" r="3.5"/><circle cx="44" cy="46" r="3"/></g>
+        ${shine('M34 22 Q40 15 48 15')}
+      </g>`),
+    taco: () => svg(`
+      <path d="M6 82 A44 44 0 0 1 94 82 Z" fill="#7ccf4f"/>
+      <g fill="#e63946"><circle cx="24" cy="46" r="6"/><circle cx="46" cy="36" r="6"/><circle cx="70" cy="40" r="6"/></g>
+      <g fill="#8b4a2b"><circle cx="34" cy="42" r="5"/><circle cx="58" cy="36" r="5"/><circle cx="80" cy="52" r="5"/></g>
+      <path d="M12 84 A38 38 0 0 1 88 84 Z" fill="#ffd166"/>
+      <g fill="#e9a23b" stroke="none"><circle cx="34" cy="70" r="2.5"/><circle cx="52" cy="62" r="2.5"/><circle cx="66" cy="72" r="2.5"/><circle cx="44" cy="78" r="2"/><circle cx="74" cy="64" r="2"/></g>
+      ${shine('M24 70 Q30 58 42 54')}`),
+    wrap: () => svg(`
+      <g transform="rotate(-28 50 54)">
+        <path d="M28 40 H72 V84 Q72 96 50 96 Q28 96 28 84 Z" fill="#f1d7a2"/>
+        <path d="M28 64 H72 V84 Q72 96 50 96 Q28 96 28 84 Z" fill="#cfd8dc"/>
+        <path d="M28 70 H72" fill="none" stroke-width="2.5" opacity=".5"/>
+        <ellipse cx="50" cy="40" rx="22" ry="9" fill="#f1d7a2"/>
+        <ellipse cx="50" cy="38" rx="17" ry="6" fill="#8b4a2b" stroke="none"/>
+        <g stroke="none"><circle cx="42" cy="36" r="4" fill="#7ccf4f"/><circle cx="56" cy="35" r="4" fill="#e63946"/><circle cx="50" cy="40" r="3.5" fill="#ffd23f"/><circle cx="62" cy="39" r="3" fill="#7ccf4f"/></g>
+        ${shine('M33 46 V62')}
+      </g>`),
+  };
+
+  const ICONS = {
+    coin: () => svg(`<circle cx="50" cy="50" r="42" fill="#ffc93c"/><circle cx="50" cy="50" r="31" fill="none" stroke="#d99a00" stroke-width="4"/>
+      <text x="50" y="66" text-anchor="middle" font-size="46" font-family="Baloo 2, Arial" font-weight="800" fill="#b37800" stroke="none">€</text>${shine('M22 36 Q28 22 42 16')}`),
+    star: () => svg(`<path d="M50 6 L62 36 L94 38 L69 58 L78 90 L50 72 L22 90 L31 58 L6 38 L38 36 Z" fill="#ffd23f"/>${shine('M40 30 L48 14')}`),
+    cart: () => svg(`<path d="M8 18 H22 L32 64 H78 L88 30 H26" fill="none" stroke="#fff" stroke-width="9"/><path d="M28 34 H84 L76 58 H33 Z" fill="#fff" stroke="none"/>
+      <circle cx="38" cy="80" r="8" fill="#fff" stroke="none"/><circle cx="72" cy="80" r="8" fill="#fff" stroke="none"/>`),
+    soundOn: () => svg(`<path d="M14 38 H32 L54 18 V82 L32 62 H14 Z" fill="#ff8c1a"/><path d="M66 34 Q76 50 66 66 M76 24 Q94 50 76 76" fill="none" stroke-width="7" stroke="#ff8c1a"/>`),
+    soundOff: () => svg(`<path d="M14 38 H32 L54 18 V82 L32 62 H14 Z" fill="#adb5bd"/><path d="M66 36 L90 64 M90 36 L66 64" fill="none" stroke-width="8" stroke="#e63946"/>`),
+    check: () => svg(`<path d="M16 52 L40 76 L86 24" fill="none" stroke="#fff" stroke-width="16"/>`),
+    checkG: () => svg(`<circle cx="50" cy="50" r="44" fill="#2ec27e"/><path d="M28 52 L44 68 L74 34" fill="none" stroke="#fff" stroke-width="11"/>`),
+    trash: () => svg(`<path d="M22 28 H78 L72 90 H28 Z" fill="#fff" stroke="none"/><rect x="14" y="16" width="72" height="12" rx="6" fill="#fff" stroke="none"/><rect x="38" y="6" width="24" height="12" rx="5" fill="#fff" stroke="none"/>
+      <path d="M40 40 V78 M60 40 V78" stroke="#adb5bd" stroke-width="6"/>`),
+    play: () => svg(`<path d="M30 14 L84 50 L30 86 Z" fill="#fff" stroke="none"/>`),
+    close: () => svg(`<path d="M24 24 L76 76 M76 24 L24 76" fill="none" stroke="#e63946" stroke-width="14"/>`),
+    sun: () => svg(`<g stroke="#ff9f1c" stroke-width="7">${[0,45,90,135,180,225,270,315].map(a => `<path d="M50 8 V18" transform="rotate(${a} 50 50)"/>`).join('')}</g><circle cx="50" cy="50" r="24" fill="#ffd23f"/>`),
+    sunset: () => svg(`<circle cx="50" cy="50" r="28" fill="#ff7b39"/><path d="M8 62 H92" stroke="#ff7b39" stroke-width="6"/>`),
+    moon: () => svg(`<path d="M62 10 A40 40 0 1 0 90 66 A32 32 0 1 1 62 10 Z" fill="#ffe066"/><circle cx="40" cy="44" r="5" fill="#f2c94c" stroke="none"/><circle cx="50" cy="70" r="4" fill="#f2c94c" stroke="none"/>`),
+    heart: () => svg(`<path d="M50 88 C10 62 6 36 20 24 C32 14 46 20 50 32 C54 20 68 14 80 24 C94 36 90 62 50 88 Z" fill="#ef476f"/>${shine('M24 36 Q26 28 34 26')}`),
+    angry: () => svg(`<g fill="none" stroke="#e63946" stroke-width="10"><path d="M20 38 Q38 38 38 20"/><path d="M62 20 Q62 38 80 38"/><path d="M20 62 Q38 62 38 80"/><path d="M80 62 Q62 62 62 80"/></g>`),
+    question: () => svg(`<circle cx="50" cy="50" r="44" fill="#ffd23f"/><path d="M36 38 Q36 22 50 22 Q64 22 64 36 Q64 46 52 50 V58" fill="none" stroke-width="9"/><circle cx="52" cy="74" r="5" fill="${O}"/>`),
+    clock: () => svg(`<circle cx="50" cy="52" r="38" fill="#fff"/><path d="M50 30 V52 L64 60" fill="none" stroke-width="6"/><rect x="40" y="4" width="20" height="10" rx="4" fill="#e63946"/>`),
+    people: () => svg(`<circle cx="34" cy="34" r="14" fill="#ffb5c5"/><circle cx="68" cy="34" r="14" fill="#b97a4a"/><path d="M10 90 Q10 56 34 56 Q58 56 58 90 Z" fill="#3a86ff"/><path d="M44 90 Q44 56 68 56 Q92 56 92 90 Z" fill="#2ec27e"/>`),
+    up: () => svg(`<path d="M50 12 L84 50 H64 V88 H36 V50 H16 Z" fill="#2ec27e"/>`),
+    hand: () => svg(`<path d="M30 92 Q18 70 20 54 Q22 46 30 50 L34 58 V22 Q34 14 41 14 Q48 14 48 22 V44 V16 Q48 8 55 8 Q62 8 62 16 V44 V22 Q62 14 69 14 Q76 14 76 22 V48 V34 Q76 28 82 28 Q88 28 88 34 V62 Q88 82 76 92 Z" fill="#ffd0a8"/>`),
+    back: () => svg(`<path d="M42 16 L10 46 L42 76 V58 Q72 56 88 82 Q86 38 42 34 Z" fill="#3a86ff"/>`),
+    register: () => svg(`
+      <rect x="16" y="6" width="60" height="26" rx="5" fill="#2f3a45"/><rect x="22" y="11" width="48" height="16" rx="3" fill="#7cf5b0" stroke="none"/>
+      <path d="M8 34 H84 L90 82 H2 Z" fill="#ff8c1a"/><g fill="#fff" stroke="none">${[0,1,2].map(r => [0,1,2,3].map(c => `<rect x="${20 + c * 14}" y="${42 + r * 10}" width="10" height="6" rx="2"/>`).join('')).join('')}</g>
+      <rect x="0" y="80" width="92" height="14" rx="4" fill="#d96d00"/>`, '0 0 92 96'),
+    lamp: () => svg(`<path d="M23 0 V28" fill="none" stroke-width="3"/><path d="M6 44 Q6 26 23 26 Q40 26 40 44 Z" fill="#2ec27e"/><circle cx="23" cy="48" r="7" fill="#fff6a8"/>`, '0 0 46 60'),
+    megaphone: () => svg(`<path d="M18 40 L64 16 V84 L18 60 Z" fill="#ef476f"/><rect x="8" y="38" width="14" height="24" rx="4" fill="#ffd23f"/><path d="M30 62 L36 86 H48 L44 68" fill="#adb5bd"/><path d="M76 34 Q84 50 76 66 M84 24 Q98 50 84 76" fill="none" stroke-width="5"/>`),
+    sofa: () => svg(`<rect x="14" y="26" width="72" height="36" rx="14" fill="#9b5de5"/><rect x="4" y="44" width="22" height="36" rx="10" fill="#b583f0"/><rect x="74" y="44" width="22" height="36" rx="10" fill="#b583f0"/><rect x="22" y="54" width="56" height="22" rx="8" fill="#c9a2f7"/><path d="M16 80 V90 M84 80 V90" stroke-width="6"/>`),
+    jar: () => svg(`<rect x="30" y="8" width="40" height="12" rx="4" fill="#ff8c1a"/><path d="M26 22 H74 Q84 32 84 48 V82 Q84 94 72 94 H28 Q16 94 16 82 V48 Q16 32 26 22 Z" fill="#d6f1ff"/>
+      <g fill="#ffc93c"><ellipse cx="38" cy="80" rx="12" ry="6"/><ellipse cx="62" cy="80" rx="12" ry="6"/><ellipse cx="50" cy="70" rx="12" ry="6"/><ellipse cx="42" cy="60" rx="11" ry="5.5"/></g>${shine('M26 40 V70')}`),
+    paint: () => svg(`<path d="M50 8 C76 8 94 26 92 50 C90 66 76 64 68 66 C60 68 64 80 58 88 C52 94 30 92 18 78 C4 62 8 8 50 8 Z" fill="#ffe0a3"/>
+      <circle cx="30" cy="50" r="7" fill="#ef476f"/><circle cx="36" cy="28" r="7" fill="#ffd23f"/><circle cx="58" cy="22" r="7" fill="#2ec27e"/><circle cx="76" cy="38" r="7" fill="#3a86ff"/><circle cx="38" cy="72" r="7" fill="#9b5de5"/>`),
+    bolt: () => svg(`<path d="M58 4 L18 56 H46 L38 96 L82 40 H54 Z" fill="#ffd23f"/>`),
+    reset: () => svg(`<path d="M80 50 A30 30 0 1 1 64 23" fill="none" stroke-width="10"/><path d="M56 8 L74 22 L56 36 Z" fill="${O}"/>`),
+    plate: () => svg(`<ellipse cx="50" cy="56" rx="44" ry="26" fill="#fff"/><ellipse cx="50" cy="54" rx="28" ry="15" fill="none" stroke-width="2.5"/>`),
+  };
+
+  const DECOR_ART = {
+    balloons: () => svg(`<path d="M30 52 Q34 74 46 98 M62 46 Q56 74 48 98 M48 34 Q50 70 47 98" fill="none" stroke-width="2"/>
+      <ellipse cx="30" cy="34" rx="16" ry="20" fill="#ef476f"/><ellipse cx="64" cy="30" rx="16" ry="20" fill="#3a86ff"/><ellipse cx="48" cy="18" rx="15" ry="18" fill="#ffd23f"/>${shine('M22 26 Q24 20 28 19')}${shine('M58 22 Q60 16 64 15')}`),
+    clock: () => svg(`<circle cx="50" cy="50" r="40" fill="#ff8c1a"/><circle cx="50" cy="50" r="31" fill="#fff"/><path d="M50 30 V50 L64 58" fill="none" stroke-width="5"/><circle cx="50" cy="50" r="4" fill="${O}"/>`),
+    picture: () => svg(`<rect x="6" y="10" width="88" height="80" rx="6" fill="#d98c3a"/><rect x="16" y="20" width="68" height="60" fill="#bde0fe"/>
+      <path d="M16 66 Q40 52 84 64 V80 H16 Z" fill="#7ccf4f"/><circle cx="68" cy="36" r="9" fill="#ffd23f"/><g transform="translate(26 38) scale(.36)">
+      <rect x="14" y="68" width="72" height="20" rx="10" fill="#f2a541"/><rect x="9" y="56" width="82" height="15" rx="7.5" fill="#7a4526"/><path d="M9 47 C9 20 30 11 50 11 C70 11 91 20 91 47 Z" fill="#f6a93b"/></g>`),
+    plant: () => svg(`<path d="M50 62 C30 40 18 46 10 30 C30 28 44 40 50 62 Z" fill="#4caf50"/><path d="M50 62 C70 36 84 42 92 24 C70 22 56 36 50 62 Z" fill="#5fbf55"/>
+      <path d="M50 62 C42 30 52 14 50 2 C64 16 60 40 50 62 Z" fill="#7ccf4f"/><path d="M24 60 H76 L68 96 H32 Z" fill="#e76f51"/><rect x="20" y="56" width="60" height="10" rx="4" fill="#f4a261"/>`),
+    trophy: () => svg(`<path d="M24 14 H76 V40 Q76 64 50 66 Q24 64 24 40 Z" fill="#ffd23f"/><path d="M24 22 H10 Q8 46 28 48 M76 22 H90 Q92 46 72 48" fill="none" stroke-width="5"/>
+      <rect x="42" y="64" width="16" height="14" fill="#e0a800"/><rect x="28" y="78" width="44" height="14" rx="3" fill="#8b4a2b"/>${shine('M34 22 V44')}`),
+    teddy: () => svg(`<circle cx="26" cy="20" r="11" fill="#c8874f"/><circle cx="74" cy="20" r="11" fill="#c8874f"/><ellipse cx="50" cy="74" rx="30" ry="24" fill="#c8874f"/>
+      <circle cx="50" cy="38" r="26" fill="#d9995e"/><ellipse cx="50" cy="48" rx="11" ry="8" fill="#f3d3ae"/><ellipse cx="50" cy="44" rx="4" ry="3" fill="${O}"/>
+      <circle cx="41" cy="34" r="3.5" fill="${O}"/><circle cx="59" cy="34" r="3.5" fill="${O}"/><path d="M40 62 L50 68 L60 62 L60 74 L50 68 L40 74 Z" fill="#ef476f" stroke-width="2.5"/>`),
+    neon: () => svg(`<rect x="4" y="16" width="92" height="68" rx="14" fill="#2b1f3a"/><g fill="none" stroke="#ff4fd8" stroke-width="4">
+      <path d="M24 48 C24 34 36 28 50 28 C64 28 76 34 76 48 Z"/><rect x="22" y="54" width="56" height="8" rx="4"/><rect x="25" y="66" width="50" height="9" rx="4.5"/></g>`),
+    rocket: () => svg(`<path d="M50 4 C70 18 72 46 66 70 H34 C28 46 30 18 50 4 Z" fill="#f1f3f5"/><circle cx="50" cy="36" r="9" fill="#3a86ff"/>
+      <path d="M34 54 L20 76 L36 72 Z M66 54 L80 76 L64 72 Z" fill="#ef476f"/><path d="M40 72 Q50 98 60 72 Z" fill="#ff8c1a"/><path d="M45 72 Q50 88 55 72 Z" fill="#ffd23f" stroke="none"/>`),
+    arcade: () => svg(`<path d="M20 4 H80 V96 H20 Z" fill="#3a86ff"/><rect x="28" y="12" width="44" height="34" rx="4" fill="#1b263b"/>
+      <g stroke="none"><rect x="36" y="22" width="6" height="6" fill="#7cf5b0"/><rect x="48" y="30" width="6" height="6" fill="#ffd23f"/><rect x="58" y="20" width="6" height="6" fill="#ef476f"/></g>
+      <rect x="24" y="52" width="52" height="14" fill="#ffd23f"/><circle cx="38" cy="59" r="4" fill="#ef476f"/><circle cx="62" cy="59" r="4" fill="#2ec27e"/><path d="M50 52 V44" stroke-width="3"/><circle cx="50" cy="42" r="4" fill="#ef476f"/>`),
+    fish: () => svg(`<rect x="4" y="14" width="92" height="74" rx="10" fill="#9ee7ff" opacity=".9"/><path d="M4 70 Q30 62 50 72 Q70 82 96 70 V78 Q96 88 86 88 H14 Q4 88 4 78 Z" fill="#f4d58d"/>
+      <path d="M22 88 Q20 72 26 62 M30 88 Q34 74 30 66" fill="none" stroke="#2ec27e" stroke-width="4"/>
+      <g class="fishy"><ellipse cx="54" cy="44" rx="16" ry="11" fill="#ff8c1a"/><path d="M68 44 L82 34 V54 Z" fill="#ff8c1a"/><circle cx="47" cy="41" r="2.5" fill="${O}"/></g>
+      <g fill="#fff" stroke="none" opacity=".8"><circle cx="34" cy="30" r="3"/><circle cx="30" cy="22" r="2"/></g>`),
+    jukebox: () => svg(`<path d="M16 96 V40 Q16 6 50 6 Q84 6 84 40 V96 Z" fill="#ef476f"/><path d="M26 92 V42 Q26 16 50 16 Q74 16 74 42 V92 Z" fill="#ffd23f"/>
+      <rect x="32" y="50" width="36" height="20" rx="3" fill="#9b5de5"/><circle cx="50" cy="34" r="10" fill="#3a86ff"/><path d="M32 78 H68 M32 85 H68" stroke-width="3"/>`),
+    crown: () => svg(`<path d="M10 78 L16 26 L34 50 L50 16 L66 50 L84 26 L90 78 Z" fill="#ffd23f"/><rect x="8" y="76" width="84" height="14" rx="4" fill="#f0b400"/>
+      <circle cx="50" cy="60" r="6" fill="#ef476f"/><circle cx="28" cy="64" r="4.5" fill="#3a86ff"/><circle cx="72" cy="64" r="4.5" fill="#2ec27e"/>${shine('M22 40 L20 64')}`),
+  };
+
+  // ---------------- Dieren ----------------
+  const KINDS = {
+    bear:   { skin: '#b97a4a', snout: '#ecc9a0', ear: 'round', inner: '#e3a777' },
+    cat:    { skin: '#f6a85b', snout: '#fff1de', ear: 'cat', inner: '#ffb3c6', whisk: 1 },
+    fox:    { skin: '#f47c2c', snout: '#ffffff', ear: 'cat', inner: '#4a2c17' },
+    panda:  { skin: '#ffffff', snout: '#ffffff', ear: 'round', earC: '#2f2f2f', inner: '#2f2f2f', patch: 1 },
+    pig:    { skin: '#ffb5c5', snout: '#ff8fab', ear: 'cat', inner: '#ff8fab', pig: 1 },
+    rabbit: { skin: '#f4f1ee', snout: '#ffffff', ear: 'long', inner: '#ffb3c6' },
+    frog:   { skin: '#7bc96f', snout: '#a9e29f', ear: 'frog' },
+    lion:   { skin: '#f6c453', snout: '#fff1c1', ear: 'round', inner: '#e0a030', mane: '#c8742f' },
+    mouse:  { skin: '#b8c0c8', snout: '#e9ecef', ear: 'mouse', inner: '#ffb3c6', whisk: 1 },
+    koala:  { skin: '#9aa5b1', snout: '#c9d1d9', ear: 'koala', inner: '#eef1f4', bignose: 1 },
+    tiger:  { skin: '#f7931e', snout: '#fff3e0', ear: 'cat', inner: '#fff3e0', stripes: 1, whisk: 1 },
+    dog:    { skin: '#e0b07a', snout: '#fff1de', ear: 'floppy', earC: '#8b5a2b' },
+  };
+  const SHIRTS = ['#3a86ff', '#ef476f', '#2ec27e', '#9b5de5', '#ff8c1a', '#00b4d8', '#ffd23f', '#f15bb5'];
+  const ACCS = ['none', 'none', 'bow', 'glasses', 'cap', 'none'];
+
+  function animalSVG(c, mood = 'ok') {
+    const k = KINDS[c.kind];
+    const frog = k.ear === 'frog';
+    const ey = frog ? 26 : 54, ex1 = frog ? 40 : 45, ex2 = frog ? 80 : 75;
+    let s = '';
+    // lichaam
+    s += `<path d="M14 166 Q16 118 60 116 Q104 118 106 166 Z" fill="${c.shirt}"/>`;
+    s += `<path d="M44 117 L60 132 L76 117" fill="#fff"/>`;
+    // manen
+    if (k.mane) for (let i = 0; i < 14; i++) {
+      const a = i / 14 * Math.PI * 2; s += `<circle cx="${60 + Math.cos(a) * 40}" cy="${58 + Math.sin(a) * 38}" r="14" fill="${k.mane}"/>`;
+    }
+    // oren achter hoofd
+    const ec = k.earC || k.skin;
+    if (k.ear === 'round') s += `<circle cx="28" cy="28" r="14" fill="${ec}"/><circle cx="92" cy="28" r="14" fill="${ec}"/><circle cx="28" cy="28" r="7" fill="${k.inner}" stroke="none"/><circle cx="92" cy="28" r="7" fill="${k.inner}" stroke="none"/>`;
+    if (k.ear === 'cat') s += `<path d="M22 46 L26 6 L54 28 Z" fill="${ec}"/><path d="M98 46 L94 6 L66 28 Z" fill="${ec}"/><path d="M29 36 L31 17 L45 28 Z" fill="${k.inner}" stroke="none"/><path d="M91 36 L89 17 L75 28 Z" fill="${k.inner}" stroke="none"/>`;
+    if (k.ear === 'long') s += `<ellipse cx="42" cy="2" rx="11" ry="30" fill="${ec}" transform="rotate(-10 42 2)"/><ellipse cx="78" cy="2" rx="11" ry="30" fill="${ec}" transform="rotate(10 78 2)"/><ellipse cx="42" cy="4" rx="5" ry="21" fill="${k.inner}" stroke="none" transform="rotate(-10 42 4)"/><ellipse cx="78" cy="4" rx="5" ry="21" fill="${k.inner}" stroke="none" transform="rotate(10 78 4)"/>`;
+    if (k.ear === 'mouse') s += `<circle cx="20" cy="30" r="21" fill="${ec}"/><circle cx="100" cy="30" r="21" fill="${ec}"/><circle cx="20" cy="30" r="12" fill="${k.inner}" stroke="none"/><circle cx="100" cy="30" r="12" fill="${k.inner}" stroke="none"/>`;
+    if (k.ear === 'koala') s += `<circle cx="20" cy="40" r="21" fill="${ec}"/><circle cx="100" cy="40" r="21" fill="${ec}"/><circle cx="21" cy="41" r="12" fill="${k.inner}" stroke="none"/><circle cx="99" cy="41" r="12" fill="${k.inner}" stroke="none"/>`;
+    if (frog) s += `<circle cx="40" cy="26" r="17" fill="${k.skin}"/><circle cx="80" cy="26" r="17" fill="${k.skin}"/>`;
+    // hoofd
+    s += `<ellipse cx="60" cy="60" rx="41" ry="38" fill="${k.skin}"/>`;
+    if (frog) s += `<path d="M27 30 A17 17 0 0 1 53 26 M67 26 A17 17 0 0 1 93 30" fill="${k.skin}" stroke="none"/>`;
+    if (k.stripes) s += `<path d="M60 23 V34 M47 25 L50 34 M73 25 L70 34 M20 58 L31 60 M100 58 L89 60 M22 70 L31 69 M98 70 L89 69" fill="none" stroke-width="4"/>`;
+    if (k.patch) s += `<ellipse cx="45" cy="55" rx="11" ry="14" fill="#2f2f2f" stroke="none" transform="rotate(-25 45 55)"/><ellipse cx="75" cy="55" rx="11" ry="14" fill="#2f2f2f" stroke="none" transform="rotate(25 75 55)"/>`;
+    if (k.ear === 'floppy') s += `<ellipse cx="22" cy="56" rx="12" ry="27" fill="${ec}" transform="rotate(18 22 56)"/><ellipse cx="98" cy="56" rx="12" ry="27" fill="${ec}" transform="rotate(-18 98 56)"/>`;
+    // ogen
+    if (mood === 'love') {
+      const h = (x, y) => `<path d="M${x} ${y + 8} C${x - 12} ${y} ${x - 10} ${y - 10} ${x} ${y - 4} C${x + 10} ${y - 10} ${x + 12} ${y} ${x} ${y + 8} Z" fill="#ef476f" stroke-width="2.5"/>`;
+      s += h(ex1, ey) + h(ex2, ey);
+    } else if (mood === 'happy') {
+      s += `<path d="M${ex1 - 7} ${ey + 2} Q${ex1} ${ey - 8} ${ex1 + 7} ${ey + 2} M${ex2 - 7} ${ey + 2} Q${ex2} ${ey - 8} ${ex2 + 7} ${ey + 2}" fill="none" stroke-width="4.5"/>`;
+    } else {
+      s += `<g class="eyes" style="animation-delay:${c.blink}s"><circle cx="${ex1}" cy="${ey}" r="8.5" fill="#fff"/><circle cx="${ex2}" cy="${ey}" r="8.5" fill="#fff"/>
+        <circle cx="${ex1 + 1}" cy="${ey + 1}" r="5" fill="${O}" stroke="none"/><circle cx="${ex2 + 1}" cy="${ey + 1}" r="5" fill="${O}" stroke="none"/>
+        <circle cx="${ex1 + 2.5}" cy="${ey - 1}" r="1.8" fill="#fff" stroke="none"/><circle cx="${ex2 + 2.5}" cy="${ey - 1}" r="1.8" fill="#fff" stroke="none"/></g>`;
+    }
+    if (mood === 'angry') s += `<path d="M${ex1 - 10} ${ey - 15} L${ex1 + 7} ${ey - 9} M${ex2 + 10} ${ey - 15} L${ex2 - 7} ${ey - 9}" fill="none" stroke-width="4.5"/>`;
+    if (mood === 'worried' || mood === 'sad') s += `<path d="M${ex1 - 8} ${ey - 11} L${ex1 + 6} ${ey - 16} M${ex2 + 8} ${ey - 11} L${ex2 - 6} ${ey - 16}" fill="none" stroke-width="4"/>`;
+    // wangen
+    s += `<ellipse cx="31" cy="72" rx="7" ry="4.5" fill="#ff6b8b" opacity="${mood === 'love' || mood === 'happy' ? .7 : .4}" stroke="none"/><ellipse cx="89" cy="72" rx="7" ry="4.5" fill="#ff6b8b" opacity="${mood === 'love' || mood === 'happy' ? .7 : .4}" stroke="none"/>`;
+    // snuit & neus
+    if (!frog && !k.pig) s += `<ellipse cx="60" cy="74" rx="16" ry="12" fill="${k.snout}" ${k.snout === k.skin ? 'stroke="none"' : ''}/>`;
+    if (k.pig) s += `<ellipse cx="60" cy="70" rx="13" ry="9" fill="${k.snout}"/><ellipse cx="55" cy="70" rx="2.5" ry="3.5" fill="${O}" stroke="none"/><ellipse cx="65" cy="70" rx="2.5" ry="3.5" fill="${O}" stroke="none"/>`;
+    else if (k.bignose) s += `<ellipse cx="60" cy="68" rx="9" ry="11" fill="#3b3b3b"/>`;
+    else if (!frog) s += `<path d="M53 66 Q60 62 67 66 Q64 72 60 72 Q56 72 53 66 Z" fill="${O}"/>`;
+    // mond
+    const my = k.pig ? 82 : 78;
+    if (frog) {
+      if (mood === 'angry' || mood === 'sad' || mood === 'worried') s += `<path d="M42 78 Q60 68 78 78" fill="none"/>`;
+      else s += `<path d="M38 66 Q60 ${mood === 'ok' ? 80 : 90} 82 66 ${mood === 'ok' ? '' : 'Z'}" fill="${mood === 'ok' ? 'none' : '#c0392b'}"/>`;
+    } else if (mood === 'happy' || mood === 'love') s += `<path d="M50 ${my - 1} Q60 ${my + 14} 70 ${my - 1} Z" fill="#c0392b"/><path d="M55 ${my + 5} Q60 ${my + 9} 65 ${my + 5}" fill="#ff8fab" stroke="none"/>`;
+    else if (mood === 'ok') s += `<path d="M52 ${my} Q56 ${my + 5} 60 ${my} Q64 ${my + 5} 68 ${my}" fill="none" stroke-width="3"/>`;
+    else s += `<path d="M52 ${my + 7} Q60 ${my - 1} 68 ${my + 7}" fill="none"/>`;
+    if (k.whisk) s += `<path d="M42 74 L24 70 M42 78 L24 80 M78 74 L96 70 M78 78 L96 80" fill="none" stroke-width="2"/>`;
+    // accessoires
+    if (c.acc === 'bow') s += `<g transform="translate(90 26)"><path d="M0 0 L-14 -10 L-14 10 Z M0 0 L14 -10 L14 10 Z" fill="#ff5d8f"/><circle r="5" fill="#ff5d8f"/></g>`;
+    if (c.acc === 'glasses' && !frog) s += `<g fill="none" stroke-width="3.5"><circle cx="${ex1}" cy="${ey}" r="13"/><circle cx="${ex2}" cy="${ey}" r="13"/><path d="M${ex1 + 13} ${ey} H${ex2 - 13}"/></g>`;
+    if (c.acc === 'cap') s += `<path d="M24 36 Q26 10 60 10 Q94 10 96 36 Z" fill="${c.cap}"/><path d="M60 36 H104 Q110 42 100 44 H60 Z" fill="${c.cap}"/><circle cx="60" cy="10" r="4" fill="${c.cap}"/>`;
+    return svg(s, '0 -30 120 196');
+  }
+
+  const art = k => (FOOD_ART[k] || DECOR_ART[k] || ICONS[k])();
+  const ic = (k, cls = 'ic') => `<div class="${cls}">${art(k)}</div>`;
+
+  // =====================================================================
+  //  SPELGEGEVENS
+  // =====================================================================
   const DAY_LEN = 120;
-  const ANIMALS = ['🐻','🐱','🐶','🐸','🐵','🦊','🐼','🐷','🐰','🦁','🐯','🐨','🐮','🐔','🐧','🦄','🐲','🐙','🦖','🤖','👽','🧑','👧','👦','🧓'];
   const DENOMS = [5000, 2000, 1000, 500, 200, 100, 50];
 
   const FOODS = {
-    burger:  { e: '🍔', price: 250, cost: 0 },
-    fries:   { e: '🍟', price: 150, cost: 0 },
-    cola:    { e: '🥤', price: 100, cost: 0 },
-    popcorn: { e: '🍿', price: 100, cost: 1000 },
-    hotdog:  { e: '🌭', price: 200, cost: 1500 },
-    ice:     { e: '🍦', price: 150, cost: 2000 },
-    donut:   { e: '🍩', price: 100, cost: 2500 },
-    pizza:   { e: '🍕', price: 300, cost: 3500 },
-    shake:   { e: '🧋', price: 250, cost: 4500 },
-    chicken: { e: '🍗', price: 350, cost: 6000 },
-    taco:    { e: '🌮', price: 200, cost: 7500 },
-    wrap:    { e: '🌯', price: 300, cost: 9000 },
+    burger:  { price: 250, cost: 0 },
+    fries:   { price: 150, cost: 0 },
+    cola:    { price: 100, cost: 0 },
+    popcorn: { price: 100, cost: 1000 },
+    hotdog:  { price: 200, cost: 1500 },
+    ice:     { price: 150, cost: 2000 },
+    donut:   { price: 100, cost: 2500 },
+    pizza:   { price: 300, cost: 3500 },
+    shake:   { price: 250, cost: 4500 },
+    chicken: { price: 350, cost: 6000 },
+    taco:    { price: 200, cost: 7500 },
+    wrap:    { price: 300, cost: 9000 },
   };
-
-  // x/y in % van de scène
+  // positie in % van de scène
   const DECOR = {
-    plant:    { e: '🪴', cost: 1000,  x: 2,  y: 48 },
-    balloons: { e: '🎈', cost: 1500,  x: 4,  y: 14 },
-    picture:  { e: '🖼️', cost: 2500,  x: 16, y: 22 },
-    lamp:     { e: '💡', cost: 3000,  x: 30, y: 2 },
-    neon:     { e: '🌟', cost: 4000,  x: 82, y: 4 },
-    fish:     { e: '🐠', cost: 6000,  x: 84, y: 44 },
-    arcade:   { e: '🕹️', cost: 8000,  x: 90, y: 30 },
-    teddy:    { e: '🧸', cost: 10000, x: 78, y: 22 },
-    music:    { e: '🎶', cost: 12000, x: 64, y: 4 },
-    trophy:   { e: '🏆', cost: 20000, x: 2,  y: 30 },
-    rocket:   { e: '🚀', cost: 30000, x: 92, y: 6 },
-    crown:    { e: '👑', cost: 50000, x: 47, y: 0 },
+    plant:    { cost: 1000,  x: 1,  y: 40 },
+    balloons: { cost: 1500,  x: 1,  y: 9 },
+    clock:    { cost: 2000,  x: 11, y: 12 },
+    picture:  { cost: 3000,  x: 10, y: 27 },
+    neon:     { cost: 4000,  x: 81, y: 11 },
+    fish:     { cost: 6000,  x: 90, y: 13 },
+    teddy:    { cost: 8000,  x: 11, y: 44 },
+    arcade:   { cost: 10000, x: 89, y: 30 },
+    trophy:   { cost: 12000, x: 1,  y: 24 },
+    jukebox:  { cost: 16000, x: 74, y: 11 },
+    rocket:   { cost: 25000, x: 82, y: 27 },
+    crown:    { cost: 50000, x: 46, y: 3 },
   };
-
   const BOOSTS = {
-    ads:    { e: '📣', eff: '👥⬆️', costs: [2000, 4000, 8000, 15000, 25000] },
-    chair:  { e: '🛋️', eff: '⏳⬆️', costs: [1500, 3000, 6000, 12000] },
-    tipjar: { e: '🫙', eff: '🪙⬆️', costs: [2500, 5000, 10000, 20000] },
+    ads:    { art: 'megaphone', eff: 'people', costs: [2000, 4000, 8000, 15000, 25000] },
+    chair:  { art: 'sofa',      eff: 'clock',  costs: [1500, 3000, 6000, 12000] },
+    tipjar: { art: 'jar',       eff: 'coin',   costs: [2500, 5000, 10000, 20000] },
   };
 
   const fresh = () => ({ money: 0, day: 1, stars: 3, served: 0, foods: { burger: 1, fries: 1, cola: 1 }, decor: {}, boosts: {}, sound: true });
   let S;
-  try { S = Object.assign(fresh(), JSON.parse(localStorage.getItem('tijnsburger2')) || {}); } catch { S = fresh(); }
-  const save = () => { try { localStorage.setItem('tijnsburger2', JSON.stringify(S)); } catch {} };
+  try { S = Object.assign(fresh(), JSON.parse(localStorage.getItem('tijnsburger3')) || {}); } catch { S = fresh(); }
+  const save = () => { try { localStorage.setItem('tijnsburger3', JSON.stringify(S)); } catch {} };
 
-  // ================= Helpers =================
+  // ---------------- Helpers ----------------
   const $ = id => document.getElementById(id);
   const fmt = c => '€' + Math.floor(c / 100) + (c % 100 ? ',' + String(c % 100).padStart(2, '0') : '');
   const pick = a => a[Math.floor(Math.random() * a.length)];
@@ -287,15 +626,15 @@
   const myFoods = () => Object.keys(FOODS).filter(k => S.foods[k]);
 
   function moneyEl(v) {
-    const d = document.createElement('div');
-    d.dataset.v = v;
+    const d = document.createElement('div'); d.dataset.v = v;
     if (v >= 500) { d.className = 'm note n' + v; d.textContent = v / 100; }
-    else { d.className = 'm coin c' + v; d.innerHTML = v === 50 ? '50<small>ct</small>' : (v / 100) + '<small>€</small>'; }
+    else { d.className = 'm coin c' + v; d.innerHTML = v === 50 ? '50<small>cent</small>' : (v / 100) + '<small>euro</small>'; }
     return d;
   }
+  const moneyHTML = v => moneyEl(v).outerHTML;
   function split(c) { const out = []; for (const d of DENOMS) while (c >= d) { out.push(d); c -= d; } return out; }
 
-  // ================= Geluid =================
+  // ---------------- Geluid ----------------
   let ac;
   function tone(f, t = 0, dur = .12, type = 'square', vol = .08) {
     if (!S.sound) return;
@@ -308,53 +647,55 @@
     } catch {}
   }
   const sfx = {
-    tap:   () => tone(660, 0, .06, 'triangle', .12),
+    tap:   () => tone(700, 0, .06, 'triangle', .14),
+    plop:  () => { tone(500, 0, .05, 'sine', .2); tone(800, .04, .06, 'sine', .15); },
     coin:  () => { tone(988, 0, .08); tone(1319, .07, .15); },
     kaching: () => { [784, 988, 1175, 1568].forEach((f, i) => tone(f, i * .07, .18, 'triangle', .14)); },
-    wrong: () => { tone(220, 0, .2, 'sawtooth', .07); tone(180, .15, .25, 'sawtooth', .07); },
-    angry: () => { tone(200, 0, .3, 'sawtooth', .08); tone(140, .25, .4, 'sawtooth', .08); },
-    hello: () => { tone(523, 0, .1, 'sine', .15); tone(784, .1, .15, 'sine', .15); },
+    wrong: () => { tone(240, 0, .18, 'sawtooth', .06); tone(190, .14, .24, 'sawtooth', .06); },
+    angry: () => { tone(200, 0, .3, 'sawtooth', .07); tone(140, .25, .4, 'sawtooth', .07); },
+    hello: () => { tone(523, 0, .1, 'sine', .18); tone(784, .1, .15, 'sine', .18); },
     buy:   () => { [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .08, .2, 'triangle', .12)); },
   };
 
-  // ================= Effecten =================
-  function floatAt(el, text, color) {
+  // ---------------- Effecten ----------------
+  function floatAt(el, text) {
     const r = el.getBoundingClientRect();
     const d = document.createElement('div'); d.className = 'float'; d.textContent = text;
-    if (color) d.style.color = color;
-    d.style.left = (r.left + r.width / 2 - 30) + 'px'; d.style.top = (r.top) + 'px';
-    document.body.appendChild(d); setTimeout(() => d.remove(), 1100);
+    d.style.left = (r.left + r.width / 2 - 40) + 'px'; d.style.top = r.top + 'px';
+    document.body.appendChild(d); setTimeout(() => d.remove(), 1200);
   }
-  function confetti(n = 18, set = ['🎉', '⭐', '✨', '🪙', '💶']) {
+  function confetti(n = 24) {
+    const cols = ['#ef476f', '#ffd23f', '#2ec27e', '#3a86ff', '#9b5de5', '#ff8c1a'];
     for (let i = 0; i < n; i++) {
-      const d = document.createElement('div'); d.className = 'confetti'; d.textContent = pick(set);
-      d.style.left = (Math.random() * innerWidth) + 'px'; d.style.top = (Math.random() * 120) + 'px';
+      const d = document.createElement('div'); d.className = 'confetti';
+      d.style.background = pick(cols);
+      d.style.left = (Math.random() * innerWidth) + 'px'; d.style.top = (Math.random() * 140 - 20) + 'px';
       d.style.animationDelay = (Math.random() * .3) + 's';
-      document.body.appendChild(d); setTimeout(() => d.remove(), 1800);
+      if (Math.random() < .4) d.style.borderRadius = '50%';
+      document.body.appendChild(d); setTimeout(() => d.remove(), 2000);
     }
   }
-  function flyToWallet(fromEl, count = 5) {
+  function flyToWallet(fromEl, count = 6) {
     const a = fromEl.getBoundingClientRect(), b = $('wallet').getBoundingClientRect();
     for (let i = 0; i < count; i++) {
-      const d = document.createElement('div'); d.className = 'fly'; d.textContent = pick(['🪙', '💶', '🪙']);
+      const d = document.createElement('div'); d.className = 'fly';
       d.style.left = (a.left + Math.random() * a.width) + 'px'; d.style.top = (a.top + Math.random() * a.height) + 'px';
       document.body.appendChild(d);
-      setTimeout(() => { d.style.left = (b.left + 20) + 'px'; d.style.top = b.top + 'px'; d.style.transform = 'scale(.5)'; }, 30 + i * 70);
+      setTimeout(() => { d.style.left = (b.left + 14) + 'px'; d.style.top = (b.top + 10) + 'px'; d.style.transform = 'scale(.6)'; }, 30 + i * 70);
       setTimeout(() => d.remove(), 950 + i * 70);
     }
-    setTimeout(() => { $('wallet').classList.remove('pop'); void $('wallet').offsetWidth; $('wallet').classList.add('pop'); sfx.coin(); }, 800);
+    setTimeout(() => { const w = $('wallet'); w.classList.remove('pop'); void w.offsetWidth; w.classList.add('pop'); sfx.coin(); }, 800);
   }
   function shake(el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
 
-  // ================= Spelstatus =================
+  // =====================================================================
+  //  SPEL
+  // =====================================================================
   let t = 0, paused = true, spawnT = 1.5;
-  let line = [];            // wachtende klanten
-  let cur = null;           // klant aan de toonbank
-  let stage = 'none';       // none | order | pay | leave
-  let tray = [], given = [];
+  let line = [], cur = null, stage = 'none', tray = [], given = [];
   let dayStats = { served: 0, earned: 0, angry: 0 };
 
-  const patienceMax = n => 22 + n * 7 + lv('chair') * 6 + decorCount() * 1.5;
+  const patienceMax = n => 24 + n * 7 + lv('chair') * 6 + decorCount() * 1.5;
   const spawnEvery = () => Math.max(2.5, 10 / (1 + .35 * lv('ads')) * (1.5 - S.stars * .12));
 
   function newCustomer() {
@@ -363,113 +704,115 @@
     const n = 1 + Math.floor(Math.random() * maxN);
     const order = []; for (let i = 0; i < n; i++) order.push(pick(foods));
     order.sort((a, b) => foods.indexOf(a) - foods.indexOf(b));
-    return { face: pick(ANIMALS), order, pat: patienceMax(n), max: patienceMax(n) };
+    let kind = pick(Object.keys(KINDS));
+    let acc = pick(ACCS); if (acc === 'cap' && ['rabbit', 'frog', 'lion'].includes(kind)) acc = 'none';
+    return { kind, shirt: pick(SHIRTS), cap: pick(SHIRTS), acc, blink: (Math.random() * 4).toFixed(2), order, pat: patienceMax(n), max: patienceMax(n), mood: 'ok' };
   }
+
+  function setMood(m) {
+    if (!cur || cur.mood === m) return;
+    cur.mood = m; $('customer').querySelector('.face').innerHTML = animalSVG(cur, m);
+  }
+  function react(k) { const r = $('react'); r.innerHTML = k ? art(k) : ''; r.classList.remove('show'); void r.offsetWidth; r.classList.add('show'); }
 
   function callNext() {
     if (cur || !line.length) return;
     cur = line.shift(); renderLine();
     stage = 'walkin'; tray = []; given = [];
     const c = $('customer');
-    c.style.transition = 'none'; c.style.left = '110%'; c.style.opacity = 1;
-    c.querySelector('.face').textContent = cur.face;
-    $('bubble').style.display = 'none'; $('react').textContent = '';
+    c.style.transition = 'none'; c.style.left = '115%'; c.style.visibility = 'visible';
+    cur.mood = ''; setMood('ok');
+    $('bubble').style.display = 'none'; react(null); $('patience').style.display = 'none';
     c.classList.add('walk');
-    requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transition = ''; c.style.left = '38%'; }));
+    requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transition = ''; c.style.left = ''; }));
     setTimeout(() => {
-      c.classList.remove('walk'); stage = 'order'; sfx.hello();
-      renderBubble(); $('bubble').style.display = 'flex'; showPanel();
-    }, 750);
+      c.classList.remove('walk'); stage = 'order'; sfx.hello(); setMood('happy');
+      setTimeout(() => { if (cur && cur.mood === 'happy' && stage === 'order') setMood('ok'); }, 900);
+      $('patience').style.display = ''; renderBubble(); $('bubble').style.display = 'flex'; showPanel();
+    }, 820);
     renderTray(); $('paid').innerHTML = '';
   }
 
   function leave(happy) {
     stage = 'leave';
     const c = $('customer');
-    $('bubble').style.display = 'none';
-    react(happy ? pick(['😍', '❤️', '😋', '🤩']) : '💢');
-    c.classList.add('walk');
-    setTimeout(() => { c.style.left = '-30%'; }, 400);
+    $('bubble').style.display = 'none'; $('patience').style.display = 'none';
+    setMood(happy ? 'love' : 'angry'); react(happy ? 'heart' : 'angry');
+    setTimeout(() => { c.classList.add('walk'); c.style.left = '-40%'; }, 500);
     setTimeout(() => {
-      c.classList.remove('walk'); c.style.opacity = 0; cur = null; stage = 'none';
+      c.classList.remove('walk'); c.style.visibility = 'hidden'; cur = null; stage = 'none';
       tray = []; given = []; renderTray(); $('paid').innerHTML = ''; showPanel();
-    }, 1150);
+    }, 1350);
   }
 
-  function react(e) { const r = $('react'); r.textContent = e; r.classList.remove('show'); void r.offsetWidth; r.classList.add('show'); }
-
-  // ================= Bestellen =================
+  // ---------------- Bestellen ----------------
   function addFood(k, btn) {
     if (stage !== 'order' || tray.length >= 8) { shake(btn); return; }
-    tray.push(k); sfx.tap(); renderTray(); renderBubble();
+    tray.push(k); sfx.plop(); renderTray(); renderBubble();
+    if (sameOrder(tray, cur.order)) setMood('happy');
   }
-  function sameOrder(a, b) { return a.length === b.length && [...a].sort().join() === [...b].sort().join(); }
+  const sameOrder = (a, b) => a.length === b.length && [...a].sort().join() === [...b].sort().join();
 
   function serve() {
     if (stage !== 'order' || !tray.length) return;
     if (!sameOrder(tray, cur.order)) {
-      sfx.wrong(); react('😕'); shake($('tray')); cur.pat -= cur.max * .12; return;
+      sfx.wrong(); setMood('sad'); react('question'); shake($('tray')); cur.pat -= cur.max * .12;
+      setTimeout(() => { if (cur && stage === 'order' && cur.mood === 'sad') setMood('ok'); }, 1200);
+      return;
     }
-    // klant betaalt
     stage = 'pay';
     cur.total = cur.order.reduce((s, k) => s + FOODS[k].price, 0);
     cur.paid = payment(cur.total);
-    react('👍'); $('bubble').style.display = 'none';
+    setMood('happy'); react('checkG'); $('bubble').style.display = 'none'; $('patience').style.display = 'none';
     const p = $('paid'); p.innerHTML = '';
     split(cur.paid).forEach((v, i) => setTimeout(() => { p.appendChild(moneyEl(v)); sfx.tap(); }, 150 + i * 180));
     showPanel();
   }
-
   function payment(T) {
     const opts = [];
     for (const step of [100, 500, 1000, 2000, 5000]) {
       const v = Math.ceil(T / step) * step;
       if (v > T && v - T <= 2000 && !opts.includes(v)) opts.push(v);
     }
-    if (Math.random() < .2 || !opts.length) return T; // gepast
+    if (Math.random() < .2 || !opts.length) return T;
     return pick(opts);
   }
 
-  // ================= Wisselgeld =================
+  // ---------------- Wisselgeld ----------------
   const givenSum = () => given.reduce((s, v) => s + v, 0);
-  function giveMoney(v) { if (stage !== 'pay') return; given.push(v); sfx.tap(); renderPay(); }
+  function giveMoney(v) { if (stage !== 'pay') return; given.push(v); sfx.coin(); renderPay(); }
   function takeBack(i) { given.splice(i, 1); sfx.tap(); renderPay(); }
 
   function finishPay() {
+    if (stage !== 'pay') return;
     const need = cur.paid - cur.total;
-    if (givenSum() !== need) { sfx.wrong(); shake($('given')); react(givenSum() > need ? '🤑' : '🤨'); return; }
-    // gelukt!
+    if (givenSum() !== need) { sfx.wrong(); shake($('given')); setMood(givenSum() > need ? 'worried' : 'sad'); react('question'); return; }
     const frac = Math.max(0, cur.pat / cur.max);
     let tip = frac > .75 ? 100 : frac > .4 ? 50 : 0;
     if (tip) tip += lv('tipjar') * 50;
     const earn = cur.total + tip;
     S.money += earn; S.served++; dayStats.served++; dayStats.earned += earn;
     S.stars = Math.min(5, S.stars + .08 + frac * .1);
-    sfx.kaching(); confetti(14);
-    flyToWallet($('paid'), 6);
+    sfx.kaching(); confetti(26);
+    flyToWallet($('paid'), 7);
     floatAt($('customer'), '+' + fmt(earn));
-    if (tip) setTimeout(() => floatAt($('wallet'), '🫙 +' + fmt(tip), '#e67700'), 400);
     save(); updateTop();
     leave(true);
   }
 
-  // ================= Render =================
-  function updateTop() {
-    $('money').textContent = fmt(S.money);
-    $('stars').textContent = S.stars.toFixed(1);
-  }
-  function renderBoard() {
-    $('board').innerHTML = myFoods().map(k => `<div><span>${FOODS[k].e}</span><b>${fmt(FOODS[k].price)}</b></div>`).join('');
-  }
+  // =====================================================================
+  //  TEKENEN VAN HET SCHERM
+  // =====================================================================
+  function updateTop() { $('money').textContent = fmt(S.money); $('stars').textContent = S.stars.toFixed(1); }
+  function renderBoard() { $('board').innerHTML = myFoods().map(k => `<div>${ic(k)}<b>${fmt(FOODS[k].price)}</b></div>`).join(''); }
   function renderDecor() {
-    $('decorLayer').innerHTML = Object.keys(S.decor).map(k => {
-      const d = DECOR[k]; return `<div class="decor" style="left:${d.x}%;top:${d.y}%">${d.e}</div>`;
-    }).join('');
+    $('decorLayer').innerHTML = Object.keys(S.decor).map(k =>
+      `<div class="decor ${k === 'neon' ? 'neon' : ''}" style="left:${DECOR[k].x}%;top:${DECOR[k].y}%">${art(k)}</div>`).join('');
   }
-  function renderLine() { $('line').innerHTML = line.map(c => `<span>${c.face}</span>`).join(''); }
+  function renderLine() { $('line').innerHTML = line.map(c => `<div class="q">${animalSVG(c, 'ok')}</div>`).join(''); }
   function renderTray() {
     const el = $('tray');
-    el.innerHTML = tray.length ? tray.map((k, i) => `<span data-i="${i}">${FOODS[k].e}</span>`).join('') : '<span class="empty">🍽️</span>';
+    el.innerHTML = tray.length ? tray.map((k, i) => `<div class="ic" data-i="${i}">${art(k)}</div>`).join('') : `<div class="plate">${art('plate')}</div>`;
     el.querySelectorAll('[data-i]').forEach(s => s.onclick = () => {
       if (stage !== 'order') return; tray.splice(+s.dataset.i, 1); sfx.tap(); renderTray(); renderBubble();
     });
@@ -479,16 +822,16 @@
   function renderBubble() {
     if (!cur) return;
     const left = tray.slice();
-    $('bubble').innerHTML = cur.order.map(k => {
-      const i = left.indexOf(k); const got = i >= 0; if (got) left.splice(i, 1);
-      return `<span class="${got ? 'got' : ''}">${FOODS[k].e}</span>`;
+    $('order-items').innerHTML = cur.order.map(k => {
+      const i = left.indexOf(k), got = i >= 0; if (got) left.splice(i, 1);
+      return `<div class="ic ${got ? 'got' : ''}">${art(k)}</div>`;
     }).join('');
   }
   function renderFoods() {
     const el = $('foods'); el.innerHTML = '';
     for (const k of myFoods()) {
       const b = document.createElement('button'); b.className = 'food';
-      b.innerHTML = `<span class="e">${FOODS[k].e}</span><span class="tag">${fmt(FOODS[k].price)}</span>`;
+      b.innerHTML = `${ic(k)}<span class="tag">${fmt(FOODS[k].price)}</span>`;
       b.onclick = () => addFood(k, b);
       el.appendChild(b);
     }
@@ -499,14 +842,12 @@
   }
   function renderPay() {
     if (!cur || stage !== 'pay') return;
-    const need = cur.paid - cur.total, g = givenSum();
-    const items = cur.order.map(k => `<span class="e">${FOODS[k].e}</span>`).join('');
-    const exact = need === 0;
+    const need = cur.paid - cur.total, g = givenSum(), exact = need === 0;
     $('bill').innerHTML = `
-      <div class="receipt">${items}</div><span class="eq">=</span><span class="tot">${fmt(cur.total)}</span>
-      <span class="eq">·</span><span>🐾💵 ${fmt(cur.paid)}</span>
-      ${exact ? `<div class="change ok">👌 ${fmt(0)}</div>` :
-        `<div class="change ${g === need ? 'ok' : g > need ? 'over' : ''}">🔙 ${fmt(need)} <span style="opacity:.5">|</span> ✋ ${fmt(g)} ${g === need ? '✅' : g > need ? '⛔' : ''}</div>`}`;
+      <div class="receipt">${cur.order.map(k => ic(k)).join('')}</div><span class="eq">=</span><span class="tot">${fmt(cur.total)}</span>
+      <div class="chip">${ic('hand')}${fmt(cur.paid)}</div>
+      ${exact ? `<div class="chip change ok">${ic('checkG')}${fmt(0)}</div>` :
+        `<div class="chip change ${g === need ? 'ok' : g > need ? 'over' : ''}">${ic('back')}${fmt(need)}<span class="sep"></span>${ic('coin')}${fmt(g)}${g === need ? ic('checkG') : ''}</div>`}`;
     const gEl = $('given'); gEl.innerHTML = '';
     given.forEach((v, i) => { const m = moneyEl(v); m.style.cursor = 'pointer'; m.onclick = () => takeBack(i); gEl.appendChild(m); });
     gEl.style.display = exact ? 'none' : 'flex';
@@ -521,22 +862,20 @@
     renderTray();
   }
 
-  // ================= Loop =================
-  let last = performance.now();
+  // ---------------- Loop ----------------
+  let last = performance.now(), sunState = '';
   function loop(now) {
     const dt = Math.min(.1, (now - last) / 1000); last = now;
     if (!paused) step(dt);
-    // zon
     const f = Math.min(1, t / DAY_LEN);
     document.querySelector('#sunbar .fill').style.width = f * 100 + '%';
     const sun = document.querySelector('#sunbar .sun'); sun.style.left = f * 100 + '%';
-    sun.textContent = f >= 1 ? '🌙' : f > .7 ? '🌇' : '☀️';
-    // geduld
+    const ss = f >= 1 ? 'moon' : f > .7 ? 'sunset' : 'sun';
+    if (ss !== sunState) { sunState = ss; sun.innerHTML = art(ss); }
     if (cur) {
-      const p = Math.max(0, cur.pat / cur.max);
-      const bar = $('patience').firstElementChild;
+      const p = Math.max(0, cur.pat / cur.max), bar = $('patience').firstElementChild;
       bar.style.width = p * 100 + '%';
-      bar.style.background = p > .5 ? 'var(--green)' : p > .25 ? 'var(--yellow)' : 'var(--red)';
+      bar.style.background = p > .5 ? 'linear-gradient(#5ff0a8,#2ec27e)' : p > .25 ? 'linear-gradient(#ffe680,#ffc21a)' : 'linear-gradient(#ff8a8a,#e63946)';
     }
     requestAnimationFrame(loop);
   }
@@ -549,38 +888,49 @@
     if (!cur && line.length) callNext();
     if (cur && stage === 'order') {
       cur.pat -= dt;
-      if (cur.pat < cur.max * .25 && $('react').textContent !== '😤') react('😤');
-      if (cur.pat <= 0) {
-        sfx.angry(); S.stars = Math.max(1, S.stars - .35); dayStats.angry++; updateTop(); leave(false);
-      }
+      const p = cur.pat / cur.max;
+      if (p < .25 && cur.mood !== 'angry' && cur.mood !== 'sad') setMood('angry');
+      else if (p < .5 && cur.mood === 'ok') setMood('worried');
+      if (cur.pat <= 0) { sfx.angry(); S.stars = Math.max(1, S.stars - .35); dayStats.angry++; updateTop(); leave(false); }
     }
     if (t >= DAY_LEN && !cur && !line.length) endDay();
   }
 
+  // =====================================================================
+  //  SCHERMEN
+  // =====================================================================
+  const overlay = html => { $('overlay').innerHTML = `<div class="overlay"><div class="modal">${html}</div></div>`; };
+  const closeOverlay = () => { $('overlay').innerHTML = ''; };
+  const starsHTML = n => `<div class="stars">${[0, 1, 2, 3, 4].map(i => `<div class="ic ${i < n ? '' : 'off'}">${art('star')}</div>`).join('')}</div>`;
+
   function endDay() {
     paused = true;
-    const st = Math.round(S.stars);
+    const happyGuy = { kind: pick(Object.keys(KINDS)), shirt: pick(SHIRTS), acc: 'none', blink: 0 };
     overlay(`
-      <h2>🌙 ${S.day}</h2>
-      <div class="stat"><div>😋 ${dayStats.served}</div><div>💶 ${fmt(dayStats.earned)}</div>${dayStats.angry ? `<div>💢 ${dayStats.angry}</div>` : ''}</div>
-      <div style="font-size:54px">${'⭐'.repeat(st)}<span style="opacity:.25">${'⭐'.repeat(5 - st)}</span></div>
-      <div class="actions"><button class="big go" id="nextBtn">☀️ ▶</button><button class="big" style="background:var(--orange)" id="endShop">🛒</button></div>`);
-    confetti(30);
+      <div class="head"><div class="ic">${art('moon')}</div><span style="font-size:44px">${S.day}</span></div>
+      <div class="stat">
+        <div><div class="ic">${animalSVG(happyGuy, 'love')}</div>${dayStats.served}</div>
+        <div><div class="ic">${art('coin')}</div>${fmt(dayStats.earned)}</div>
+        ${dayStats.angry ? `<div><div class="ic">${art('angry')}</div>${dayStats.angry}</div>` : ''}
+      </div>
+      ${starsHTML(Math.round(S.stars))}
+      <div class="actions"><button class="big orange" id="endShop">${art('cart')}</button><button class="big go" id="nextBtn">${art('play')}</button></div>`);
+    confetti(40);
     S.day++; save();
     $('nextBtn').onclick = startDay;
     $('endShop').onclick = () => openShop(true);
   }
   function startDay() {
     closeOverlay();
-    t = 0; spawnT = 1.5; line = []; dayStats = { served: 0, earned: 0, angry: 0 };
+    t = 0; spawnT = 1.5; line = []; renderLine(); dayStats = { served: 0, earned: 0, angry: 0 };
     paused = false; last = performance.now(); sfx.hello();
   }
-
-  // ================= Overlays & winkel =================
-  function overlay(html) {
-    $('overlay').innerHTML = `<div class="overlay"><div class="modal">${html}</div></div>`;
+  function nextDayScreen() {
+    overlay(`<div class="head"><div class="ic">${art('sun')}</div><span style="font-size:44px">${S.day}</span></div>
+      <div style="display:flex;justify-content:center;gap:6px;margin:6px 0 10px">${['burger', 'fries', 'cola'].map(k => `<div style="width:80px;height:80px">${art(k)}</div>`).join('')}</div>
+      <div class="actions"><button class="big orange" id="endShop">${art('cart')}</button><button class="big go" id="nextBtn">${art('play')}</button></div>`);
+    $('nextBtn').onclick = startDay; $('endShop').onclick = () => openShop(true);
   }
-  function closeOverlay() { $('overlay').innerHTML = ''; }
 
   let shopTab = 'food', shopFromEnd = false, pausedBefore = false;
   function openShop(fromEnd) {
@@ -590,81 +940,89 @@
   }
   function renderShop() {
     overlay(`
-      <button class="round close" id="closeShop">✖️</button>
-      <h2>🛒</h2>
-      <div class="pill" style="display:inline-flex;margin-bottom:10px"><span class="i">💰</span>${fmt(S.money)}</div>
+      <button class="rbtn xbtn" id="closeShop">${art('close')}</button>
+      <div class="head"><div class="ic">${art('coin')}</div><span style="font-size:38px;color:var(--green-d)">${fmt(S.money)}</span></div>
       <div class="stabs">
-        <button data-t="food" class="${shopTab === 'food' ? 'on' : ''}">🍔</button>
-        <button data-t="decor" class="${shopTab === 'decor' ? 'on' : ''}">🎨</button>
-        <button data-t="boost" class="${shopTab === 'boost' ? 'on' : ''}">⚡</button>
+        <button data-t="food" class="${shopTab === 'food' ? 'on' : ''}">${art('burger')}</button>
+        <button data-t="decor" class="${shopTab === 'decor' ? 'on' : ''}">${art('paint')}</button>
+        <button data-t="boost" class="${shopTab === 'boost' ? 'on' : ''}">${art('bolt')}</button>
       </div>
       <div class="grid" id="shopGrid"></div>`);
     const g = $('shopGrid');
-    const card = (e, eff, cost, owned, onBuy) => {
+    const card = (artKey, eff, cost, owned, onBuy) => {
       const b = document.createElement('button');
       b.className = 'card' + (owned ? ' owned' : S.money < cost ? ' cant' : '');
-      b.innerHTML = `<span class="e">${e}</span><span class="eff">${eff}</span><span class="price">${owned ? '✔️' : fmt(cost)}</span>`;
+      b.innerHTML = `${ic(artKey)}<div class="eff">${eff}</div>${owned ? `<div class="okmark">${art('checkG')}</div>` : `<span class="price">${ic('coin')}${fmt(cost)}</span>`}`;
       b.onclick = () => {
         if (owned) return;
         if (S.money < cost) { sfx.wrong(); shake(b); return; }
-        S.money -= cost; onBuy(); sfx.buy(); confetti(20, [e, '✨', '🎉']); save(); updateTop();
+        S.money -= cost; onBuy(); sfx.buy(); confetti(30); save(); updateTop();
         renderBoard(); renderFoods(); renderDecor(); renderShop();
       };
       g.appendChild(b);
     };
     if (shopTab === 'food') {
-      for (const k in FOODS) { const f = FOODS[k]; if (f.cost) card(f.e, `<span class="tag">${fmt(f.price)}</span>`, f.cost, !!S.foods[k], () => S.foods[k] = 1); }
+      for (const k in FOODS) if (FOODS[k].cost) card(k, `<span class="tag">${fmt(FOODS[k].price)}</span>`, FOODS[k].cost, !!S.foods[k], () => S.foods[k] = 1);
     } else if (shopTab === 'decor') {
-      for (const k in DECOR) { const d = DECOR[k]; card(d.e, '⏳⬆️', d.cost, !!S.decor[k], () => S.decor[k] = 1); }
+      for (const k in DECOR) card(k, `${ic('clock')}${ic('up')}`, DECOR[k].cost, !!S.decor[k], () => S.decor[k] = 1);
     } else {
       for (const k in BOOSTS) {
         const b = BOOSTS[k], n = lv(k), max = n >= b.costs.length;
         const dots = `<span class="dots">${b.costs.map((_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</span>`;
-        card(b.e, b.eff + ' ' + dots, max ? 0 : b.costs[n], max, () => S.boosts[k] = n + 1);
+        card(b.art, `${ic(b.eff)}${ic('up')}${dots}`, max ? 0 : b.costs[n], max, () => S.boosts[k] = n + 1);
       }
     }
     document.querySelectorAll('.stabs button').forEach(b => b.onclick = () => { shopTab = b.dataset.t; sfx.tap(); renderShop(); });
     $('closeShop').onclick = () => {
       sfx.tap();
-      if (shopFromEnd) { endDayAgain(); return; }
+      if (shopFromEnd) { nextDayScreen(); return; }
       closeOverlay(); paused = pausedBefore; last = performance.now();
     };
   }
-  function endDayAgain() {
-    overlay(`<h2>☀️ ${S.day}</h2><div style="font-size:80px">🍔🍟🥤</div>
-      <div class="actions"><button class="big go" id="nextBtn">▶</button><button class="big" style="background:var(--orange)" id="endShop">🛒</button></div>`);
-    $('nextBtn').onclick = startDay; $('endShop').onclick = () => openShop(true);
-  }
 
   function welcome() {
+    const bear = { kind: 'bear', shirt: '#3a86ff', acc: 'none', blink: 0 };
     overlay(`
-      <div style="font-size:90px;line-height:1">🍔</div>
-      <h2>Tijn's Burger Place</h2>
+      <div class="hero">${art('burger')}</div>
+      <div class="title">Tijn's Burger Place</div>
       <div class="how">
-        <div>🐻💭🍔<small>Kijk wat de klant wil</small></div>
-        <div>👆🍟🥤<small>Tik het eten aan</small></div>
-        <div>💶➡️🪙<small>Geef wisselgeld terug</small></div>
-        <div>🛒🎨<small>Koop leuke dingen</small></div>
+        <div><span class="n">1</span><div class="pics">${`<div class="ic">${animalSVG(bear, 'happy')}</div>`}${ic('burger')}</div><small>Kijk wat de klant wil</small></div>
+        <div><span class="n">2</span><div class="pics">${ic('fries')}${ic('cola')}</div><small>Tik het eten aan</small></div>
+        <div><span class="n">3</span><div class="pics">${moneyHTML(500)}${moneyHTML(100)}</div><small>Geef wisselgeld terug</small></div>
+        <div><span class="n">4</span><div class="pics">${ic('cart')}${ic('plant')}</div><small>Koop leuke dingen</small></div>
       </div>
-      <div class="actions"><button class="big go" id="startBtn">▶ ${S.day > 1 ? '☀️ ' + S.day : ''}</button></div>
-      ${S.served ? '<div style="margin-top:14px"><button class="round" id="resetBtn" style="font-size:22px;width:44px;height:44px">🔄</button></div>' : ''}`);
+      <div class="actions">
+        ${S.served ? `<button class="big no" id="resetBtn">${art('reset')}</button>` : ''}
+        <button class="big go" id="startBtn">${art('play')}</button>
+      </div>`);
+    document.querySelector('.how > div:nth-child(4) .pics .ic').style.cssText = 'background:var(--green);border-radius:50%;padding:8px';
     $('startBtn').onclick = () => { sfx.hello(); startDay(); };
     const r = $('resetBtn');
     if (r) r.onclick = () => {
-      overlay(`<div style="font-size:70px">🔄❓</div><div class="actions">
-        <button class="big no" id="rNo">✖️</button><button class="big" style="background:var(--red)" id="rYes">✔️</button></div>`);
+      overlay(`<div class="hero">${art('reset')}</div><div class="actions">
+        <button class="big no" id="rNo">${art('close')}</button><button class="big go" id="rYes">${art('check')}</button></div>`);
       $('rNo').onclick = welcome;
       $('rYes').onclick = () => { const snd = S.sound; S = fresh(); S.sound = snd; save(); updateTop(); renderBoard(); renderFoods(); renderDecor(); welcome(); };
     };
   }
 
-  // ================= Start =================
+  // =====================================================================
+  //  START
+  // =====================================================================
+  document.querySelectorAll('[data-art]').forEach(e => e.innerHTML = art(e.dataset.art));
+  document.querySelectorAll('[data-icon]').forEach(e => e.innerHTML = art(e.dataset.icon));
+  $('shopBtn').innerHTML = art('cart');
+  $('serveBtn').innerHTML = `<div class="ic">${art('check')}</div>`;
+  $('payBtn').innerHTML = `<div class="ic">${art('check')}</div>`;
+  $('clearBtn').innerHTML = `<div class="ic">${art('trash')}</div>`;
+  const setSoundIcon = () => $('soundBtn').innerHTML = art(S.sound ? 'soundOn' : 'soundOff');
+  setSoundIcon();
+
   $('serveBtn').onclick = serve;
   $('clearBtn').onclick = () => { if (stage === 'order' && tray.length) { tray = []; sfx.tap(); renderTray(); renderBubble(); } };
   $('payBtn').onclick = finishPay;
   $('shopBtn').onclick = () => { sfx.tap(); openShop(false); };
-  $('soundBtn').onclick = () => { S.sound = !S.sound; $('soundBtn').textContent = S.sound ? '🔊' : '🔇'; save(); sfx.tap(); };
-  $('soundBtn').textContent = S.sound ? '🔊' : '🔇';
+  $('soundBtn').onclick = () => { S.sound = !S.sound; setSoundIcon(); save(); sfx.tap(); };
 
   updateTop(); renderBoard(); renderFoods(); renderDecor(); renderDrawer(); renderTray(); showPanel();
   welcome();
