@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#ff9f43">
+<meta name="description" content="Tijn's Burger Place – bouw je eigen fastfoodrestaurant met koks, obers en uitbreidingen.">
+<title>Tijn's Burger Place</title>
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+  <div id="top">
+    <div class="logo"><div class="ic" data-art="burger"></div><div class="t"><div class="t1">TIJN'S</div><div class="t2">Burger Place</div></div></div>
+    <div class="pill" id="wallet"><div class="ic" data-art="coin"></div><span id="money">€0</span></div>
+    <div class="pill"><div class="ic" data-art="star"></div><span id="stars">3</span></div>
+    <button class="rbtn" id="soundBtn"></button>
+    <button class="rbtn" id="shopBtn"><span class="badge">!</span><span id="cartIc"></span></button>
+  </div>
+  <div id="stage"><div id="world"></div></div>
+  <div id="menu"></div>
+  <div id="rotate"></div>
+</div>
+<div id="overlay"></div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
