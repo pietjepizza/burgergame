@@ -1,8 +1,10 @@
 # Tijn's Burger Place
 
-Een restaurant tycoon game in de browser. Open `index.html` om te spelen.
+Een kleurrijk fastfood tycoon spel voor kinderen (8-10 jaar). Open `index.html` in de browser.
 
-- Maak burgers, friet, drankjes en toetjes in de keuken
-- Serveer klanten voordat hun geduld op is
-- Koop upgrades, nieuwe menu-items en personeel
-- Voortgang wordt automatisch opgeslagen
+- 🐻💭🍔 Kijk wat de klant wil
+- 👆🍟🥤 Tik het eten aan en geef het met ✔️
+- 💶➡️🪙 Reken af en geef wisselgeld terug met echte euromunten en -biljetten
+- 🛒🎨 Koop nieuw eten, versiering en boosts
+
+Voortgang wordt automatisch opgeslagen in de browser.

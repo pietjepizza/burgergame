@@ -2,498 +2,673 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Tijn's Burger Place</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #fff4e0; --panel: #ffffff; --ink: #3a2414; --muted: #8a6a50;
-    --accent: #e8590c; --accent2: #f59f00; --good: #2f9e44; --bad: #e03131;
-    --line: #f0d9b5; --floor: #fbe3c0;
+    --red: #e63946; --orange: #ff8c1a; --yellow: #ffd23f; --green: #2ec27e; --blue: #3a86ff;
+    --ink: #3b2314; --wood: #a0612b; --wood2: #7a4519; --cream: #fff6e5;
   }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink);
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; user-select: none; }
-  header { background: linear-gradient(90deg, #c92a2a, var(--accent)); color: #fff; padding: 10px 16px;
-    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
-  header h1 { margin: 0; font-size: 22px; letter-spacing: .5px; }
-  .stats { display: flex; gap: 14px; flex-wrap: wrap; font-weight: 600; }
-  .stats span { background: rgba(0,0,0,.18); padding: 4px 10px; border-radius: 99px; }
-  main { display: grid; grid-template-columns: 1fr 320px; gap: 14px; padding: 14px; max-width: 1200px; margin: 0 auto; }
-  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
-  .panel { background: var(--panel); border-radius: 14px; padding: 12px; box-shadow: 0 2px 0 var(--line); }
-  h2 { margin: 0 0 8px; font-size: 16px; color: var(--accent); }
-  #dining { background: repeating-conic-gradient(var(--floor) 0 25%, #fff0d6 0 50%) 0 0/40px 40px;
-    border-radius: 14px; padding: 12px; min-height: 250px; position: relative; }
-  #queue { display: flex; gap: 10px; flex-wrap: wrap; min-height: 170px; align-items: flex-end; }
-  .cust { width: 104px; background: #fff; border-radius: 12px; padding: 6px; text-align: center; cursor: pointer;
-    border: 3px solid transparent; transition: transform .1s; animation: walkin .4s ease-out; }
-  .cust:hover { transform: translateY(-3px); }
-  .cust.ready { border-color: var(--good); }
-  .cust .face { font-size: 40px; line-height: 1; }
-  .cust .order { font-size: 20px; min-height: 26px; }
-  .cust .order .done { opacity: .35; }
-  .pbar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-top: 4px; }
-  .pbar div { height: 100%; background: var(--good); }
-  @keyframes walkin { from { transform: translateX(60px); opacity: 0; } to { transform: none; opacity: 1; } }
-  #counter { margin-top: 10px; background: #8d5524; color: #fff; border-radius: 10px; padding: 8px 10px;
-    display: flex; gap: 6px; align-items: center; flex-wrap: wrap; min-height: 48px; }
-  #counter .lbl { font-size: 12px; opacity: .8; margin-right: 6px; }
-  #counter .item { font-size: 24px; }
-  #kitchen { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 14px; }
-  .station { background: #f8f9fa; border: 2px solid #dee2e6; border-radius: 12px; padding: 8px; text-align: center; }
-  .station.locked { opacity: .5; }
-  .station .big { font-size: 34px; }
-  .station .name { font-weight: 700; font-size: 14px; }
-  .slots { display: flex; gap: 4px; justify-content: center; margin: 6px 0; flex-wrap: wrap; }
-  .slot { width: 30px; height: 30px; border-radius: 6px; background: #343a40; position: relative; overflow: hidden;
-    display: flex; align-items: center; justify-content: center; font-size: 16px; }
-  .slot .fill { position: absolute; left: 0; bottom: 0; width: 100%; background: var(--accent2); opacity: .7; }
-  .slot span { position: relative; }
-  button { font: inherit; border: 0; border-radius: 10px; padding: 8px 10px; cursor: pointer; font-weight: 700;
-    background: var(--accent); color: #fff; }
-  button:disabled { background: #ced4da; color: #868e96; cursor: not-allowed; }
-  button.sec { background: #495057; }
-  .shop-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px dashed var(--line); }
-  .shop-item .ico { font-size: 26px; width: 34px; text-align: center; }
-  .shop-item .txt { flex: 1; font-size: 13px; }
-  .shop-item .txt b { display: block; font-size: 14px; }
-  .shop-item .txt small { color: var(--muted); }
-  .shop-item button { min-width: 80px; font-size: 13px; }
-  .tabs { display: flex; gap: 6px; margin-bottom: 8px; }
-  .tabs button { flex: 1; background: #f1f3f5; color: var(--ink); font-size: 13px; }
-  .tabs button.on { background: var(--accent); color: #fff; }
-  #log { font-size: 12px; color: var(--muted); max-height: 120px; overflow: auto; margin-top: 10px; }
-  .float { position: fixed; pointer-events: none; font-weight: 800; color: var(--good); font-size: 20px;
-    animation: up 1s ease-out forwards; text-shadow: 0 1px 0 #fff; z-index: 50; }
-  .float.bad { color: var(--bad); }
-  @keyframes up { to { transform: translateY(-50px); opacity: 0; } }
-  .overlay { position: fixed; inset: 0; background: rgba(40,20,5,.6); display: flex; align-items: center;
-    justify-content: center; z-index: 100; padding: 16px; }
-  .modal { background: #fff; border-radius: 18px; padding: 22px; max-width: 420px; width: 100%; text-align: center; }
-  .modal h2 { font-size: 24px; }
-  .modal table { width: 100%; margin: 10px 0 16px; border-collapse: collapse; }
-  .modal td { padding: 4px; border-bottom: 1px solid #f1f3f5; text-align: left; }
-  .modal td:last-child { text-align: right; font-weight: 700; }
-  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
-  .staffrow { font-size: 13px; margin-top: 6px; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; }
+  body { background: #ffcf5c radial-gradient(circle at 50% 0, #ffe9a8, #ffb347); color: var(--ink);
+    font-family: "Fredoka", "Comic Sans MS", system-ui, sans-serif; user-select: none; overflow-x: hidden; }
+  #app { max-width: 920px; margin: 0 auto; padding: 8px 12px 16px; }
+
+  /* ---------- Topbalk ---------- */
+  #top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .logo { font-size: 26px; font-weight: 700; color: #fff; text-shadow: 0 3px 0 var(--red), 0 5px 0 #0003;
+    display: flex; align-items: center; gap: 6px; margin-right: auto; }
+  .logo .b { font-size: 36px; animation: bob 2s ease-in-out infinite; }
+  .pill { background: #fff; border-radius: 99px; padding: 4px 14px 4px 6px; display: flex; align-items: center;
+    gap: 6px; font-size: 24px; font-weight: 700; box-shadow: 0 4px 0 #0002; }
+  .pill .i { font-size: 28px; }
+  #wallet { color: #1b7a43; min-width: 120px; }
+  #wallet.pop { animation: pop .35s; }
+  .round { width: 54px; height: 54px; border-radius: 50%; border: 0; background: #fff; font-size: 28px;
+    box-shadow: 0 4px 0 #0002; cursor: pointer; display: grid; place-items: center; }
+  .round:active { transform: translateY(3px); box-shadow: 0 1px 0 #0002; }
+  #shopBtn { background: var(--green); width: 64px; height: 64px; font-size: 34px; animation: bob 2.4s infinite; }
+  #sunbar { height: 14px; background: #fff8; border-radius: 99px; margin: 8px 0 6px; position: relative; }
+  #sunbar .fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #ffe066, #ff8c1a, #7048e8); width: 0; }
+  #sunbar .sun { position: absolute; top: 50%; transform: translate(-50%, -50%); font-size: 26px; left: 0; }
+
+  /* ---------- Restaurant ---------- */
+  #scene { position: relative; height: 340px; border-radius: 22px; overflow: hidden; box-shadow: 0 6px 0 #0002;
+    background:
+      linear-gradient(#0000 62%, #0000 62%),
+      repeating-linear-gradient(90deg, #ff6b6b 0 40px, #fff 40px 80px) top / 100% 30px no-repeat,
+      linear-gradient(#ffeccc 0 62%, #0000 62%),
+      repeating-conic-gradient(#fff 0 25%, #222 0 50%) 0 0 / 44px 44px; }
+  #scene::after { content: ""; position: absolute; left: 0; right: 0; top: 62%; height: 6px; background: #c0392b; }
+  #board { position: absolute; left: 50%; top: 40px; transform: translateX(-50%); background: #2b2d42; color: #fff;
+    border: 6px solid var(--wood); border-radius: 12px; padding: 6px 10px; display: flex; gap: 10px;
+    font-size: 15px; box-shadow: 0 4px 0 #0003; z-index: 1; max-width: 92%; flex-wrap: wrap; justify-content: center; }
+  #board div { display: flex; flex-direction: column; align-items: center; line-height: 1.05; }
+  #board span { font-size: 26px; }
+  #board b { color: var(--yellow); }
+  .decor { position: absolute; font-size: 46px; z-index: 1; animation: popin .5s; filter: drop-shadow(0 4px 0 #0002); }
+  #customer { position: absolute; left: 50%; bottom: 70px; transform: translateX(-50%); z-index: 2;
+    display: flex; flex-direction: column; align-items: center; transition: left .7s ease-in-out, opacity .7s; }
+  #customer .face { font-size: 120px; line-height: 1; animation: bob 1.4s ease-in-out infinite; }
+  #customer.walk .face { animation: walk .3s ease-in-out infinite; }
+  #bubble { position: absolute; left: 100%; bottom: 70%; background: #fff; border-radius: 22px; padding: 6px 12px;
+    font-size: 44px; white-space: nowrap; box-shadow: 0 4px 0 #0002; display: flex; gap: 2px; animation: popin .35s; }
+  #bubble::before { content: ""; position: absolute; left: -12px; bottom: 12px; border: 10px solid transparent;
+    border-right: 16px solid #fff; border-left: 0; }
+  #bubble .got { opacity: .3; }
+  #react { position: absolute; top: -30px; right: -10px; font-size: 54px; }
+  #react.show { animation: popin .4s; }
+  #patience { width: 120px; height: 16px; background: #0003; border-radius: 99px; overflow: hidden; border: 3px solid #fff; }
+  #patience div { height: 100%; width: 100%; background: var(--green); transition: background .3s; }
+  #line { position: absolute; right: 14px; bottom: 74px; display: flex; gap: 0; z-index: 1; flex-direction: row-reverse; }
+  #line span { font-size: 56px; margin-left: -12px; animation: popin .4s; filter: saturate(.8); }
+  #counter { position: absolute; left: 0; right: 0; bottom: 0; height: 84px; z-index: 3;
+    background: linear-gradient(var(--wood) 0 14px, #c97b3c 14px 18px, var(--wood2) 18px); border-top: 4px solid #d98c4a;
+    display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 0; gap: 10px; }
+  #tray { background: #e63946; border-radius: 14px; min-width: 150px; height: 58px; padding: 4px 8px; display: flex;
+    align-items: center; gap: 2px; box-shadow: inset 0 -5px 0 #0003; }
+  #tray span { font-size: 40px; cursor: pointer; animation: popin .25s; }
+  #tray .empty { font-size: 30px; opacity: .35; cursor: default; animation: none; }
+  #paid { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+  .shake { animation: shake .4s; }
+
+  /* ---------- Bedieningspaneel ---------- */
+  #panel { margin-top: 12px; background: #fff; border-radius: 22px; padding: 12px; box-shadow: 0 6px 0 #0002; min-height: 200px; }
+  #foods { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 10px; }
+  .food { border: 0; border-radius: 18px; background: #fff1d6; box-shadow: 0 5px 0 #f0c88a; cursor: pointer;
+    padding: 6px 4px 8px; display: flex; flex-direction: column; align-items: center; font-family: inherit; }
+  .food:active { transform: translateY(4px); box-shadow: 0 1px 0 #f0c88a; }
+  .food .e { font-size: 52px; line-height: 1.1; }
+  .tag { background: var(--yellow); color: var(--ink); border-radius: 99px; padding: 1px 10px; font-weight: 700; font-size: 18px; }
+  .actions { display: flex; gap: 12px; justify-content: center; margin-top: 12px; }
+  .big { border: 0; border-radius: 20px; font-size: 40px; padding: 8px 30px; cursor: pointer; color: #fff;
+    font-family: inherit; font-weight: 700; box-shadow: 0 6px 0 #0003; display: flex; align-items: center; gap: 8px; }
+  .big:active { transform: translateY(4px); box-shadow: 0 2px 0 #0003; }
+  .big.go { background: var(--green); }
+  .big.no { background: #adb5bd; }
+  .big:disabled { opacity: .4; }
+  .big.pulse { animation: pulse 1s infinite; }
+
+  #pay { display: none; }
+  .payrow { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; font-size: 28px; font-weight: 700; }
+  .receipt { background: #fffdf5; border: 2px dashed #d6c7a1; border-radius: 12px; padding: 4px 12px; display: flex; align-items: center; gap: 8px; }
+  .receipt .e { font-size: 32px; }
+  .eq { font-size: 34px; color: #999; }
+  .tot { background: var(--yellow); border-radius: 14px; padding: 2px 14px; font-size: 32px; }
+  .change { background: #e7f5ff; border-radius: 16px; padding: 6px 14px; display: flex; align-items: center; gap: 10px; font-size: 32px; }
+  .change.ok { background: #d3f9d8; }
+  .change.over { background: #ffe3e3; }
+  #given { display: flex; gap: 4px; flex-wrap: wrap; min-height: 56px; justify-content: center; align-items: center;
+    background: #f1f3f5; border-radius: 14px; padding: 6px; margin: 10px 0; }
+  #given:empty::before { content: "👇"; font-size: 32px; opacity: .5; }
+  #drawer { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; background: #495057; border-radius: 16px; padding: 10px; }
+  #drawer .m { cursor: pointer; }
+  #drawer .m:active { transform: scale(.92); }
+
+  /* ---------- Geld ---------- */
+  .m { flex-shrink: 0; display: inline-grid; place-items: center; font-weight: 700; position: relative; animation: popin .25s; }
+  .coin { width: 58px; height: 58px; border-radius: 50%; font-size: 22px; color: #5c4400;
+    box-shadow: 0 3px 0 #0004, inset 0 0 0 3px #0002; }
+  .coin small { font-size: 11px; position: absolute; bottom: 7px; }
+  .c50  { background: radial-gradient(circle at 35% 30%, #fff3b0, #e6b422 60%, #b8860b); width: 52px; height: 52px; }
+  .c100 { background: radial-gradient(circle, #f5c542 0 52%, #8d8d8d 53%, #e9ecef 60%, #adb5bd); }
+  .c200 { background: radial-gradient(circle, #dee2e6 0 52%, #a07c00 53%, #ffd43b 60%, #c99700); width: 64px; height: 64px; font-size: 26px; }
+  .note { width: 96px; height: 54px; border-radius: 6px; color: #fff; font-size: 26px; box-shadow: 0 3px 0 #0004;
+    text-shadow: 0 2px 0 #0004; border: 2px solid #fff6; overflow: hidden; }
+  .note::before { content: ""; position: absolute; right: 8px; top: 8px; width: 26px; height: 34px; border-radius: 50%; background: #fff4; }
+  .note::after { content: "€"; position: absolute; left: 7px; top: 3px; font-size: 14px; opacity: .8; }
+  .n500  { background: linear-gradient(135deg, #8a9a8c, #5f6f62); }
+  .n1000 { background: linear-gradient(135deg, #ef5350, #b71c1c); }
+  .n2000 { background: linear-gradient(135deg, #42a5f5, #1565c0); }
+  .n5000 { background: linear-gradient(135deg, #ffa726, #e65100); }
+  .small .coin { transform: scale(.75); margin: -6px; }
+  .small .note { transform: scale(.7); margin: -10px -14px; }
+
+  /* ---------- Winkel / overlays ---------- */
+  .overlay { position: fixed; inset: 0; background: #2b1a0ccc; display: flex; align-items: center; justify-content: center;
+    z-index: 100; padding: 12px; animation: fade .2s; }
+  .modal { background: var(--cream); border-radius: 26px; padding: 16px; max-width: 760px; width: 100%;
+    max-height: 92vh; overflow: auto; box-shadow: 0 8px 0 #0004; text-align: center; position: relative; }
+  .modal h2 { margin: 0 0 8px; font-size: 32px; }
+  .stabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; }
+  .stabs button { font-size: 34px; border: 0; border-radius: 16px; padding: 4px 20px; background: #fff; cursor: pointer; box-shadow: 0 4px 0 #0002; }
+  .stabs button.on { background: var(--orange); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; }
+  .card { background: #fff; border-radius: 20px; padding: 8px; box-shadow: 0 5px 0 #0002; cursor: pointer; border: 0;
+    font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 4px; position: relative; }
+  .card .e { font-size: 58px; line-height: 1.1; }
+  .card .eff { font-size: 18px; min-height: 22px; }
+  .card .price { background: var(--green); color: #fff; border-radius: 99px; padding: 2px 12px; font-weight: 700; font-size: 20px; }
+  .card.cant { opacity: .55; }
+  .card.cant .price { background: #adb5bd; }
+  .card.owned { background: #d3f9d8; cursor: default; }
+  .card.owned .price { background: none; color: var(--green); font-size: 30px; padding: 0; }
+  .dots { display: flex; gap: 3px; }
+  .dots i { width: 10px; height: 10px; border-radius: 50%; background: #dee2e6; }
+  .dots i.on { background: var(--orange); }
+  .close { position: absolute; right: 10px; top: 10px; }
+  .stat { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 12px 0 18px; }
+  .stat div { background: #fff; border-radius: 18px; padding: 8px 16px; font-size: 34px; font-weight: 700; box-shadow: 0 4px 0 #0002; }
+  .how { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 12px 0 16px; }
+  .how div { background: #fff; border-radius: 18px; padding: 10px; font-size: 40px; box-shadow: 0 4px 0 #0002; }
+  .how small { display: block; font-size: 16px; }
+
+  .fly { position: fixed; z-index: 200; pointer-events: none; font-size: 40px; transition: all .8s cubic-bezier(.5,-0.3,.6,1); }
+  .float { position: fixed; z-index: 200; pointer-events: none; font-size: 34px; font-weight: 700; color: var(--green);
+    text-shadow: 0 2px 0 #fff, 0 0 8px #fff; animation: up 1.1s forwards; }
+  .confetti { position: fixed; z-index: 150; pointer-events: none; font-size: 28px; animation: fall 1.4s ease-in forwards; }
+
+  @keyframes bob { 50% { transform: translateY(-6px); } }
+  @keyframes walk { 0%,100% { transform: rotate(-6deg) translateY(0); } 50% { transform: rotate(6deg) translateY(-8px); } }
+  @keyframes popin { from { transform: scale(0); } 70% { transform: scale(1.15); } }
+  @keyframes pop { 50% { transform: scale(1.2); } }
+  @keyframes pulse { 50% { transform: scale(1.07); } }
+  @keyframes shake { 20%,60% { transform: translateX(-10px); } 40%,80% { transform: translateX(10px); } }
+  @keyframes up { to { transform: translateY(-70px); opacity: 0; } }
+  @keyframes fade { from { opacity: 0; } }
+  @keyframes fall { from { transform: translateY(0) rotate(0); opacity: 1; } to { transform: translateY(260px) rotate(540deg); opacity: 0; } }
+
+  @media (max-width: 600px) {
+    .logo { font-size: 22px; width: 100%; justify-content: center; margin: 0; } .logo .b { font-size: 30px; }
+    #top { justify-content: center; gap: 6px; }
+    .pill { font-size: 18px; padding: 3px 10px 3px 4px; } .pill .i { font-size: 22px; } #wallet { min-width: 96px; }
+    .round { width: 44px; height: 44px; font-size: 22px; } #shopBtn { width: 52px; height: 52px; font-size: 28px; }
+    #scene { height: 310px; }
+    #board { gap: 6px; padding: 4px 6px; border-width: 4px; }
+    #customer .face { font-size: 96px; } #bubble { font-size: 34px; left: 70%; }
+    #line span { font-size: 40px; } #board span { font-size: 20px; } #board { font-size: 12px; top: 36px; }
+    .decor { font-size: 34px; }
+    .food .e { font-size: 42px; } .big { font-size: 32px; padding: 6px 22px; }
+  }
 </style>
 </head>
 <body>
-<header>
-  <h1>🍔 Tijn's Burger Place</h1>
-  <div class="stats">
-    <span id="sMoney">€0</span>
-    <span id="sDay">Dag 1</span>
-    <span id="sTime">⏱ 0s</span>
-    <span id="sRating">⭐ 3.0</span>
-    <span id="sServed">😋 0</span>
+<div id="app">
+  <div id="top">
+    <div class="logo"><span class="b">🍔</span>Tijn's Burger Place</div>
+    <div class="pill" id="wallet"><span class="i">💰</span><span id="money">€0</span></div>
+    <div class="pill"><span class="i">⭐</span><span id="stars">3</span></div>
+    <button class="round" id="soundBtn">🔊</button>
+    <button class="round" id="shopBtn">🛒</button>
   </div>
-</header>
+  <div id="sunbar"><div class="fill"></div><div class="sun">☀️</div></div>
 
-<main>
-  <section>
-    <div id="dining">
-      <h2>Restaurant</h2>
-      <div id="queue"></div>
-      <div id="counter"><span class="lbl">Uitgifte:</span></div>
-      <div class="hint">Klik op een station om eten te maken. Klik op een klant om te serveren als alles klaar ligt.</div>
+  <div id="scene">
+    <div id="board"></div>
+    <div id="decorLayer"></div>
+    <div id="line"></div>
+    <div id="customer" style="opacity:0">
+      <div id="react"></div>
+      <div id="bubble" style="display:none"></div>
+      <div class="face">🐻</div>
+      <div id="patience"><div></div></div>
     </div>
-    <div class="panel" style="margin-top:14px">
-      <h2>Keuken</h2>
-      <div id="kitchen"></div>
-      <div id="staffInfo" class="staffrow"></div>
+    <div id="counter">
+      <div id="tray"></div>
+      <div id="paid"></div>
     </div>
-  </section>
+  </div>
 
-  <aside class="panel">
-    <div class="tabs">
-      <button data-tab="upg" class="on">Upgrades</button>
-      <button data-tab="menu">Menu</button>
-      <button data-tab="staff">Personeel</button>
+  <div id="panel">
+    <div id="order">
+      <div id="foods"></div>
+      <div class="actions">
+        <button class="big no" id="clearBtn">🗑️</button>
+        <button class="big go" id="serveBtn">✔️</button>
+      </div>
     </div>
-    <div id="shop"></div>
-    <div id="log"></div>
-    <div style="margin-top:10px; display:flex; gap:6px">
-      <button class="sec" id="btnReset" style="flex:1">Opnieuw beginnen</button>
+    <div id="pay">
+      <div class="payrow" id="bill"></div>
+      <div id="given"></div>
+      <div id="drawer"></div>
+      <div class="actions"><button class="big go" id="payBtn">✔️</button></div>
     </div>
-  </aside>
-</main>
-
+  </div>
+</div>
 <div id="overlay"></div>
 
 <script>
 (() => {
-  const DAY_LEN = 120; // seconden per dag
-  const FACES = ['🧑','👩','👨','🧒','👵','👴','👧','👦','🧔','👱','👩‍🦰','🧑‍🦱','👨‍🦳','🤠','🧑‍🎤'];
+  // ================= Gegevens =================
+  const DAY_LEN = 120;
+  const ANIMALS = ['🐻','🐱','🐶','🐸','🐵','🦊','🐼','🐷','🐰','🦁','🐯','🐨','🐮','🐔','🐧','🦄','🐲','🐙','🦖','🤖','👽','🧑','👧','👦','🧓'];
+  const DENOMS = [5000, 2000, 1000, 500, 200, 100, 50];
 
-  const ITEMS = {
-    burger:  { name: 'Burger',       ico: '🍔', station: 'grill',  price: 6,  time: 5,   cost: 0 },
-    fries:   { name: 'Friet',        ico: '🍟', station: 'fryer',  price: 3,  time: 4,   cost: 150 },
-    cola:    { name: 'Cola',         ico: '🥤', station: 'drinks', price: 2,  time: 2,   cost: 100 },
-    cheese:  { name: 'Cheeseburger', ico: '🧀', station: 'grill',  price: 9,  time: 6,   cost: 400 },
-    shake:   { name: 'Milkshake',    ico: '🥛', station: 'drinks', price: 5,  time: 3.5, cost: 600 },
-    hotdog:  { name: 'Hotdog',       ico: '🌭', station: 'grill',  price: 5,  time: 4,   cost: 800 },
-    ice:     { name: 'IJsje',        ico: '🍦', station: 'dessert',price: 4,  time: 2.5, cost: 1200 },
-    donut:   { name: 'Donut',        ico: '🍩', station: 'dessert',price: 4,  time: 3,   cost: 1500 },
+  const FOODS = {
+    burger:  { e: '🍔', price: 250, cost: 0 },
+    fries:   { e: '🍟', price: 150, cost: 0 },
+    cola:    { e: '🥤', price: 100, cost: 0 },
+    popcorn: { e: '🍿', price: 100, cost: 1000 },
+    hotdog:  { e: '🌭', price: 200, cost: 1500 },
+    ice:     { e: '🍦', price: 150, cost: 2000 },
+    donut:   { e: '🍩', price: 100, cost: 2500 },
+    pizza:   { e: '🍕', price: 300, cost: 3500 },
+    shake:   { e: '🧋', price: 250, cost: 4500 },
+    chicken: { e: '🍗', price: 350, cost: 6000 },
+    taco:    { e: '🌮', price: 200, cost: 7500 },
+    wrap:    { e: '🌯', price: 300, cost: 9000 },
   };
 
-  const STATIONS = {
-    grill:   { name: 'Grill',          ico: '🔥', unlock: 0 },
-    fryer:   { name: 'Frituur',        ico: '🫕', unlock: 0 },
-    drinks:  { name: 'Drankautomaat',  ico: '🧃', unlock: 0 },
-    dessert: { name: 'Toetjesbar',     ico: '🍨', unlock: 0 },
+  // x/y in % van de scène
+  const DECOR = {
+    plant:    { e: '🪴', cost: 1000,  x: 2,  y: 48 },
+    balloons: { e: '🎈', cost: 1500,  x: 4,  y: 14 },
+    picture:  { e: '🖼️', cost: 2500,  x: 16, y: 22 },
+    lamp:     { e: '💡', cost: 3000,  x: 30, y: 2 },
+    neon:     { e: '🌟', cost: 4000,  x: 82, y: 4 },
+    fish:     { e: '🐠', cost: 6000,  x: 84, y: 44 },
+    arcade:   { e: '🕹️', cost: 8000,  x: 90, y: 30 },
+    teddy:    { e: '🧸', cost: 10000, x: 78, y: 22 },
+    music:    { e: '🎶', cost: 12000, x: 64, y: 4 },
+    trophy:   { e: '🏆', cost: 20000, x: 2,  y: 30 },
+    rocket:   { e: '🚀', cost: 30000, x: 92, y: 6 },
+    crown:    { e: '👑', cost: 50000, x: 47, y: 0 },
   };
 
-  const UPGRADES = {
-    slots:    { name: 'Extra kookplek',      ico: '➕', desc: 'Elk station kan 1 extra ding tegelijk maken', base: 120, mult: 1.8, max: 5 },
-    speed:    { name: 'Snellere apparatuur', ico: '⚡', desc: '15% sneller koken', base: 200, mult: 1.9, max: 6 },
-    queue:    { name: 'Grotere zaak',        ico: '🏠', desc: '+1 plek in de rij', base: 250, mult: 1.7, max: 6 },
-    ads:      { name: 'Reclame',             ico: '📣', desc: 'Meer klanten komen langs', base: 180, mult: 1.75, max: 8 },
-    decor:    { name: 'Gezellige inrichting',ico: '🪴', desc: 'Klanten wachten langer', base: 220, mult: 1.8, max: 6 },
-    price:    { name: 'Premium recepten',    ico: '👨‍🍳', desc: '+12% prijs op alles', base: 350, mult: 2.0, max: 8 },
-    counter:  { name: 'Grotere uitgifte',    ico: '🗄️', desc: '+3 plekken op de uitgifte', base: 150, mult: 1.6, max: 6 },
+  const BOOSTS = {
+    ads:    { e: '📣', eff: '👥⬆️', costs: [2000, 4000, 8000, 15000, 25000] },
+    chair:  { e: '🛋️', eff: '⏳⬆️', costs: [1500, 3000, 6000, 12000] },
+    tipjar: { e: '🫙', eff: '🪙⬆️', costs: [2500, 5000, 10000, 20000] },
   };
 
-  const STAFF = {
-    cook:    { name: 'Kok',      ico: '👨‍🍳', desc: 'Maakt automatisch eten dat klanten willen', base: 300, mult: 1.9, max: 6, wage: 25 },
-    cashier: { name: 'Kassière', ico: '💁', desc: 'Serveert automatisch klanten', base: 400, mult: 2.0, max: 4, wage: 30 },
-  };
-
-  const fresh = () => ({
-    money: 50, day: 1, t: 0, rating: 3, served: 0, totalServed: 0,
-    menu: { burger: true }, upg: {}, staff: {},
-    dayStats: { earned: 0, tips: 0, served: 0, lost: 0 },
-  });
-
+  const fresh = () => ({ money: 0, day: 1, stars: 3, served: 0, foods: { burger: 1, fries: 1, cola: 1 }, decor: {}, boosts: {}, sound: true });
   let S;
-  try { S = JSON.parse(localStorage.getItem('tijnsburger')) || fresh(); } catch { S = fresh(); }
-  S = Object.assign(fresh(), S);
+  try { S = Object.assign(fresh(), JSON.parse(localStorage.getItem('tijnsburger2')) || {}); } catch { S = fresh(); }
+  const save = () => { try { localStorage.setItem('tijnsburger2', JSON.stringify(S)); } catch {} };
 
-  // Runtime state (niet opgeslagen)
-  let queue = [], cooking = {}, tray = [], spawnTimer = 2, cookTimer = 0, cashTimer = 0, paused = false, tab = 'upg';
-  let nextId = 1;
+  // ================= Helpers =================
+  const $ = id => document.getElementById(id);
+  const fmt = c => '€' + Math.floor(c / 100) + (c % 100 ? ',' + String(c % 100).padStart(2, '0') : '');
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const lv = k => S.boosts[k] || 0;
+  const decorCount = () => Object.keys(S.decor).length;
+  const myFoods = () => Object.keys(FOODS).filter(k => S.foods[k]);
 
-  const lvl = k => S.upg[k] || 0;
-  const staffN = k => S.staff[k] || 0;
-  const upCost = (def, n) => Math.round(def.base * Math.pow(def.mult, n));
-  const slotsPer = () => 1 + lvl('slots');
-  const speedMult = () => Math.pow(0.85, lvl('speed'));
-  const queueMax = () => 3 + lvl('queue');
-  const trayMax = () => 6 + lvl('counter') * 3;
-  const priceMult = () => 1 + 0.12 * lvl('price');
-  const patienceBase = () => 30 * (1 + 0.2 * lvl('decor'));
-  const spawnEvery = () => Math.max(1.2, 8 / (1 + 0.3 * lvl('ads')) / (0.6 + S.rating / 5) - Math.min(S.day * 0.1, 1.5));
-  const unlockedItems = () => Object.keys(ITEMS).filter(k => S.menu[k]);
-  const activeStations = () => Object.keys(STATIONS).filter(st => unlockedItems().some(i => ITEMS[i].station === st));
-  const fmt = n => '€' + Math.floor(n).toLocaleString('nl-NL');
-
-  function save() { try { localStorage.setItem('tijnsburger', JSON.stringify(S)); } catch {} }
-  function log(msg) {
-    const el = document.getElementById('log');
-    const d = document.createElement('div'); d.textContent = msg; el.prepend(d);
-    while (el.children.length > 30) el.lastChild.remove();
+  function moneyEl(v) {
+    const d = document.createElement('div');
+    d.dataset.v = v;
+    if (v >= 500) { d.className = 'm note n' + v; d.textContent = v / 100; }
+    else { d.className = 'm coin c' + v; d.innerHTML = v === 50 ? '50<small>ct</small>' : (v / 100) + '<small>€</small>'; }
+    return d;
   }
-  function floatText(x, y, text, bad) {
-    const d = document.createElement('div'); d.className = 'float' + (bad ? ' bad' : '');
-    d.textContent = text; d.style.left = x + 'px'; d.style.top = y + 'px';
-    document.body.appendChild(d); setTimeout(() => d.remove(), 1000);
+  function split(c) { const out = []; for (const d of DENOMS) while (c >= d) { out.push(d); c -= d; } return out; }
+
+  // ================= Geluid =================
+  let ac;
+  function tone(f, t = 0, dur = .12, type = 'square', vol = .08) {
+    if (!S.sound) return;
+    try {
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      const o = ac.createOscillator(), g = ac.createGain(), s = ac.currentTime + t;
+      o.type = type; o.frequency.setValueAtTime(f, s);
+      g.gain.setValueAtTime(vol, s); g.gain.exponentialRampToValueAtTime(.001, s + dur);
+      o.connect(g).connect(ac.destination); o.start(s); o.stop(s + dur);
+    } catch {}
+  }
+  const sfx = {
+    tap:   () => tone(660, 0, .06, 'triangle', .12),
+    coin:  () => { tone(988, 0, .08); tone(1319, .07, .15); },
+    kaching: () => { [784, 988, 1175, 1568].forEach((f, i) => tone(f, i * .07, .18, 'triangle', .14)); },
+    wrong: () => { tone(220, 0, .2, 'sawtooth', .07); tone(180, .15, .25, 'sawtooth', .07); },
+    angry: () => { tone(200, 0, .3, 'sawtooth', .08); tone(140, .25, .4, 'sawtooth', .08); },
+    hello: () => { tone(523, 0, .1, 'sine', .15); tone(784, .1, .15, 'sine', .15); },
+    buy:   () => { [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .08, .2, 'triangle', .12)); },
+  };
+
+  // ================= Effecten =================
+  function floatAt(el, text, color) {
+    const r = el.getBoundingClientRect();
+    const d = document.createElement('div'); d.className = 'float'; d.textContent = text;
+    if (color) d.style.color = color;
+    d.style.left = (r.left + r.width / 2 - 30) + 'px'; d.style.top = (r.top) + 'px';
+    document.body.appendChild(d); setTimeout(() => d.remove(), 1100);
+  }
+  function confetti(n = 18, set = ['🎉', '⭐', '✨', '🪙', '💶']) {
+    for (let i = 0; i < n; i++) {
+      const d = document.createElement('div'); d.className = 'confetti'; d.textContent = pick(set);
+      d.style.left = (Math.random() * innerWidth) + 'px'; d.style.top = (Math.random() * 120) + 'px';
+      d.style.animationDelay = (Math.random() * .3) + 's';
+      document.body.appendChild(d); setTimeout(() => d.remove(), 1800);
+    }
+  }
+  function flyToWallet(fromEl, count = 5) {
+    const a = fromEl.getBoundingClientRect(), b = $('wallet').getBoundingClientRect();
+    for (let i = 0; i < count; i++) {
+      const d = document.createElement('div'); d.className = 'fly'; d.textContent = pick(['🪙', '💶', '🪙']);
+      d.style.left = (a.left + Math.random() * a.width) + 'px'; d.style.top = (a.top + Math.random() * a.height) + 'px';
+      document.body.appendChild(d);
+      setTimeout(() => { d.style.left = (b.left + 20) + 'px'; d.style.top = b.top + 'px'; d.style.transform = 'scale(.5)'; }, 30 + i * 70);
+      setTimeout(() => d.remove(), 950 + i * 70);
+    }
+    setTimeout(() => { $('wallet').classList.remove('pop'); void $('wallet').offsetWidth; $('wallet').classList.add('pop'); sfx.coin(); }, 800);
+  }
+  function shake(el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+
+  // ================= Spelstatus =================
+  let t = 0, paused = true, spawnT = 1.5;
+  let line = [];            // wachtende klanten
+  let cur = null;           // klant aan de toonbank
+  let stage = 'none';       // none | order | pay | leave
+  let tray = [], given = [];
+  let dayStats = { served: 0, earned: 0, angry: 0 };
+
+  const patienceMax = n => 22 + n * 7 + lv('chair') * 6 + decorCount() * 1.5;
+  const spawnEvery = () => Math.max(2.5, 10 / (1 + .35 * lv('ads')) * (1.5 - S.stars * .12));
+
+  function newCustomer() {
+    const foods = myFoods();
+    const maxN = S.day <= 1 ? 2 : S.day <= 3 ? 3 : 4;
+    const n = 1 + Math.floor(Math.random() * maxN);
+    const order = []; for (let i = 0; i < n; i++) order.push(pick(foods));
+    order.sort((a, b) => foods.indexOf(a) - foods.indexOf(b));
+    return { face: pick(ANIMALS), order, pat: patienceMax(n), max: patienceMax(n) };
   }
 
-  // ---------- Klanten ----------
-  function spawnCustomer() {
-    if (queue.length >= queueMax()) return;
-    const items = unlockedItems();
-    const n = Math.min(items.length, 1 + Math.floor(Math.random() * Math.min(3, 1 + S.day / 2)));
-    const order = [];
-    for (let i = 0; i < n; i++) order.push(items[Math.floor(Math.random() * items.length)]);
-    const pat = patienceBase() + order.length * 8;
-    queue.push({ id: nextId++, face: FACES[Math.floor(Math.random() * FACES.length)], order, patience: pat, maxPat: pat });
+  function callNext() {
+    if (cur || !line.length) return;
+    cur = line.shift(); renderLine();
+    stage = 'walkin'; tray = []; given = [];
+    const c = $('customer');
+    c.style.transition = 'none'; c.style.left = '110%'; c.style.opacity = 1;
+    c.querySelector('.face').textContent = cur.face;
+    $('bubble').style.display = 'none'; $('react').textContent = '';
+    c.classList.add('walk');
+    requestAnimationFrame(() => requestAnimationFrame(() => { c.style.transition = ''; c.style.left = '38%'; }));
+    setTimeout(() => {
+      c.classList.remove('walk'); stage = 'order'; sfx.hello();
+      renderBubble(); $('bubble').style.display = 'flex'; showPanel();
+    }, 750);
+    renderTray(); $('paid').innerHTML = '';
   }
 
-  function trayHas(order) {
-    const copy = tray.slice();
-    for (const it of order) { const i = copy.indexOf(it); if (i < 0) return false; copy.splice(i, 1); }
-    return true;
+  function leave(happy) {
+    stage = 'leave';
+    const c = $('customer');
+    $('bubble').style.display = 'none';
+    react(happy ? pick(['😍', '❤️', '😋', '🤩']) : '💢');
+    c.classList.add('walk');
+    setTimeout(() => { c.style.left = '-30%'; }, 400);
+    setTimeout(() => {
+      c.classList.remove('walk'); c.style.opacity = 0; cur = null; stage = 'none';
+      tray = []; given = []; renderTray(); $('paid').innerHTML = ''; showPanel();
+    }, 1150);
   }
 
-  function serve(c, el) {
-    if (!trayHas(c.order)) return false;
-    for (const it of c.order) tray.splice(tray.indexOf(it), 1);
-    const base = c.order.reduce((s, it) => s + ITEMS[it].price, 0) * priceMult();
-    const frac = c.patience / c.maxPat;
-    const tip = Math.round(base * 0.4 * frac);
-    S.money += base + tip; S.dayStats.earned += base; S.dayStats.tips += tip; S.dayStats.served++;
-    S.totalServed++;
-    S.rating = Math.min(5, S.rating + 0.03 + 0.05 * frac);
-    queue = queue.filter(q => q !== c);
-    if (el) { const r = el.getBoundingClientRect(); floatText(r.left + 20, r.top, '+' + fmt(base + tip)); }
-    return true;
+  function react(e) { const r = $('react'); r.textContent = e; r.classList.remove('show'); void r.offsetWidth; r.classList.add('show'); }
+
+  // ================= Bestellen =================
+  function addFood(k, btn) {
+    if (stage !== 'order' || tray.length >= 8) { shake(btn); return; }
+    tray.push(k); sfx.tap(); renderTray(); renderBubble();
+  }
+  function sameOrder(a, b) { return a.length === b.length && [...a].sort().join() === [...b].sort().join(); }
+
+  function serve() {
+    if (stage !== 'order' || !tray.length) return;
+    if (!sameOrder(tray, cur.order)) {
+      sfx.wrong(); react('😕'); shake($('tray')); cur.pat -= cur.max * .12; return;
+    }
+    // klant betaalt
+    stage = 'pay';
+    cur.total = cur.order.reduce((s, k) => s + FOODS[k].price, 0);
+    cur.paid = payment(cur.total);
+    react('👍'); $('bubble').style.display = 'none';
+    const p = $('paid'); p.innerHTML = '';
+    split(cur.paid).forEach((v, i) => setTimeout(() => { p.appendChild(moneyEl(v)); sfx.tap(); }, 150 + i * 180));
+    showPanel();
   }
 
-  // ---------- Koken ----------
-  function startCook(item) {
-    const st = ITEMS[item].station;
-    cooking[st] = cooking[st] || [];
-    if (cooking[st].length >= slotsPer()) return false;
-    if (tray.length + totalCooking() >= trayMax()) return false;
-    const dur = ITEMS[item].time * speedMult();
-    cooking[st].push({ item, t: dur, dur });
-    return true;
-  }
-  const totalCooking = () => Object.values(cooking).reduce((s, a) => s + a.length, 0);
-
-  function neededItems() {
-    // Wat de rij nodig heeft min wat al klaar of in de maak is
-    const need = {};
-    for (const c of queue) for (const it of c.order) need[it] = (need[it] || 0) + 1;
-    for (const it of tray) if (need[it]) need[it]--;
-    for (const arr of Object.values(cooking)) for (const c of arr) if (need[c.item]) need[c.item]--;
-    return need;
+  function payment(T) {
+    const opts = [];
+    for (const step of [100, 500, 1000, 2000, 5000]) {
+      const v = Math.ceil(T / step) * step;
+      if (v > T && v - T <= 2000 && !opts.includes(v)) opts.push(v);
+    }
+    if (Math.random() < .2 || !opts.length) return T; // gepast
+    return pick(opts);
   }
 
-  // ---------- Game loop ----------
+  // ================= Wisselgeld =================
+  const givenSum = () => given.reduce((s, v) => s + v, 0);
+  function giveMoney(v) { if (stage !== 'pay') return; given.push(v); sfx.tap(); renderPay(); }
+  function takeBack(i) { given.splice(i, 1); sfx.tap(); renderPay(); }
+
+  function finishPay() {
+    const need = cur.paid - cur.total;
+    if (givenSum() !== need) { sfx.wrong(); shake($('given')); react(givenSum() > need ? '🤑' : '🤨'); return; }
+    // gelukt!
+    const frac = Math.max(0, cur.pat / cur.max);
+    let tip = frac > .75 ? 100 : frac > .4 ? 50 : 0;
+    if (tip) tip += lv('tipjar') * 50;
+    const earn = cur.total + tip;
+    S.money += earn; S.served++; dayStats.served++; dayStats.earned += earn;
+    S.stars = Math.min(5, S.stars + .08 + frac * .1);
+    sfx.kaching(); confetti(14);
+    flyToWallet($('paid'), 6);
+    floatAt($('customer'), '+' + fmt(earn));
+    if (tip) setTimeout(() => floatAt($('wallet'), '🫙 +' + fmt(tip), '#e67700'), 400);
+    save(); updateTop();
+    leave(true);
+  }
+
+  // ================= Render =================
+  function updateTop() {
+    $('money').textContent = fmt(S.money);
+    $('stars').textContent = S.stars.toFixed(1);
+  }
+  function renderBoard() {
+    $('board').innerHTML = myFoods().map(k => `<div><span>${FOODS[k].e}</span><b>${fmt(FOODS[k].price)}</b></div>`).join('');
+  }
+  function renderDecor() {
+    $('decorLayer').innerHTML = Object.keys(S.decor).map(k => {
+      const d = DECOR[k]; return `<div class="decor" style="left:${d.x}%;top:${d.y}%">${d.e}</div>`;
+    }).join('');
+  }
+  function renderLine() { $('line').innerHTML = line.map(c => `<span>${c.face}</span>`).join(''); }
+  function renderTray() {
+    const el = $('tray');
+    el.innerHTML = tray.length ? tray.map((k, i) => `<span data-i="${i}">${FOODS[k].e}</span>`).join('') : '<span class="empty">🍽️</span>';
+    el.querySelectorAll('[data-i]').forEach(s => s.onclick = () => {
+      if (stage !== 'order') return; tray.splice(+s.dataset.i, 1); sfx.tap(); renderTray(); renderBubble();
+    });
+    $('serveBtn').disabled = !tray.length || stage !== 'order';
+    $('serveBtn').classList.toggle('pulse', !!cur && stage === 'order' && sameOrder(tray, cur.order));
+  }
+  function renderBubble() {
+    if (!cur) return;
+    const left = tray.slice();
+    $('bubble').innerHTML = cur.order.map(k => {
+      const i = left.indexOf(k); const got = i >= 0; if (got) left.splice(i, 1);
+      return `<span class="${got ? 'got' : ''}">${FOODS[k].e}</span>`;
+    }).join('');
+  }
+  function renderFoods() {
+    const el = $('foods'); el.innerHTML = '';
+    for (const k of myFoods()) {
+      const b = document.createElement('button'); b.className = 'food';
+      b.innerHTML = `<span class="e">${FOODS[k].e}</span><span class="tag">${fmt(FOODS[k].price)}</span>`;
+      b.onclick = () => addFood(k, b);
+      el.appendChild(b);
+    }
+  }
+  function renderDrawer() {
+    const el = $('drawer'); el.innerHTML = '';
+    for (const v of [...DENOMS].reverse()) { const m = moneyEl(v); m.onclick = () => giveMoney(v); el.appendChild(m); }
+  }
+  function renderPay() {
+    if (!cur || stage !== 'pay') return;
+    const need = cur.paid - cur.total, g = givenSum();
+    const items = cur.order.map(k => `<span class="e">${FOODS[k].e}</span>`).join('');
+    const exact = need === 0;
+    $('bill').innerHTML = `
+      <div class="receipt">${items}</div><span class="eq">=</span><span class="tot">${fmt(cur.total)}</span>
+      <span class="eq">·</span><span>🐾💵 ${fmt(cur.paid)}</span>
+      ${exact ? `<div class="change ok">👌 ${fmt(0)}</div>` :
+        `<div class="change ${g === need ? 'ok' : g > need ? 'over' : ''}">🔙 ${fmt(need)} <span style="opacity:.5">|</span> ✋ ${fmt(g)} ${g === need ? '✅' : g > need ? '⛔' : ''}</div>`}`;
+    const gEl = $('given'); gEl.innerHTML = '';
+    given.forEach((v, i) => { const m = moneyEl(v); m.style.cursor = 'pointer'; m.onclick = () => takeBack(i); gEl.appendChild(m); });
+    gEl.style.display = exact ? 'none' : 'flex';
+    $('drawer').style.display = exact ? 'none' : 'flex';
+    $('payBtn').classList.toggle('pulse', g === need);
+  }
+  function showPanel() {
+    const paying = stage === 'pay';
+    $('order').style.display = paying ? 'none' : 'block';
+    $('pay').style.display = paying ? 'block' : 'none';
+    if (paying) renderPay();
+    renderTray();
+  }
+
+  // ================= Loop =================
   let last = performance.now();
-  function tick(now) {
-    const dt = Math.min(0.1, (now - last) / 1000); last = now;
-    if (!paused) update(dt);
-    render();
-    requestAnimationFrame(tick);
+  function loop(now) {
+    const dt = Math.min(.1, (now - last) / 1000); last = now;
+    if (!paused) step(dt);
+    // zon
+    const f = Math.min(1, t / DAY_LEN);
+    document.querySelector('#sunbar .fill').style.width = f * 100 + '%';
+    const sun = document.querySelector('#sunbar .sun'); sun.style.left = f * 100 + '%';
+    sun.textContent = f >= 1 ? '🌙' : f > .7 ? '🌇' : '☀️';
+    // geduld
+    if (cur) {
+      const p = Math.max(0, cur.pat / cur.max);
+      const bar = $('patience').firstElementChild;
+      bar.style.width = p * 100 + '%';
+      bar.style.background = p > .5 ? 'var(--green)' : p > .25 ? 'var(--yellow)' : 'var(--red)';
+    }
+    requestAnimationFrame(loop);
   }
-
-  function update(dt) {
-    S.t += dt;
-    // klanten
-    if (S.t < DAY_LEN) {
-      spawnTimer -= dt;
-      if (spawnTimer <= 0) { spawnCustomer(); spawnTimer = spawnEvery() * (0.6 + Math.random() * 0.8); }
+  function step(dt) {
+    t += dt;
+    if (t < DAY_LEN) {
+      spawnT -= dt;
+      if (spawnT <= 0 && line.length < 4) { line.push(newCustomer()); renderLine(); spawnT = spawnEvery() * (.7 + Math.random() * .6); }
     }
-    for (const c of queue.slice()) {
-      c.patience -= dt;
-      if (c.patience <= 0) {
-        queue = queue.filter(q => q !== c);
-        S.dayStats.lost++; S.rating = Math.max(1, S.rating - 0.25);
-        log(`${c.face} liep boos weg 😠`);
+    if (!cur && line.length) callNext();
+    if (cur && stage === 'order') {
+      cur.pat -= dt;
+      if (cur.pat < cur.max * .25 && $('react').textContent !== '😤') react('😤');
+      if (cur.pat <= 0) {
+        sfx.angry(); S.stars = Math.max(1, S.stars - .35); dayStats.angry++; updateTop(); leave(false);
       }
     }
-    // koken
-    for (const st in cooking) {
-      for (const c of cooking[st].slice()) {
-        c.t -= dt;
-        if (c.t <= 0) { cooking[st].splice(cooking[st].indexOf(c), 1); tray.push(c.item); }
-      }
-    }
-    // koks
-    if (staffN('cook') > 0) {
-      cookTimer -= dt;
-      if (cookTimer <= 0) {
-        cookTimer = 1.6 / staffN('cook');
-        const need = neededItems();
-        for (const it in need) if (need[it] > 0 && startCook(it)) break;
-      }
-    }
-    // kassières
-    if (staffN('cashier') > 0) {
-      cashTimer -= dt;
-      if (cashTimer <= 0) {
-        cashTimer = 2.2 / staffN('cashier');
-        const c = queue.find(q => trayHas(q.order));
-        if (c) serve(c, document.querySelector(`[data-cid="${c.id}"]`));
-      }
-    }
-    // einde dag
-    if (S.t >= DAY_LEN && queue.length === 0) endDay();
+    if (t >= DAY_LEN && !cur && !line.length) endDay();
   }
 
   function endDay() {
     paused = true;
-    const wages = Object.keys(STAFF).reduce((s, k) => s + staffN(k) * STAFF[k].wage, 0);
-    const rent = 10 + S.day * 5;
-    S.money -= wages + rent;
-    const ds = S.dayStats;
-    document.getElementById('overlay').innerHTML = `
-      <div class="overlay"><div class="modal">
-        <h2>🌙 Einde van dag ${S.day}</h2>
-        <table>
-          <tr><td>Klanten geholpen</td><td>${ds.served}</td></tr>
-          <tr><td>Klanten weggelopen</td><td>${ds.lost}</td></tr>
-          <tr><td>Omzet</td><td>${fmt(ds.earned)}</td></tr>
-          <tr><td>Fooien</td><td>${fmt(ds.tips)}</td></tr>
-          <tr><td>Salarissen</td><td style="color:var(--bad)">-${fmt(wages)}</td></tr>
-          <tr><td>Huur</td><td style="color:var(--bad)">-${fmt(rent)}</td></tr>
-          <tr><td>Saldo</td><td>${fmt(S.money)}</td></tr>
-          <tr><td>Beoordeling</td><td>⭐ ${S.rating.toFixed(1)}</td></tr>
-        </table>
-        <button id="btnNext">Volgende dag ☀️</button>
-      </div></div>`;
-    document.getElementById('btnNext').onclick = () => {
-      S.day++; S.t = 0; S.dayStats = { earned: 0, tips: 0, served: 0, lost: 0 };
-      tray = []; cooking = {}; spawnTimer = 2;
-      document.getElementById('overlay').innerHTML = '';
-      paused = false; save(); renderShop();
-    };
-    save();
+    const st = Math.round(S.stars);
+    overlay(`
+      <h2>🌙 ${S.day}</h2>
+      <div class="stat"><div>😋 ${dayStats.served}</div><div>💶 ${fmt(dayStats.earned)}</div>${dayStats.angry ? `<div>💢 ${dayStats.angry}</div>` : ''}</div>
+      <div style="font-size:54px">${'⭐'.repeat(st)}<span style="opacity:.25">${'⭐'.repeat(5 - st)}</span></div>
+      <div class="actions"><button class="big go" id="nextBtn">☀️ ▶</button><button class="big" style="background:var(--orange)" id="endShop">🛒</button></div>`);
+    confetti(30);
+    S.day++; save();
+    $('nextBtn').onclick = startDay;
+    $('endShop').onclick = () => openShop(true);
+  }
+  function startDay() {
+    closeOverlay();
+    t = 0; spawnT = 1.5; line = []; dayStats = { served: 0, earned: 0, angry: 0 };
+    paused = false; last = performance.now(); sfx.hello();
   }
 
-  // ---------- Render ----------
-  let lastShopKey = '';
-  function render() {
-    document.getElementById('sMoney').textContent = fmt(S.money);
-    document.getElementById('sDay').textContent = 'Dag ' + S.day;
-    document.getElementById('sTime').textContent = S.t < DAY_LEN ? '⏱ ' + Math.ceil(DAY_LEN - S.t) + 's' : '🚪 Sluiten...';
-    document.getElementById('sRating').textContent = '⭐ ' + S.rating.toFixed(1);
-    document.getElementById('sServed').textContent = '😋 ' + S.totalServed;
-
-    // rij
-    const qEl = document.getElementById('queue');
-    const ids = queue.map(c => c.id).join(',');
-    if (qEl.dataset.ids !== ids) {
-      qEl.dataset.ids = ids;
-      qEl.innerHTML = '';
-      for (const c of queue) {
-        const d = document.createElement('div'); d.className = 'cust'; d.dataset.cid = c.id;
-        d.innerHTML = `<div class="order"></div><div class="face">${c.face}</div><div class="pbar"><div></div></div>`;
-        d.onclick = () => { if (!serve(c, d)) { const r = d.getBoundingClientRect(); floatText(r.left + 10, r.top, 'Nog niet klaar!', true); } };
-        qEl.appendChild(d);
-      }
-      if (!queue.length) qEl.innerHTML = `<div style="color:var(--muted);padding:20px">${S.t < DAY_LEN ? 'Wachten op klanten...' : 'Alle klanten zijn weg.'}</div>`;
-    }
-    const trayCopy = tray.slice();
-    for (const c of queue) {
-      const d = qEl.querySelector(`[data-cid="${c.id}"]`); if (!d) continue;
-      const frac = Math.max(0, c.patience / c.maxPat);
-      const bar = d.querySelector('.pbar div');
-      bar.style.width = (frac * 100) + '%';
-      bar.style.background = frac > .5 ? 'var(--good)' : frac > .25 ? 'var(--accent2)' : 'var(--bad)';
-      const ready = trayHas(c.order);
-      d.classList.toggle('ready', ready);
-      const tc = trayCopy.slice();
-      const html = c.order.map(it => {
-        const i = tc.indexOf(it); const have = i >= 0; if (have) tc.splice(i, 1);
-        return `<span class="${have ? 'done' : ''}">${ITEMS[it].ico}</span>`;
-      }).join('');
-      const o = d.querySelector('.order'); if (o.innerHTML !== html) o.innerHTML = html;
-      d.querySelector('.face').textContent = frac < .25 ? '😤' : c.face;
-    }
-
-    // uitgifte
-    const cEl = document.getElementById('counter');
-    const tKey = tray.join(',') + '|' + trayMax();
-    if (cEl.dataset.k !== tKey) {
-      cEl.dataset.k = tKey;
-      cEl.innerHTML = `<span class="lbl">Uitgifte (${tray.length}/${trayMax()}):</span>` +
-        tray.map((it, i) => `<span class="item" title="Klik om weg te gooien" data-i="${i}" style="cursor:pointer">${ITEMS[it].ico}</span>`).join('');
-      cEl.querySelectorAll('.item').forEach(el => el.onclick = () => { tray.splice(+el.dataset.i, 1); });
-    }
-
-    // keuken
-    const kEl = document.getElementById('kitchen');
-    const stKey = activeStations().join(',') + '|' + unlockedItems().join(',') + '|' + slotsPer();
-    if (kEl.dataset.k !== stKey) {
-      kEl.dataset.k = stKey;
-      kEl.innerHTML = '';
-      for (const st of activeStations()) {
-        const d = document.createElement('div'); d.className = 'station'; d.dataset.st = st;
-        const btns = unlockedItems().filter(i => ITEMS[i].station === st)
-          .map(i => `<button data-item="${i}" style="margin:2px">${ITEMS[i].ico} ${ITEMS[i].name}</button>`).join('');
-        d.innerHTML = `<div class="big">${STATIONS[st].ico}</div><div class="name">${STATIONS[st].name}</div>
-          <div class="slots">${'<div class="slot"><div class="fill"></div><span></span></div>'.repeat(slotsPer())}</div>${btns}`;
-        d.querySelectorAll('button').forEach(b => b.onclick = () => {
-          if (!startCook(b.dataset.item)) { const r = b.getBoundingClientRect(); floatText(r.left, r.top, 'Vol!', true); }
-        });
-        kEl.appendChild(d);
-      }
-    }
-    for (const st of activeStations()) {
-      const d = kEl.querySelector(`[data-st="${st}"]`); if (!d) continue;
-      const arr = cooking[st] || [];
-      d.querySelectorAll('.slot').forEach((s, i) => {
-        const c = arr[i];
-        s.querySelector('.fill').style.height = c ? ((1 - c.t / c.dur) * 100) + '%' : '0';
-        s.querySelector('span').textContent = c ? ITEMS[c.item].ico : '';
-      });
-      const full = arr.length >= slotsPer() || tray.length + totalCooking() >= trayMax();
-      d.querySelectorAll('button').forEach(b => b.disabled = full);
-    }
-    const si = [];
-    if (staffN('cook')) si.push(`👨‍🍳 ${staffN('cook')} kok(s) aan het werk`);
-    if (staffN('cashier')) si.push(`💁 ${staffN('cashier')} kassière(s) aan het werk`);
-    document.getElementById('staffInfo').textContent = si.join(' · ');
-
-    // winkel: alleen opnieuw tekenen als geld-status verandert
-    const key = tab + '|' + Math.floor(S.money) + JSON.stringify(S.upg) + JSON.stringify(S.staff) + JSON.stringify(S.menu);
-    if (key !== lastShopKey) { lastShopKey = key; renderShop(); }
+  // ================= Overlays & winkel =================
+  function overlay(html) {
+    $('overlay').innerHTML = `<div class="overlay"><div class="modal">${html}</div></div>`;
   }
+  function closeOverlay() { $('overlay').innerHTML = ''; }
 
-  function shopRow(ico, title, desc, cost, owned, maxed, onBuy) {
-    const row = document.createElement('div'); row.className = 'shop-item';
-    row.innerHTML = `<div class="ico">${ico}</div><div class="txt"><b>${title}</b><small>${desc}</small>${owned}</div>`;
-    const b = document.createElement('button');
-    b.textContent = maxed ? 'Max' : fmt(cost);
-    b.disabled = maxed || S.money < cost;
-    b.onclick = () => { if (S.money >= cost && !maxed) { S.money -= cost; onBuy(); save(); } };
-    row.appendChild(b);
-    return row;
+  let shopTab = 'food', shopFromEnd = false, pausedBefore = false;
+  function openShop(fromEnd) {
+    shopFromEnd = !!fromEnd;
+    if (!fromEnd) { pausedBefore = paused; paused = true; }
+    renderShop();
   }
-
   function renderShop() {
-    const el = document.getElementById('shop'); el.innerHTML = '';
-    if (tab === 'upg') {
-      for (const k in UPGRADES) {
-        const u = UPGRADES[k], n = lvl(k);
-        el.appendChild(shopRow(u.ico, u.name, u.desc, upCost(u, n), `<br><small>Niveau ${n}/${u.max}</small>`, n >= u.max,
-          () => { S.upg[k] = n + 1; log(`${u.ico} ${u.name} → niveau ${n + 1}`); }));
-      }
-    } else if (tab === 'menu') {
-      for (const k in ITEMS) {
-        const it = ITEMS[k];
-        const owned = !!S.menu[k];
-        el.appendChild(shopRow(it.ico, it.name, `${STATIONS[it.station].name} · verkoopprijs ${fmt(it.price * priceMult())}`,
-          it.cost, owned ? '<br><small style="color:var(--good)">✔ Op het menu</small>' : '', owned,
-          () => { S.menu[k] = true; log(`${it.ico} ${it.name} staat nu op het menu!`); }));
-      }
+    overlay(`
+      <button class="round close" id="closeShop">✖️</button>
+      <h2>🛒</h2>
+      <div class="pill" style="display:inline-flex;margin-bottom:10px"><span class="i">💰</span>${fmt(S.money)}</div>
+      <div class="stabs">
+        <button data-t="food" class="${shopTab === 'food' ? 'on' : ''}">🍔</button>
+        <button data-t="decor" class="${shopTab === 'decor' ? 'on' : ''}">🎨</button>
+        <button data-t="boost" class="${shopTab === 'boost' ? 'on' : ''}">⚡</button>
+      </div>
+      <div class="grid" id="shopGrid"></div>`);
+    const g = $('shopGrid');
+    const card = (e, eff, cost, owned, onBuy) => {
+      const b = document.createElement('button');
+      b.className = 'card' + (owned ? ' owned' : S.money < cost ? ' cant' : '');
+      b.innerHTML = `<span class="e">${e}</span><span class="eff">${eff}</span><span class="price">${owned ? '✔️' : fmt(cost)}</span>`;
+      b.onclick = () => {
+        if (owned) return;
+        if (S.money < cost) { sfx.wrong(); shake(b); return; }
+        S.money -= cost; onBuy(); sfx.buy(); confetti(20, [e, '✨', '🎉']); save(); updateTop();
+        renderBoard(); renderFoods(); renderDecor(); renderShop();
+      };
+      g.appendChild(b);
+    };
+    if (shopTab === 'food') {
+      for (const k in FOODS) { const f = FOODS[k]; if (f.cost) card(f.e, `<span class="tag">${fmt(f.price)}</span>`, f.cost, !!S.foods[k], () => S.foods[k] = 1); }
+    } else if (shopTab === 'decor') {
+      for (const k in DECOR) { const d = DECOR[k]; card(d.e, '⏳⬆️', d.cost, !!S.decor[k], () => S.decor[k] = 1); }
     } else {
-      for (const k in STAFF) {
-        const s = STAFF[k], n = staffN(k);
-        el.appendChild(shopRow(s.ico, s.name, `${s.desc} · salaris ${fmt(s.wage)}/dag`, upCost(s, n),
-          `<br><small>In dienst: ${n}/${s.max}</small>`, n >= s.max,
-          () => { S.staff[k] = n + 1; log(`${s.ico} Nieuwe ${s.name.toLowerCase()} aangenomen!`); }));
+      for (const k in BOOSTS) {
+        const b = BOOSTS[k], n = lv(k), max = n >= b.costs.length;
+        const dots = `<span class="dots">${b.costs.map((_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</span>`;
+        card(b.e, b.eff + ' ' + dots, max ? 0 : b.costs[n], max, () => S.boosts[k] = n + 1);
       }
     }
+    document.querySelectorAll('.stabs button').forEach(b => b.onclick = () => { shopTab = b.dataset.t; sfx.tap(); renderShop(); });
+    $('closeShop').onclick = () => {
+      sfx.tap();
+      if (shopFromEnd) { endDayAgain(); return; }
+      closeOverlay(); paused = pausedBefore; last = performance.now();
+    };
+  }
+  function endDayAgain() {
+    overlay(`<h2>☀️ ${S.day}</h2><div style="font-size:80px">🍔🍟🥤</div>
+      <div class="actions"><button class="big go" id="nextBtn">▶</button><button class="big" style="background:var(--orange)" id="endShop">🛒</button></div>`);
+    $('nextBtn').onclick = startDay; $('endShop').onclick = () => openShop(true);
   }
 
-  document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
-    tab = b.dataset.tab;
-    document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
-    lastShopKey = '';
-  });
-  document.getElementById('btnReset').onclick = () => {
-    if (confirm('Weet je zeker dat je opnieuw wilt beginnen? Je voortgang gaat verloren.')) {
-      S = fresh(); queue = []; tray = []; cooking = {}; save(); lastShopKey = '';
-      document.querySelectorAll('[data-k]').forEach(e => e.dataset.k = '');
-    }
-  };
-  setInterval(save, 5000);
-
-  // Welkomstscherm
-  paused = true;
-  document.getElementById('overlay').innerHTML = `
-    <div class="overlay"><div class="modal">
-      <div style="font-size:60px">🍔</div>
+  function welcome() {
+    overlay(`
+      <div style="font-size:90px;line-height:1">🍔</div>
       <h2>Tijn's Burger Place</h2>
-      <p style="text-align:left;font-size:14px;line-height:1.5">
-        Welkom, baas! Bouw jouw burgerzaak uit tot een echt imperium.<br><br>
-        🔥 Klik op de knoppen in de <b>keuken</b> om eten te maken.<br>
-        😋 Klik op een <b>klant</b> (groene rand) om te serveren.<br>
-        ⭐ Snel serveren = meer fooi en betere beoordeling.<br>
-        🛒 Koop <b>upgrades</b>, nieuwe <b>menu-items</b> en <b>personeel</b>.<br>
-        🌙 Aan het eind van de dag betaal je huur en salarissen.
-      </p>
-      <button id="btnStart">${S.day > 1 || S.totalServed ? 'Verder spelen (dag ' + S.day + ')' : 'Open de zaak!'}</button>
-    </div></div>`;
-  document.getElementById('btnStart').onclick = () => { document.getElementById('overlay').innerHTML = ''; paused = false; last = performance.now(); };
+      <div class="how">
+        <div>🐻💭🍔<small>Kijk wat de klant wil</small></div>
+        <div>👆🍟🥤<small>Tik het eten aan</small></div>
+        <div>💶➡️🪙<small>Geef wisselgeld terug</small></div>
+        <div>🛒🎨<small>Koop leuke dingen</small></div>
+      </div>
+      <div class="actions"><button class="big go" id="startBtn">▶ ${S.day > 1 ? '☀️ ' + S.day : ''}</button></div>
+      ${S.served ? '<div style="margin-top:14px"><button class="round" id="resetBtn" style="font-size:22px;width:44px;height:44px">🔄</button></div>' : ''}`);
+    $('startBtn').onclick = () => { sfx.hello(); startDay(); };
+    const r = $('resetBtn');
+    if (r) r.onclick = () => {
+      overlay(`<div style="font-size:70px">🔄❓</div><div class="actions">
+        <button class="big no" id="rNo">✖️</button><button class="big" style="background:var(--red)" id="rYes">✔️</button></div>`);
+      $('rNo').onclick = welcome;
+      $('rYes').onclick = () => { const snd = S.sound; S = fresh(); S.sound = snd; save(); updateTop(); renderBoard(); renderFoods(); renderDecor(); welcome(); };
+    };
+  }
 
-  renderShop();
-  requestAnimationFrame(tick);
+  // ================= Start =================
+  $('serveBtn').onclick = serve;
+  $('clearBtn').onclick = () => { if (stage === 'order' && tray.length) { tray = []; sfx.tap(); renderTray(); renderBubble(); } };
+  $('payBtn').onclick = finishPay;
+  $('shopBtn').onclick = () => { sfx.tap(); openShop(false); };
+  $('soundBtn').onclick = () => { S.sound = !S.sound; $('soundBtn').textContent = S.sound ? '🔊' : '🔇'; save(); sfx.tap(); };
+  $('soundBtn').textContent = S.sound ? '🔊' : '🔇';
+
+  updateTop(); renderBoard(); renderFoods(); renderDecor(); renderDrawer(); renderTray(); showPanel();
+  welcome();
+  requestAnimationFrame(loop);
 })();
 </script>
 </body>
