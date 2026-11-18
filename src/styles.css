@@ -71,6 +71,7 @@ svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
 .ptag .ic { width: 22px; height: 22px; }
 .ptag.cant { background: #adb5bd; box-shadow: 0 3px 0 #868e96; }
 .char { width: 74px; height: 138px; pointer-events: none; }
+.char.boss .body svg.art { transform: scale(1.14); transform-origin: 50% 100%; }
 .char .body { width: 100%; height: 100%; animation: breathe 2.4s ease-in-out infinite; transform-origin: 50% 100%; }
 .char.walk .body { animation: hop .3s ease-in-out infinite; }
 .char.walk .fl { animation: stepL .3s infinite; } .char.walk .fr { animation: stepR .3s infinite; }
@@ -89,9 +90,17 @@ svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
 .chair { width: 72px; height: 69px; pointer-events: none; }
 .onTable { position: absolute; left: 50%; top: 6px; transform: translateX(-50%); display: flex; }
 .onTable .ic { width: 34px; height: 34px; margin: 0 -3px; animation: drop .3s; transition: transform .4s; }
-.coins { width: 96px; height: 80px; cursor: pointer; display: flex; flex-direction: column; align-items: center; animation: popin .4s, bounce 1s .4s ease-in-out infinite; }
-.coins .pile { width: 64px; height: 50px; }
-.coins .amt { background: #fff; color: var(--green-d); border-radius: 99px; padding: 0 10px; font-size: 20px; box-shadow: 0 3px 0 #0002; margin-top: -8px; }
+.coins { width: 116px; cursor: pointer; transform: translateY(-100%); }
+.coinsIn { display: flex; flex-direction: column; align-items: center; transform-origin: 50% 100%; animation: popin .4s, bounce 1s .4s ease-in-out infinite; }
+.coins .pile { width: 64px; height: 50px; margin-top: -6px; }
+.bon { width: 112px; padding: 6px 8px 12px; background: #fff; color: var(--ink); font-size: 16px; line-height: 1; font-variant-numeric: tabular-nums;
+  box-shadow: 0 4px 0 #0002; border-radius: 6px 6px 0 0;
+  -webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - 7px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 12px 7px repeat-x;
+          mask: linear-gradient(#000 0 0) top / 100% calc(100% - 7px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 12px 7px repeat-x; }
+.bon .row { display: flex; align-items: center; justify-content: space-between; height: 24px; }
+.bon .row .ic { width: 24px; height: 24px; }
+.bon .tot { border-top: 2px dashed #c9a77a; margin-top: 3px; padding-top: 3px; color: var(--green-d); font-size: 18px; }
+.bon .tip { color: #d6336c; font-size: 15px; } .bon .tip .ic { width: 18px; height: 18px; margin-left: 3px; }
 .zone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
   background: repeating-linear-gradient(45deg, #3b2a1fd9 0 22px, #2c1f17d9 22px 44px); border: 4px dashed #ffd23f; border-radius: 14px; }
 .zone .ic { width: 64px; height: 64px; }

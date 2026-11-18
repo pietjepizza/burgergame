@@ -77,7 +77,7 @@ export function update(dt) {
       if (c.eat <= 0) {
         const total = c.order.reduce((s, k) => s + FOODS[k].price, 0);
         const frac = c.pat / c.max, tip = frac > .6 ? 100 : frac > .3 ? 50 : 0;
-        c.table.coins = total + tip; c.table.dishes = []; renderTable(c.table);
+        c.table.coins = total + tip; c.table.bill = { items: c.order.slice(), tip }; c.table.dishes = []; renderTable(c.table);
         S.served++; S.stars = Math.min(5, S.stars + .06); updateTop(); sfx.ding();
         leave(c, true);
       }
@@ -174,7 +174,13 @@ export function collect(t, auto) {
   if (!t.coins) return;
   const v = t.coins; t.coins = 0;
   S.money += v; save();
-  if (t.coinEl) { flyToWallet(t.coinEl, 6); floatAt(t.coinEl, '+' + fmt(v)); }
+  const tip = (t.bill && t.bill.tip) || 0;
+  if (t.coinEl) {
+    flyToWallet(t.coinEl, 6);
+    floatAt(t.coinEl, '+' + fmt(v - tip));
+    if (tip) { const r = t.coinEl.getBoundingClientRect(), spot = { getBoundingClientRect: () => r }; setTimeout(() => floatAt(spot, '♥ +' + fmt(tip)), 350); }
+  }
+  t.bill = null;
   sfx.kaching();
   renderTable(t); updateTop();
 }

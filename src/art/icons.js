@@ -1,4 +1,4 @@
-import { animalSVG } from './animals.js';
+import { animalSVG, tijnLook } from './animals.js';
 import { O, shine, svg } from './svg.js';
 
 export const ICONS = {
@@ -62,6 +62,7 @@ Object.assign(ICONS, {
   rotate: () => svg(`<rect x="30" y="12" width="40" height="70" rx="8" fill="#fff"/><path d="M14 64 A40 40 0 0 0 76 90" fill="none" stroke="#fff" stroke-width="7"/><path d="M70 80 L82 92 L66 96 Z" fill="#fff"/>`),
   tap: () => svg(`<path d="M40 92 Q28 72 28 60 Q28 52 36 54 L42 62 V24 Q42 16 49 16 Q56 16 56 24 V50 Q70 46 74 54 Q86 54 86 64 Q86 82 74 92 Z" fill="#ffd0a8"/><path d="M30 18 L22 10 M49 6 V-2 M68 18 L76 10" stroke-width="4"/>`),
   chef: () => animalSVG({ kind: 'bear', shirt: '#fff', role: 'cook', acc: 'none', blink: 0 }, 'happy'),
+  tijn: () => animalSVG(tijnLook(), 'happy'),
   waiterIc: () => animalSVG({ kind: 'cat', shirt: '#2b2d42', role: 'waiter', acc: 'none', blink: 0 }, 'happy'),
   cashierIc: () => animalSVG({ kind: 'panda', shirt: '#2ec27e', role: 'cashier', acc: 'cap', cap: '#ef476f', blink: 0 }, 'happy'),
 });

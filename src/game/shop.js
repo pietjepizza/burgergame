@@ -82,7 +82,7 @@ export function help() {
   const floaters = foods.map((k, i) =>
     `<div class="floater" style="left:${(i * 10 + 3) % 100}%;--d:${(i * 1.7) % 9}s;--t:${9 + (i % 4) * 2}s;--s:${0.7 + (i % 3) * 0.25}">${art(k)}</div>`).join('');
   const crowdLooks = [
-    art('chef'),
+    art('tijn'),
     animalSVG({ kind: 'rabbit', shirt: '#ef476f', acc: 'bow', blink: 1 }, 'happy'),
     art('waiterIc'),
     animalSVG({ kind: 'frog', shirt: '#ffd23f', acc: 'none', blink: 2 }, 'love'),
@@ -103,7 +103,7 @@ export function help() {
         </div>
         <div class="steps">
           ${step(0, half(animalSVG(cust, 'happy')) + ic('table'), 'Klanten gaan zitten')}
-          ${step(1, half(art('chef')) + ic('grill'), 'Koks maken het eten')}
+          ${step(1, half(art('tijn')) + ic('grill'), 'Tijn en de koks koken')}
           ${step(2, half(art('waiterIc')) + ic('burger'), 'Obers brengen het')}
           ${step(3, ic('tap') + ic('pile'), 'Tik op het geld')}
           ${step(4, `<div class="ic cartbubble">${art('cart')}</div>` + ic('house'), 'Koop mensen en meer')}

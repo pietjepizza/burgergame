@@ -14,11 +14,15 @@ export const KINDS = {
   tiger:  { skin: '#f7931e', snout: '#fff3e0', ear: 'cat', inner: '#fff3e0', stripes: 1, whisk: 1 },
   dog:    { skin: '#e0b07a', snout: '#fff1de', ear: 'floppy', earC: '#8b5a2b' },
 };
+// Tijn: de baas van het restaurant (een mens, geen dier). Pas hier zijn uiterlijk aan.
+export const TIJN = { skin: '#f6cba6', hair: '#7a4a24', freckles: true, ear: 'human', human: true };
+export const tijnLook = (mood = 'happy') => ({ kind: 'tijn', shirt: '#ffffff', role: 'cook', name: 'TIJN', acc: 'none', blink: 0, mood });
+
 export const SHIRTS = ['#3a86ff', '#ef476f', '#2ec27e', '#9b5de5', '#ff8c1a', '#00b4d8', '#ffd23f', '#f15bb5'];
 export const ACCS = ['none', 'none', 'bow', 'glasses', 'cap', 'none'];
 
 export function animalSVG(c, mood = 'ok') {
-  const k = KINDS[c.kind];
+  const k = c.kind === 'tijn' ? TIJN : KINDS[c.kind];
   const frog = k.ear === 'frog';
   const ey = frog ? 26 : 54, ex1 = frog ? 40 : 45, ex2 = frog ? 80 : 75;
   let s = '';
@@ -28,6 +32,7 @@ export function animalSVG(c, mood = 'ok') {
   s += `<path d="M44 117 L60 132 L76 117" fill="#fff"/>`;
   if (c.role === 'waiter') s += `<path d="M60 124 L46 116 L46 132 Z M60 124 L74 116 L74 132 Z" fill="#e63946"/><circle cx="60" cy="124" r="4.5" fill="#e63946"/>`;
   if (c.role === 'cook') s += `<circle cx="60" cy="140" r="3" fill="#ced4da"/><circle cx="60" cy="152" r="3" fill="#ced4da"/>`;
+  if (c.name) s += `<rect x="64" y="128" width="34" height="15" rx="4" fill="#ffd23f" stroke-width="2.5"/><text x="81" y="139.5" text-anchor="middle" font-size="10" font-family="Baloo 2, Arial" font-weight="800" fill="${O}" stroke="none">${c.name}</text>`;
   if (c.role === 'cashier') s += `<rect x="70" y="134" width="20" height="14" rx="3" fill="#fff"/><path d="M74 140 H86" stroke-width="2.5"/>`;
   // manen
   if (k.mane) for (let i = 0; i < 14; i++) {
@@ -40,6 +45,7 @@ export function animalSVG(c, mood = 'ok') {
   if (k.ear === 'long') s += `<ellipse cx="42" cy="2" rx="11" ry="30" fill="${ec}" transform="rotate(-10 42 2)"/><ellipse cx="78" cy="2" rx="11" ry="30" fill="${ec}" transform="rotate(10 78 2)"/><ellipse cx="42" cy="4" rx="5" ry="21" fill="${k.inner}" stroke="none" transform="rotate(-10 42 4)"/><ellipse cx="78" cy="4" rx="5" ry="21" fill="${k.inner}" stroke="none" transform="rotate(10 78 4)"/>`;
   if (k.ear === 'mouse') s += `<circle cx="20" cy="30" r="21" fill="${ec}"/><circle cx="100" cy="30" r="21" fill="${ec}"/><circle cx="20" cy="30" r="12" fill="${k.inner}" stroke="none"/><circle cx="100" cy="30" r="12" fill="${k.inner}" stroke="none"/>`;
   if (k.ear === 'koala') s += `<circle cx="20" cy="40" r="21" fill="${ec}"/><circle cx="100" cy="40" r="21" fill="${ec}"/><circle cx="21" cy="41" r="12" fill="${k.inner}" stroke="none"/><circle cx="99" cy="41" r="12" fill="${k.inner}" stroke="none"/>`;
+  if (k.human) s += `<circle cx="20" cy="62" r="9" fill="${k.skin}"/><circle cx="100" cy="62" r="9" fill="${k.skin}"/>`;
   if (frog) s += `<circle cx="40" cy="26" r="17" fill="${k.skin}"/><circle cx="80" cy="26" r="17" fill="${k.skin}"/>`;
   // hoofd
   s += `<ellipse cx="60" cy="60" rx="41" ry="38" fill="${k.skin}"/>`;
@@ -47,6 +53,7 @@ export function animalSVG(c, mood = 'ok') {
   if (k.stripes) s += `<path d="M60 23 V34 M47 25 L50 34 M73 25 L70 34 M20 58 L31 60 M100 58 L89 60 M22 70 L31 69 M98 70 L89 69" fill="none" stroke-width="4"/>`;
   if (k.patch) s += `<ellipse cx="45" cy="55" rx="11" ry="14" fill="#2f2f2f" stroke="none" transform="rotate(-25 45 55)"/><ellipse cx="75" cy="55" rx="11" ry="14" fill="#2f2f2f" stroke="none" transform="rotate(25 75 55)"/>`;
   if (k.ear === 'floppy') s += `<ellipse cx="22" cy="56" rx="12" ry="27" fill="${ec}" transform="rotate(18 22 56)"/><ellipse cx="98" cy="56" rx="12" ry="27" fill="${ec}" transform="rotate(-18 98 56)"/>`;
+  if (k.human) s += `<path d="M19 54 Q16 18 60 16 Q104 18 101 54 Q96 40 86 36 Q80 44 68 38 Q58 46 46 38 Q34 46 26 38 Q21 44 19 54 Z" fill="${k.hair}"/>`;
   // ogen
   if (mood === 'love') {
     const h = (x, y) => `<path d="M${x} ${y + 8} C${x - 12} ${y} ${x - 10} ${y - 10} ${x} ${y - 4} C${x + 10} ${y - 10} ${x + 12} ${y} ${x} ${y + 8} Z" fill="#ef476f" stroke-width="2.5"/>`;
@@ -63,9 +70,11 @@ export function animalSVG(c, mood = 'ok') {
   // wangen
   s += `<ellipse cx="31" cy="72" rx="7" ry="4.5" fill="#ff6b8b" opacity="${mood === 'love' || mood === 'happy' ? .7 : .4}" stroke="none"/><ellipse cx="89" cy="72" rx="7" ry="4.5" fill="#ff6b8b" opacity="${mood === 'love' || mood === 'happy' ? .7 : .4}" stroke="none"/>`;
   // snuit & neus
-  if (!frog && !k.pig) s += `<ellipse cx="60" cy="74" rx="16" ry="12" fill="${k.snout}" ${k.snout === k.skin ? 'stroke="none"' : ''}/>`;
+  if (!frog && !k.pig && !k.human) s += `<ellipse cx="60" cy="74" rx="16" ry="12" fill="${k.snout}" ${k.snout === k.skin ? 'stroke="none"' : ''}/>`;
+  if (k.human && k.freckles) s += `<g fill="#c98a5e" stroke="none"><circle cx="38" cy="66" r="1.6"/><circle cx="43" cy="69" r="1.6"/><circle cx="35" cy="70" r="1.4"/><circle cx="82" cy="66" r="1.6"/><circle cx="77" cy="69" r="1.6"/><circle cx="85" cy="70" r="1.4"/></g>`;
   if (k.pig) s += `<ellipse cx="60" cy="70" rx="13" ry="9" fill="${k.snout}"/><ellipse cx="55" cy="70" rx="2.5" ry="3.5" fill="${O}" stroke="none"/><ellipse cx="65" cy="70" rx="2.5" ry="3.5" fill="${O}" stroke="none"/>`;
   else if (k.bignose) s += `<ellipse cx="60" cy="68" rx="9" ry="11" fill="#3b3b3b"/>`;
+  else if (k.human) s += `<path d="M57 62 Q60 70 64 66" fill="none" stroke-width="3"/>`;
   else if (!frog) s += `<path d="M53 66 Q60 62 67 66 Q64 72 60 72 Q56 72 53 66 Z" fill="${O}"/>`;
   // mond
   const my = k.pig ? 82 : 78;

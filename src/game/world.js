@@ -1,4 +1,4 @@
-import { KINDS, animalSVG } from '../art/animals.js';
+import { KINDS, animalSVG, tijnLook } from '../art/animals.js';
 import { art, ic } from '../art/index.js';
 import { svg } from '../art/svg.js';
 import { S } from '../core/state.js';
@@ -44,7 +44,7 @@ export function buildStatic() {
 
 export function placeCharEl(ch) {
   ch.el.style.transform = `translate(${ch.x - 37}px, ${ch.y - 138}px)`;
-  ch.el.style.zIndex = Math.round(ch.y);
+  ch.el.style.zIndex = Math.round(ch.y) + (ch.boss ? 5 : 0);
 }
 export function makeChar(look, x, y) {
   const el = mk('char', `<div class="body">${animalSVG(look, look.mood || 'ok')}</div>`, 0, 0);
@@ -83,7 +83,10 @@ export function syncCooks() {
     const want = owned(k) ? S.st[k].cooks : 0;
     let mine = G.cooks.filter(c => c.st === k);
     while (mine.length < want) {
-      const c = makeChar(staffLook('cook'), 0, 0); c.st = k; c.job = null; G.cooks.push(c); mine.push(c);
+      // de eerste kok bij de grill is altijd Tijn zelf
+      const look = k === 'grill' && mine.length === 0 ? tijnLook() : staffLook('cook');
+      const c = makeChar(look, 0, 0); c.st = k; c.job = null; G.cooks.push(c); mine.push(c);
+      if (look.kind === 'tijn') { c.boss = true; c.el.classList.add('boss'); }
     }
     mine.forEach((c, i) => {
       const p = STATIONS[k], n = mine.length;
@@ -153,7 +156,13 @@ export function renderTable(t) {
   t.dishEl.innerHTML = t.dishes.map(k => `<div class="ic">${art(k)}</div>`).join('');
   if (t.coinEl) { t.coinEl.remove(); t.coinEl = null; }
   if (t.coins) {
-    t.coinEl = mk('coins', `<div class="pile">${art('pile')}</div><div class="amt">${fmt(t.coins)}</div>`, t.x - 48, t.y - 66, 3000);
+    // bonnetje: elk gerecht met zijn menuprijs, het totaal, en de fooi apart
+    const b = t.bill || { items: [], tip: 0 };
+    const total = b.items.reduce((sum, k) => sum + FOODS[k].price, 0);
+    const rows = b.items.map(k => `<div class="row">${ic(k)}<span>${fmt(FOODS[k].price)}</span></div>`).join('');
+    const bon = `<div class="bon">${rows}<div class="row tot"><span>=</span><span>${fmt(total)}</span></div>${
+      b.tip ? `<div class="row tip">${ic('heart')}<span>+${fmt(b.tip)}</span></div>` : ''}</div>`;
+    t.coinEl = mk('coins', `<div class="coinsIn">${bon}<div class="pile">${art('pile')}</div></div>`, t.x - 58, t.y - 12, 3000);
     t.coinEl.onclick = e => { e.stopPropagation(); collect(t); };
   }
 }
