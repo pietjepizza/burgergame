@@ -33,7 +33,10 @@ export function fit() {
   const border = parseFloat(getComputedStyle(st).borderLeftWidth) * 2 || 0;
   const viewH = (window.visualViewport && visualViewport.height) || innerHeight;
   const availW = app.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - border;
-  const availH = viewH - top.offsetHeight - parseFloat(getComputedStyle(top).marginBottom) - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - border;
+  const menuEl = $('menu');
+  const availH = viewH - top.offsetHeight - parseFloat(getComputedStyle(top).marginBottom)
+    - menuEl.offsetHeight - parseFloat(getComputedStyle(menuEl).marginTop)
+    - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - border;
   if (chooseLayout(availW, availH) && built) rebuildWorld();
   let sx = availW / L.W, sy = availH / L.H;
   if (sx > sy) sx = Math.min(sx, sy * MAX_STRETCH); else sy = Math.min(sy, sx * MAX_STRETCH);

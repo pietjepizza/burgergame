@@ -15,7 +15,7 @@ svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
 
 /* ---------- Topbalk ---------- */
 #top { display: flex; align-items: center; gap: 8px 10px; flex-wrap: nowrap; margin-bottom: 8px; }
-.logo { display: flex; align-items: center; gap: 8px; }
+.logo { display: flex; align-items: center; gap: 8px; margin-right: auto; }
 .logo .ic { width: 56px; height: 56px; animation: bob 2.2s ease-in-out infinite; }
 .logo .t { line-height: .9; }
 .logo .t1 { font-size: 17px; color: #fff; text-shadow: 0 2px 0 var(--wood-d); letter-spacing: 1px; }
@@ -113,9 +113,7 @@ svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
 .spark { position: absolute; width: 30px; height: 30px; pointer-events: none; animation: sparkle .6s forwards; z-index: 9999; }
 
 /* ---------- Menubalk ---------- */
-#menu { flex: 1 1 0; min-width: 0; display: flex; gap: 6px; flex-wrap: nowrap; overflow-x: auto; padding: 2px 2px 6px; scrollbar-width: none; }
-#menu::-webkit-scrollbar { display: none; }
-#menu > :first-child { margin-left: auto; } #menu > :last-child { margin-right: auto; }
+#menu { display: flex; gap: 6px 8px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
 #menu .mi { flex-shrink: 0; }
 #menu .mi { background: #fff; border-radius: 18px; padding: 4px 10px 4px 4px; display: flex; align-items: center; gap: 4px;
   box-shadow: 0 4px 0 #d9822b; font-size: 18px; animation: popin .4s; }
@@ -191,16 +189,16 @@ svg.art { width: 100%; height: 100%; display: block; overflow: visible; }
 .eyes { transform-box: fill-box; transform-origin: center; animation: blink 4.5s infinite; }
 .fishy { animation: swim 2s ease-in-out infinite; }
 
-@media (max-width: 1150px) { .logo .t { display: none; } }
+@media (max-width: 700px) { .logo .t { display: none; } }
 @media (max-width: 640px) {
-  #top { flex-wrap: wrap; }
-  #menu { order: 5; flex-basis: 100%; }
-  .logo { margin: 0; }
   .logo .ic { width: 42px; height: 42px; } .logo .t2 { font-size: 26px; } .logo .t1 { font-size: 13px; }
-  #top { justify-content: center; gap: 8px; }
+  #top { gap: 8px; }
   .pill { height: 44px; font-size: 20px; padding: 0 12px 0 4px; } .pill .ic { width: 34px; height: 34px; } #wallet { min-width: 108px; }
   .rbtn { width: 44px; height: 44px; padding: 8px; } #shopBtn { width: 56px; height: 56px; padding: 11px; }
   #stage { border-width: 3px; border-radius: 16px; }
+  #menu { gap: 5px; margin-top: 6px; }
+  #menu .mi { padding: 2px 6px 2px 2px; border-radius: 14px; box-shadow: 0 3px 0 #d9822b; }
+  #menu .mi .ic { width: 24px; height: 24px; } #menu .mi .tag { font-size: 13px; padding: 0 6px; }
 }
 
 /* ---------- Startscherm ---------- */
