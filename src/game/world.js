@@ -25,16 +25,22 @@ export let stationEls = {}, zoneEls = [], passEl;
 // Maak het speelveld zo groot als het scherm toelaat. Kies daarbij de indeling
 // (liggend of staand) waarmee het speelveld het grootst wordt.
 let built = false;
+// Het speelveld mag een klein beetje uitrekken (max 12%) zodat het het scherm
+// helemaal vult, ook als het scherm een iets andere vorm heeft.
+const MAX_STRETCH = 1.12;
 export function fit() {
-  const st = $('stage'), app = $('app'), cs = getComputedStyle(app);
-  const border = 10;
+  const st = $('stage'), app = $('app'), cs = getComputedStyle(app), top = $('top');
+  const border = parseFloat(getComputedStyle(st).borderLeftWidth) * 2 || 0;
+  const viewH = (window.visualViewport && visualViewport.height) || innerHeight;
   const availW = app.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - border;
-  const availH = innerHeight - $('top').offsetHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - 10 - border;
+  const availH = viewH - top.offsetHeight - parseFloat(getComputedStyle(top).marginBottom) - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - border;
   if (chooseLayout(availW, availH) && built) rebuildWorld();
-  const s = Math.max(.2, Math.min(availW / L.W, availH / L.H));
+  let sx = availW / L.W, sy = availH / L.H;
+  if (sx > sy) sx = Math.min(sx, sy * MAX_STRETCH); else sy = Math.min(sy, sx * MAX_STRETCH);
+  sx = Math.max(.2, sx); sy = Math.max(.2, sy);
   W.style.width = L.W + 'px'; W.style.height = L.H + 'px';
-  W.style.transform = `scale(${s})`;
-  st.style.width = (L.W * s + border) + 'px'; st.style.height = (L.H * s + border) + 'px';
+  W.style.transform = `scale(${sx}, ${sy})`;
+  st.style.width = (L.W * sx + border) + 'px'; st.style.height = (L.H * sy + border) + 'px';
   document.body.dataset.layout = L.name;
 }
 

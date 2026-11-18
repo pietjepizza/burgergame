@@ -18,6 +18,8 @@ $('top').querySelector('.logo').onclick = help;
 fit(); buildWorld(); fit();
 addEventListener('resize', fit);
 addEventListener('orientationchange', () => setTimeout(fit, 300));
+if (window.visualViewport) visualViewport.addEventListener('resize', fit);
+if (document.fonts) document.fonts.ready.then(fit);
 setInterval(save, 5000);
 
 G.last = performance.now();
